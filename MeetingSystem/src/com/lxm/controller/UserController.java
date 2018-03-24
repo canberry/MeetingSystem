@@ -20,7 +20,6 @@ public class UserController {
 	public String login(User user, HttpServletRequest request) {
 		System.out.println(user.getName() + " " + user.getPassword());
 		if (userService.login(user)) {
-			System.out.println("ÊÇ·ñµ½´Ë£¡");
 			request.setAttribute("user", user);
 			return "/ok";
 		}
