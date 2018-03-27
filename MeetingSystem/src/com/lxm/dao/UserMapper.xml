@@ -6,8 +6,35 @@
 	 id:必须与对应接口的某个对应的方法名一致	-->
 <mapper namespace="com.lxm.dao.UserMapper">
 
-	<select id="login" resultType="int" parameterType="User">
-		select count(*) from User where name=#{name} and password=#{password}
+	<!-- 采用结果映射的形式查询 -->
+	<resultMap type="User" id="userMap">
+		<!-- column值是数据表的列名，property值是实体类的get属性 -->
+		<id column="user_id" property="userId" /> <!-- 唯一的主键 -->
+		<result column="user_name" property="userName" /> <!-- 可以有多个 -->
+		<result column="user_role" property="userRole" />
+	</resultMap>
+
+	<select id="login" parameterType="User" resultType="int">
+		select count(*) from user where user_name=#{userName} and password=#{password}
+	</select>
+	
+	<select id="queryById" parameterType="int" resultMap="userMap">
+        select * from user where user_id=#{userId}
+	</select>
+	
+	<select id="queryByExample" parameterType="User" resultMap="userMap">
+	    select * from user
+	    <where>
+	        <if test="userId != 0">
+	             and user_id=#{userId}
+	        </if>
+	        <if test="userName != null and userName != ''">
+	             and user_name=#{userName}
+	        </if>
+	        <if test="password != null and password !=''">
+	             and password=#{password}
+	        </if>
+	    </where>
 	</select>
 
 </mapper>

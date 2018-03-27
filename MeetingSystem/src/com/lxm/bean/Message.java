@@ -3,8 +3,8 @@ package com.lxm.bean;
 import java.sql.Timestamp;
 
 public class Message {
-	private int id;
-	private String name;
+	private int messageId;
+	private String messageName;
 	private Timestamp sendTime;
 	private String content;
 	private String scan;
@@ -15,10 +15,10 @@ public class Message {
 		super();
 	}
 
-	public Message(String name, Timestamp sendTime, String content,
+	public Message(String messageName, Timestamp sendTime, String content,
 			String scan, User sendUser, User receiveUser) {
 		super();
-		this.name = name;
+		this.messageName = messageName;
 		this.sendTime = sendTime;
 		this.content = content;
 		this.scan = scan;
@@ -26,11 +26,11 @@ public class Message {
 		this.receiveUser = receiveUser;
 	}
 
-	public Message(int id, String name, Timestamp sendTime, String content,
-			String scan, User sendUser, User receiveUser) {
+	public Message(int messageId, String messageName, Timestamp sendTime,
+			String content, String scan, User sendUser, User receiveUser) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.messageId = messageId;
+		this.messageName = messageName;
 		this.sendTime = sendTime;
 		this.content = content;
 		this.scan = scan;
@@ -38,20 +38,20 @@ public class Message {
 		this.receiveUser = receiveUser;
 	}
 
-	public int getId() {
-		return id;
+	public int getMessageId() {
+		return messageId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setMessageId(int messageId) {
+		this.messageId = messageId;
 	}
 
-	public String getName() {
-		return name;
+	public String getMessageName() {
+		return messageName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setMessageName(String messageName) {
+		this.messageName = messageName;
 	}
 
 	public Timestamp getSendTime() {
@@ -96,9 +96,9 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "Message [id=" + id + ", name=" + name + ", sendTime="
-				+ sendTime + ", content=" + content + ", scan=" + scan
-				+ ", sendUser=" + sendUser + ", receiveUser=" + receiveUser
-				+ "]";
+		return "Message [messageId=" + messageId + ", messageName="
+				+ messageName + ", sendTime=" + sendTime + ", content="
+				+ content + ", scan=" + scan + ", sendUser=" + sendUser
+				+ ", receiveUser=" + receiveUser + "]";
 	}
 }

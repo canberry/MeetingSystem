@@ -1,8 +1,8 @@
 package com.lxm.bean;
 
 public class MeetingRoom {
-	private int id;
-	private String name;
+	private int mrId;
+	private String mrName;
 	private int capacity;
 	private String occupation;
 
@@ -10,33 +10,33 @@ public class MeetingRoom {
 		super();
 	}
 
-	public MeetingRoom(String name, int capacity) {
+	public MeetingRoom(String mrName, int capacity) {
 		super();
-		this.name = name;
+		this.mrName = mrName;
 		this.capacity = capacity;
 	}
 
-	public MeetingRoom(int id, String name, int capacity) {
+	public MeetingRoom(int mrId, String mrName, int capacity) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.mrId = mrId;
+		this.mrName = mrName;
 		this.capacity = capacity;
 	}
 
-	public int getId() {
-		return id;
+	public int getMrId() {
+		return mrId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setMrId(int mrId) {
+		this.mrId = mrId;
 	}
 
-	public String getName() {
-		return name;
+	public String getMrName() {
+		return mrName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setMrName(String mrName) {
+		this.mrName = mrName;
 	}
 
 	public int getCapacity() {
@@ -57,7 +57,7 @@ public class MeetingRoom {
 
 	@Override
 	public String toString() {
-		return "MeetingRoom [id=" + id + ", name=" + name + ", capacity="
-				+ capacity + ", occupation=" + occupation + "]";
+		return "MeetingRoom [mrId=" + mrId + ", mrName=" + mrName
+				+ ", capacity=" + capacity + ", occupation=" + occupation + "]";
 	}
 }

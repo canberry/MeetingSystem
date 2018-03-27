@@ -1,8 +1,8 @@
 package com.lxm.bean;
 
 public class Resource {
-	private int id;
-	private String name;
+	private int rId;
+	private String rName;
 	private int total;
 	private int remain;
 
@@ -10,35 +10,35 @@ public class Resource {
 		super();
 	}
 
-	public Resource(String name, int total, int remain) {
+	public Resource(String rName, int total, int remain) {
 		super();
-		this.name = name;
+		this.rName = rName;
 		this.total = total;
 		this.remain = remain;
 	}
 
-	public Resource(int id, String name, int total, int remain) {
+	public Resource(int rId, String rName, int total, int remain) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.rId = rId;
+		this.rName = rName;
 		this.total = total;
 		this.remain = remain;
 	}
 
-	public int getId() {
-		return id;
+	public int getrId() {
+		return rId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setrId(int rId) {
+		this.rId = rId;
 	}
 
-	public String getName() {
-		return name;
+	public String getrName() {
+		return rName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setrName(String rName) {
+		this.rName = rName;
 	}
 
 	public int getTotal() {
@@ -59,7 +59,7 @@ public class Resource {
 
 	@Override
 	public String toString() {
-		return "Resource [id=" + id + ", name=" + name + ", total=" + total
+		return "Resource [rId=" + rId + ", rName=" + rName + ", total=" + total
 				+ ", remain=" + remain + "]";
 	}
 }

@@ -11,7 +11,7 @@
 <html>
 	<head>
 		<base href="<%=basePath%>">
-		<title>Home</title>
+		<title>主页</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="keywords" content="" />
@@ -317,7 +317,7 @@ $(".sidebar-icon").click(
 		<script type="text/javascript" src="js/vroom.js"></script>
 		<script type="text/javascript" src="js/TweenLite.min.js"></script>
 		<script type="text/javascript" src="js/CSSPlugin.min.js"></script>
-		<script src="js/jquery.nicescroll.js"></script>
+		<!-- <script src="js/jquery.nicescroll.js"></script> -->
 		<script src="js/scripts.js"></script>
 
 		<!-- Bootstrap Core JavaScript -->

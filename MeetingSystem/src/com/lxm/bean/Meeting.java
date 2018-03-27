@@ -3,8 +3,8 @@ package com.lxm.bean;
 import java.sql.Timestamp;
 
 public class Meeting {
-	private int id;
-	private String name;
+	private int mId;
+	private String mName;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private Timestamp scheduledTime;
@@ -18,11 +18,11 @@ public class Meeting {
 		super();
 	}
 
-	public Meeting(String name, Timestamp startTime, Timestamp endTime,
+	public Meeting(String mName, Timestamp startTime, Timestamp endTime,
 			Timestamp scheduledTime, String description, String cancel,
 			MeetingRoom meetingRoom, User scheduler) {
 		super();
-		this.name = name;
+		this.mName = mName;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.scheduledTime = scheduledTime;
@@ -32,12 +32,12 @@ public class Meeting {
 		this.scheduler = scheduler;
 	}
 
-	public Meeting(int id, String name, Timestamp startTime, Timestamp endTime,
-			Timestamp scheduledTime, String description, String cancel,
-			MeetingRoom meetingRoom, User scheduler) {
+	public Meeting(int mId, String mName, Timestamp startTime,
+			Timestamp endTime, Timestamp scheduledTime, String description,
+			String cancel, MeetingRoom meetingRoom, User scheduler) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.mId = mId;
+		this.mName = mName;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.scheduledTime = scheduledTime;
@@ -47,20 +47,20 @@ public class Meeting {
 		this.scheduler = scheduler;
 	}
 
-	public int getId() {
-		return id;
+	public int getmId() {
+		return mId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setmId(int mId) {
+		this.mId = mId;
 	}
 
-	public String getName() {
-		return name;
+	public String getmName() {
+		return mName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setmName(String mName) {
+		this.mName = mName;
 	}
 
 	public Timestamp getStartTime() {
@@ -129,7 +129,7 @@ public class Meeting {
 
 	@Override
 	public String toString() {
-		return "Meeting [id=" + id + ", name=" + name + ", startTime="
+		return "Meeting [mId=" + mId + ", mName=" + mName + ", startTime="
 				+ startTime + ", endTime=" + endTime + ", scheduledTime="
 				+ scheduledTime + ", description=" + description + ", cancel="
 				+ cancel + ", hold=" + hold + ", meetingRoom=" + meetingRoom

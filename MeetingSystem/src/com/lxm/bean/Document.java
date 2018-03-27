@@ -1,8 +1,8 @@
 package com.lxm.bean;
 
 public class Document {
-	private int id;
-	private String name;
+	private int dId;
+	private String dName;
 	private String path;
 	private Meeting meeting;
 
@@ -10,35 +10,35 @@ public class Document {
 		super();
 	}
 
-	public Document(String name, String path, Meeting meeting) {
+	public Document(String dName, String path, Meeting meeting) {
 		super();
-		this.name = name;
+		this.dName = dName;
 		this.path = path;
 		this.meeting = meeting;
 	}
 
-	public Document(int id, String name, String path, Meeting meeting) {
+	public Document(int dId, String dName, String path, Meeting meeting) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.dId = dId;
+		this.dName = dName;
 		this.path = path;
 		this.meeting = meeting;
 	}
 
-	public int getId() {
-		return id;
+	public int getdId() {
+		return dId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setdId(int dId) {
+		this.dId = dId;
 	}
 
-	public String getName() {
-		return name;
+	public String getdName() {
+		return dName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setdName(String dName) {
+		this.dName = dName;
 	}
 
 	public String getPath() {
@@ -59,7 +59,7 @@ public class Document {
 
 	@Override
 	public String toString() {
-		return "Document [id=" + id + ", name=" + name + ", path=" + path
+		return "Document [dId=" + dId + ", dName=" + dName + ", path=" + path
 				+ ", meeting=" + meeting + "]";
 	}
 }

@@ -1,52 +1,52 @@
 package com.lxm.bean;
 
 public class User {
-	private int id;
-	private String name;
+	private int userId;
+	private String userName;
 	private String password;
 	private String avatar;
 	private String sex;
-	private String role;
+	private String userRole;
 
 	public User() {
 		super();
 	}
 
-	public User(String name, String password, String avatar, String sex,
-			String role) {
+	public User(String userName, String password, String avatar, String sex,
+			String userRole) {
 		super();
-		this.name = name;
+		this.userName = userName;
 		this.password = password;
 		this.avatar = avatar;
 		this.sex = sex;
-		this.role = role;
+		this.userRole = userRole;
 	}
 
-	public User(int id, String name, String password, String avatar,
-			String sex, String role) {
+	public User(int userId, String userName, String password, String avatar,
+			String sex, String userRole) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.userId = userId;
+		this.userName = userName;
 		this.password = password;
 		this.avatar = avatar;
 		this.sex = sex;
-		this.role = role;
+		this.userRole = userRole;
 	}
 
-	public int getId() {
-		return id;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
-	public String getName() {
-		return name;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getPassword() {
@@ -73,18 +73,18 @@ public class User {
 		this.sex = sex;
 	}
 
-	public String getRole() {
-		return role;
+	public String getUserRole() {
+		return userRole;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", password=" + password
-				+ ", avatar=" + avatar + ", sex=" + sex + ", role=" + role
-				+ "]";
+		return "User [userId=" + userId + ", userName=" + userName
+				+ ", password=" + password + ", avatar=" + avatar + ", sex="
+				+ sex + ", userRole=" + userRole + "]";
 	}
 }

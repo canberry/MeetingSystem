@@ -10,15 +10,19 @@ import com.lxm.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-	
+
 	@Resource
 	private UserMapper userMapper;
 
 	public boolean login(User user) {
-		if (userMapper.login(user) == 1) {
-			return true;
-		} 
-		
-		return false;
+		return userMapper.login(user) == 1;
+	}
+
+	public User queryByUserId(int userId) {
+		return userMapper.queryById(userId);
+	}
+
+	public User queryByUserExample(User user) {
+		return userMapper.queryByExample(user);
 	}
 }
