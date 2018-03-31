@@ -36,5 +36,43 @@
 	        </if>
 	    </where>
 	</select>
+	
+    <insert id="add" parameterType="User" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(user_name, password) values(#{userName}, #{password})
+    </insert>
 
+    <update id="modify" parameterType="User">
+        update user 
+        <set>
+            <if test="password != null and password != ''">
+                password = #{password}, 
+            </if>
+            <if test="signature != null and signature != ''">
+                signature = #{signature}, 
+            </if>
+            <if test="avatar != null and avatar != ''">
+                avatar = #{avatar}, 
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex}, 
+            </if>
+            <if test="userRole != null and userRole != ''">
+                user_role = #{userRole}, 
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="mobile != null and mobile != ''">
+                mobile = #{mobile},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+        </set>
+        where user_id=#{userId}
+    </update>
+    
 </mapper>

@@ -1,5 +1,7 @@
 package com.lxm.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -22,7 +24,15 @@ public class UserServiceImpl implements UserService {
 		return userMapper.queryById(userId);
 	}
 
-	public User queryByUserExample(User user) {
+	public List<User> queryByUserExample(User user) {
 		return userMapper.queryByExample(user);
+	}
+
+	public void addUser(User user) {
+		userMapper.add(user);
+	}
+
+	public void modifyUser(User user) {
+		userMapper.modify(user);
 	}
 }

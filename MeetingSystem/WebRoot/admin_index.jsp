@@ -199,22 +199,22 @@ $('.close').click(function() {
 				<div style="border-top: 1px solid rgba(69, 74, 84, 0.7)"></div>
 				<!--/down-->
 				<div class="down">
-					<a href="modify_userinfo.jsp"><img src="images/default_avatar.jpg"> </a>
-					<a href="modify_userinfo.jsp"><span class=" name-caret">Admin</span> </a>
+					<a href="query_myuserinfo.jsp" title="更换头像"><img src="${sessionScope.user.avatar}" alt="avatar/default_avatar.jpg"> </a>
+					<a href="query_myuserinfo.jsp" title="修改昵称"><span class=" name-caret">${sessionScope.user.nickname}</span> </a>
 					<p>
-						请输入个人签名
+					    ${sessionScope.user.signature}
 					</p>
 					<ul>
 						<li>
-							<a class="tooltips" href="query_myinfo.jsp"><span>我的</span><i
+							<a class="tooltips" href="query_myuserinfo.jsp"><span>我的</span><i
 								class="lnr lnr-user"></i> </a>
 						</li>
 						<li>
-							<a class="tooltips" href="index.html"><span>设置</span><i
+							<a class="tooltips" href="query_myuserinfo.jsp"><span>设置</span><i
 								class="lnr lnr-cog"></i> </a>
 						</li>
 						<li>
-							<a class="tooltips" href="login.jsp"><span>退出</span><i
+							<a class="tooltips" href="<%=basePath%>user/loginout"><span>退出</span><i
 								class="lnr lnr-power-switch"></i> </a>
 						</li>
 					</ul>

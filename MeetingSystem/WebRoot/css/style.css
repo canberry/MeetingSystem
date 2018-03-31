@@ -3250,6 +3250,19 @@ a.read.fourth:hover {
 	font-family: 'Roboto', sans-serif;
 }
 
+.login .certcode {
+	width: 50%;
+	padding: 0.9em 1em 0.9em 4em;
+	color: #777;
+	font-size: 15px;
+	outline: none;
+	font-weight: 400;
+	border: 1px solid #ddd;
+	background: url("../images/certcode.png") no-repeat 12px 12px;
+	margin: 0.3em 0;
+	font-family: 'Roboto', sans-serif;
+}
+
 .login input[type="password"] {
 	background: url("../images/icons.png") no-repeat 13px -33px;
 }
@@ -7470,6 +7483,17 @@ footer  p a:hover,.footer p a:hover {
 		font-weight: 400;
 		border: 1px solid #ddd;
 		background: url("../images/icons.png") no-repeat 14px 13px;
+		margin: 0.3em 0;
+	}
+	.login .certcode {
+		width: 50%;
+		padding: 0.7em 1em 0.7em 4em;
+		color: #777;
+		font-size: 15px;
+		outline: none;
+		font-weight: 400;
+		background: url("../images/certcode.png") no-repeat 12px 12px;
+		border: 1px solid #ddd;
 		margin: 0.3em 0;
 	}
 	.login input[type="password"] {

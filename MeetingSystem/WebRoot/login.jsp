@@ -12,7 +12,7 @@
 	<head>
 		<base href="<%=basePath%>">
 
-		<title>Login</title>
+		<title>登录</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="keywords" content="" />
@@ -91,7 +91,7 @@ function hideURLbar() {
 						</div>
 					</form>
 
-					<script type="text/javascript">
+<script type="text/javascript">
 $("#errorinfo").hide();
 function checkAndlogin() {
 	var username = $("#username").val();
@@ -105,7 +105,8 @@ function checkAndlogin() {
 		$("#errorinfo").show();
 		return;
 	} else {
-		$.post("<%=basePath%>user/login", $("form").serialize(), 
+		$.post("<%=basePath%>user/login", 
+		    $("form").serialize(), 
 		    function(data) {
             if (data == "ordinary ok") {
                 window.location.href = "index.jsp";
