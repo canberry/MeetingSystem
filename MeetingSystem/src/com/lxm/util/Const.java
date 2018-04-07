@@ -26,4 +26,12 @@ public class Const {
 	
 	public final static String SEX_MAN = "man";
 	public final static String SEX_FEMALE = "female";
+	
+	public static final String ENCODING_UTF8 = "utf-8";
+	
+	public static final String DATEFORMAT_HM = "yyyy-MM-dd HH:mm";
+	public static final String DATEFORMAT_HMS = "yyyy-MM-dd HH:mm:ss";
+	
+	public static final String MODE_HISTORY = "history";
+	public static final String MODE_FUTURE = "future";
 }

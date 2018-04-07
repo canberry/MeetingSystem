@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 		return userMapper.queryById(userId);
 	}
 
-	public List<User> queryByUserExample(User user) {
+	public List<User> queryByUsersExample(User user) {
 		return userMapper.queryByExample(user);
 	}
 

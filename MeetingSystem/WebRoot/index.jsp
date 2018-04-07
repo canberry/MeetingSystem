@@ -227,13 +227,10 @@ $('.close').click(function() {
 								style="float: right"></span> </a>
 							<ul id="menu-academico-sub">
 								<li id="menu-academico-avaliacoes">
-									<a href="query_dayview_meetingroom.jsp">日&nbsp;视&nbsp;图</a>
+									<a href="<%=basePath%>meetingRoom/queryMeetingRoom">会&nbsp;议&nbsp;室</a>
 								</li>
 								<li id="menu-academico-boletim">
-									<a href="query_weekview_meetingroom.jsp">周&nbsp;视&nbsp;图</a>
-								</li>
-								<li id="menu-academico-avaliacoes">
-									<a href="query_monthview_meetingroom.jsp">月&nbsp;视&nbsp;图</a>
+									<a href="query_mr_monthview.jsp">月&nbsp;视&nbsp;图</a>
 								</li>
 							</ul>
 						</li>
@@ -243,13 +240,13 @@ $('.close').click(function() {
 							</a>
 							<ul id="menu-academico-sub">
 								<li id="menu-academico-avaliacoes">
-									<a href="query_futuremeeting.jsp">即将召开</a>
+									<a href="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold?pageIndex=1">即将召开</a>
 								</li>
 								<li id="menu-academico-boletim">
-									<a href="query_historymeeting.jsp">历史会议</a>
+									<a href="<%=basePath%>meetingDetail/queryMeetingDetailAlreadyHold?pageIndex=1">历史会议</a>
 								</li>
 								<li id="menu-academico-avaliacoes">
-									<a href="add_document.jsp">上传记录</a>
+									<a href="<%=basePath%>meetingDetail/queryMeetingDetailByRole?pageIndex=1">上传记录</a>
 								</li>
 							</ul>
 						</li>

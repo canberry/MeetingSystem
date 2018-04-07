@@ -1,11 +1,9 @@
 package com.lxm.bean;
 
-import java.sql.Timestamp;
-
 public class Message {
 	private int messageId;
 	private String messageName;
-	private Timestamp sendTime;
+	private String sendTime;
 	private String content;
 	private String scan;
 	private User sendUser;
@@ -15,7 +13,7 @@ public class Message {
 		super();
 	}
 
-	public Message(String messageName, Timestamp sendTime, String content,
+	public Message(String messageName, String sendTime, String content,
 			String scan, User sendUser, User receiveUser) {
 		super();
 		this.messageName = messageName;
@@ -26,7 +24,7 @@ public class Message {
 		this.receiveUser = receiveUser;
 	}
 
-	public Message(int messageId, String messageName, Timestamp sendTime,
+	public Message(int messageId, String messageName, String sendTime,
 			String content, String scan, User sendUser, User receiveUser) {
 		super();
 		this.messageId = messageId;
@@ -54,11 +52,11 @@ public class Message {
 		this.messageName = messageName;
 	}
 
-	public Timestamp getSendTime() {
+	public String getSendTime() {
 		return sendTime;
 	}
 
-	public void setSendTime(Timestamp sendTime) {
+	public void setSendTime(String sendTime) {
 		this.sendTime = sendTime;
 	}
 

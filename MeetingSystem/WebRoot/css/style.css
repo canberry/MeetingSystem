@@ -2222,6 +2222,14 @@ h2.inner-tittle,h3.inner-tittle {
 	text-align: left;
 }
 
+h3.my-inner-tittle {
+	font-size: 0.5em;
+	font-weight: 400;
+	color: #333;
+	margin-bottom: 0.7em;
+	text-align: left;
+}
+
 .graph {
 	background: #fff;
 	padding: 2em 2em;

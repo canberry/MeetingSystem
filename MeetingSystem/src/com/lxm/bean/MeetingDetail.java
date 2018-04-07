@@ -5,23 +5,27 @@ public class MeetingDetail {
 	private User user;
 	private String role;
 	private String will;
+	private String optional;
 
 	public MeetingDetail() {
 		super();
 	}
 
-	public MeetingDetail(String role, String will) {
+	public MeetingDetail(String role, String will, String optional) {
 		super();
 		this.role = role;
 		this.will = will;
+		this.optional = optional;
 	}
 
-	public MeetingDetail(Meeting meeting, User user, String role, String will) {
+	public MeetingDetail(Meeting meeting, User user, String role, String will,
+			String optional) {
 		super();
 		this.meeting = meeting;
 		this.user = user;
 		this.role = role;
 		this.will = will;
+		this.optional = optional;
 	}
 
 	public Meeting getMeeting() {
@@ -56,9 +60,18 @@ public class MeetingDetail {
 		this.will = will;
 	}
 
+	public String getOptional() {
+		return optional;
+	}
+
+	public void setOptional(String optional) {
+		this.optional = optional;
+	}
+
 	@Override
 	public String toString() {
 		return "MeetingDetail [meeting=" + meeting + ", user=" + user
-				+ ", role=" + role + ", will=" + will + "]";
+				+ ", role=" + role + ", will=" + will + ", optional="
+				+ optional + "]";
 	}
 }

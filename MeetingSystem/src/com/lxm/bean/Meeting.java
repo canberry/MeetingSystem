@@ -1,25 +1,29 @@
 package com.lxm.bean;
 
-import java.sql.Timestamp;
+import java.util.List;
 
 public class Meeting {
 	private int mId;
 	private String mName;
-	private Timestamp startTime;
-	private Timestamp endTime;
-	private Timestamp scheduledTime;
+	private String startTime;
+	private String endTime;
+	private String scheduledTime;
 	private String description;
 	private String cancel;
 	private String hold;
 	private MeetingRoom meetingRoom;
 	private User scheduler;
+	
+	private List<MeetingDetail> meetingDetails;
+	private List<MeetingResource> meetingResources;
+	private List<Document> documents;
 
 	public Meeting() {
 		super();
 	}
 
-	public Meeting(String mName, Timestamp startTime, Timestamp endTime,
-			Timestamp scheduledTime, String description, String cancel,
+	public Meeting(String mName, String startTime, String endTime,
+			String scheduledTime, String description, String cancel,
 			MeetingRoom meetingRoom, User scheduler) {
 		super();
 		this.mName = mName;
@@ -32,8 +36,8 @@ public class Meeting {
 		this.scheduler = scheduler;
 	}
 
-	public Meeting(int mId, String mName, Timestamp startTime,
-			Timestamp endTime, Timestamp scheduledTime, String description,
+	public Meeting(int mId, String mName, String startTime,
+			String endTime, String scheduledTime, String description,
 			String cancel, MeetingRoom meetingRoom, User scheduler) {
 		super();
 		this.mId = mId;
@@ -63,27 +67,27 @@ public class Meeting {
 		this.mName = mName;
 	}
 
-	public Timestamp getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Timestamp startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 
-	public Timestamp getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Timestamp endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 
-	public Timestamp getScheduledTime() {
+	public String getScheduledTime() {
 		return scheduledTime;
 	}
 
-	public void setScheduledTime(Timestamp scheduledTime) {
+	public void setScheduledTime(String scheduledTime) {
 		this.scheduledTime = scheduledTime;
 	}
 
@@ -125,6 +129,30 @@ public class Meeting {
 
 	public void setScheduler(User scheduler) {
 		this.scheduler = scheduler;
+	}
+
+	public List<MeetingDetail> getMeetingDetails() {
+		return meetingDetails;
+	}
+
+	public void setMeetingDetails(List<MeetingDetail> meetingDetails) {
+		this.meetingDetails = meetingDetails;
+	}
+
+	public List<MeetingResource> getMeetingResources() {
+		return meetingResources;
+	}
+
+	public void setMeetingResources(List<MeetingResource> meetingResources) {
+		this.meetingResources = meetingResources;
+	}
+
+	public List<Document> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
 	}
 
 	@Override

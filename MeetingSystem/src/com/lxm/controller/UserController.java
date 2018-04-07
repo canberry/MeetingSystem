@@ -22,7 +22,7 @@ import com.lxm.util.FileUtil;
 @RequestMapping("/user")
 public class UserController {
 
-	public static Logger logger = Logger.getLogger(UserController.class);
+	private static Logger logger = Logger.getLogger(UserController.class);
 
 	@Autowired
 	private UserService userService;
@@ -32,7 +32,7 @@ public class UserController {
 	public String login(User user, HttpServletRequest request) {
 		logger.info("before login user: " + user);
 		if (userService.login(user)) { // success
-			List<User> users = userService.queryByUserExample(user);
+			List<User> users = userService.queryByUsersExample(user);
 			if (users == null || users.isEmpty() || users.size() != 1) {
 				return "fail";
 			}
@@ -44,7 +44,7 @@ public class UserController {
 			if (authority.equals(Const.AUTHORITY_ORDINARY)) { // ordinary
 				logger.info("want to index.jsp");
 				return "ordinary ok";
-			} else if (authority.equals(Const.AUTHORITY_ORDINARY)) { // admin
+			} else if (authority.equals(Const.AUTHORITY_ADMIN)) { // admin
 				logger.info("want to admin_index.jsp");
 				return "admin ok";
 			}
@@ -58,11 +58,11 @@ public class UserController {
 
 	@RequestMapping("/queryUserName")
 	@ResponseBody
-	public String queryUserName(String userName, HttpServletRequest request) {
+	public String queryUserName(String userName) {
 		User user = new User();
 		user.setUserName(userName);
 		logger.info("before queryUserName user: " + user);
-		List<User> users = userService.queryByUserExample(user);
+		List<User> users = userService.queryByUsersExample(user);
 		if (users == null || users.isEmpty()) {
 			logger.info("username is not existed");
 			return "ok";

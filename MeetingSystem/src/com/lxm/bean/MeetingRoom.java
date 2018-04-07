@@ -2,6 +2,7 @@ package com.lxm.bean;
 
 public class MeetingRoom {
 	private int mrId;
+	private String no;
 	private String mrName;
 	private int capacity;
 	private String occupation;
@@ -10,17 +11,22 @@ public class MeetingRoom {
 		super();
 	}
 
-	public MeetingRoom(String mrName, int capacity) {
+	public MeetingRoom(String no, String mrName, int capacity, String occupation) {
 		super();
+		this.no = no;
 		this.mrName = mrName;
 		this.capacity = capacity;
+		this.occupation = occupation;
 	}
 
-	public MeetingRoom(int mrId, String mrName, int capacity) {
+	public MeetingRoom(int mrId, String no, String mrName, int capacity,
+			String occupation) {
 		super();
 		this.mrId = mrId;
+		this.no = no;
 		this.mrName = mrName;
 		this.capacity = capacity;
+		this.occupation = occupation;
 	}
 
 	public int getMrId() {
@@ -55,9 +61,18 @@ public class MeetingRoom {
 		this.occupation = occupation;
 	}
 
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
+	}
+
 	@Override
 	public String toString() {
 		return "MeetingRoom [mrId=" + mrId + ", mrName=" + mrName
-				+ ", capacity=" + capacity + ", occupation=" + occupation + "]";
+				+ ", capacity=" + capacity + ", occupation=" + occupation 
+				+ ", no=" + no + "]";
 	}
 }

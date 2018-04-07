@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace：必须与对应的接口全类名一致
+	 id:必须与对应接口的某个对应的方法名一致	-->
+<mapper namespace="com.lxm.dao.MeetingRoomMapper">
+	
+	<resultMap type="MeetingRoom" id="meetingRoomMap">
+		<!-- column值是数据表的列名，property值是实体类的get属性 -->
+		<id column="mr_id" property="mrId" /> <!-- 唯一的主键 -->
+		<result column="no" property="no" /> <!-- 可以有多个 -->
+		<result column="mr_name" property="mrName" />
+		<result column="capacity" property="capacity" />
+		<result column="occupation" property="occupation" />
+	</resultMap>
+	
+	<select id="pagination" resultMap="meetingRoomMap">
+	    select * from meeting_room 
+	    <where>
+	        <if test="meetingRoom.no != null and meetingRoom.no !=''">
+	            and no like '%${meetingRoom.no}%' 
+	        </if>
+	        <if test="meetingRoom.mrName != null and meetingRoom.mrName != ''">
+	            and mr_name like '%${meetingRoom.mrName}%'
+	        </if>
+	        <if test="meetingRoom.capacity > 0">
+	            and capacity >= #{meetingRoom.capacity}
+	        </if>
+	    </where>
+	    order by mr_id limit #{pageStart}, #{pageSize}
+	</select>
+	
+	<select id="getRows" parameterType="MeetingRoom" resultType="int">
+	    select count(*) from meeting_room 
+	    <where>
+	        <if test="no != null and no !=''">
+	            and no like '%${no}%' 
+	        </if>
+	        <if test="mrName != null and mrName != ''">
+	            and mr_name like '%${mrName}%'
+	        </if>
+	        <if test="capacity > 0">
+	            and capacity >= #{capacity}
+	        </if>
+	    </where>
+	</select>
+    
+</mapper>

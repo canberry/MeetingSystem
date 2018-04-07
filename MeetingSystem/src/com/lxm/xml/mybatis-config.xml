@@ -10,5 +10,8 @@
 	<!-- 实体接口映射资源 -->
 	<mappers>
 		<mapper resource="com/lxm/dao/UserMapper.xml" />
+		<mapper resource="com/lxm/dao/MeetingMapper.xml" />
+		<mapper resource="com/lxm/dao/MeetingRoomMapper.xml" />
+		<mapper resource="com/lxm/dao/MeetingDetailMapper.xml" />
 	</mappers>
 </configuration>  
