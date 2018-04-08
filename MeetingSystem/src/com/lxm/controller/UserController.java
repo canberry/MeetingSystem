@@ -131,7 +131,7 @@ public class UserController {
 	
 	@RequestMapping(value="/uploadAvatar", method=RequestMethod.POST)
 	public String uploadAvatar(@RequestParam("file")MultipartFile file, HttpServletRequest request) {
-		String saveFilePath = "upload/avatar/";
+		String saveFilePath = Const.Path_TOSAVE_AVATAR;
 		String imgPath = FileUtil.saveFile(file, saveFilePath, request);
 		logger.info("imgPath: " + imgPath);
 		

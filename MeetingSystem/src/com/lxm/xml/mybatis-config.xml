@@ -13,5 +13,6 @@
 		<mapper resource="com/lxm/dao/MeetingMapper.xml" />
 		<mapper resource="com/lxm/dao/MeetingRoomMapper.xml" />
 		<mapper resource="com/lxm/dao/MeetingDetailMapper.xml" />
+		<mapper resource="com/lxm/dao/DocumentMapper.xml" />
 	</mappers>
 </configuration>  

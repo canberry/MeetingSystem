@@ -31,7 +31,6 @@
 		<association property="scheduler" javaType="User">
 			<id column="scheduler" property="userId" />
 		    <result column="user_name" property="userName" />
-		    <result column="user_role" property="userRole" />
 		</association>
 	</resultMap>
 	
@@ -80,8 +79,8 @@
 		
 		<!-- 联合从表Documents -->
 		<collection property="documents" ofType="Document" javaType="ArrayList">
-		    <id column="d_id" property="dId" />
-		    <id column="d_name" property="dName" />
+		    <id column="d_id" property="docId" />
+		    <id column="d_name" property="docName" />
 		    <result column="path" property="path" />
 		</collection>
 	</resultMap>
@@ -105,10 +104,10 @@
 		inner join user u on m.scheduler= u.user_id 
 		<where>
 			<if test="mId != 0">
-				and m_id=#{mId}
+				and m_id = #{mId}
 	        </if>
 			<if test="mName != null and mName != ''">
-				and m_name=#{mName}
+				and m_name like '%${mName}%'
 	        </if>
 			<if test="startTime != null and startTime != ''">
 			    <![CDATA[ and DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
@@ -116,17 +115,23 @@
 	        <if test="endTime != null and endTime != ''">
 	            <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 	        </if>
+	        <if test="scheduledTime != null and scheduledTime != ''">
+	            <![CDATA[ and DATE_FORMAT(scheduled_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{scheduledTime}, '%Y-%m-%d %H:%i:%s') ]]>
+	        </if>
 	        <if test="cancel != null and cancel != ''">
-	            and cancel=#{cancel}
+	            and cancel = #{cancel}
 	        </if>
 	        <if test="hold != null and hold != ''">
-	            and hold=#{hold}
+	            and hold = #{hold}
 	        </if>
 	        <if test="meetingRoom != null and meetingRoom.mrId != 0">
-	            and m.mr_id=#{meetingRoom.mrId}	        
+	            and m.mr_id = #{meetingRoom.mrId}	        
+	        </if>
+	        <if test="meetingRoom != null and meetingRoom.no != ''">
+	            and mr.no like '%${meetingRoom.no}%'	        
 	        </if>
 	        <if test="scheduler != null and scheduler.userId != 0">
-	            and m.scheduler=#{scheduler.userId}
+	            and m.scheduler = #{scheduler.userId}
 	        </if>
 		</where>
 	</select>

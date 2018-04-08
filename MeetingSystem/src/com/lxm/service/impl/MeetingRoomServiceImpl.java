@@ -2,7 +2,8 @@ package com.lxm.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.lxm.bean.MeetingRoom;
@@ -12,7 +13,7 @@ import com.lxm.service.MeetingRoomService;
 @Service
 public class MeetingRoomServiceImpl implements MeetingRoomService {
 	
-	@Autowired
+	@Resource
     MeetingRoomMapper meetingRoomMapper;
 	
 	public List<MeetingRoom> paginateMeetingRoomsByExample(MeetingRoom meetingRoom, int pageIndex, int pageSize) {

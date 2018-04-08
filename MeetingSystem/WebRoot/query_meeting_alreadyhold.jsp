@@ -355,7 +355,6 @@ $("#endTime").click(function(){
 							<div class="accordion">
 								<div class="panel-group tool-tips graph-form" id="accordion"
 									role="tablist" aria-multiselectable="true">
-
 									<c:forEach var="meetingDetail" items="${meetingDetails}"
 										varStatus="status">
 										<fmt:parseDate var="startObj" value="${meetingDetail.meeting.startTime}" type="DATE"
@@ -470,8 +469,11 @@ $("#endTime").click(function(){
 														<div class="col-md-6 page_1" style="width: 15%">
 															<div class="list-group list-group-alternate">
 																<c:if test="${meetingDetail.role == 'recorder'}">
-																	<button type="button" class="btn btn-lg btn-info">上传会议记录</button>
+																	<button type="button" class="btn btn-lg btn-info" >
+																	上传会议记录
+																	</button>
 																</c:if>
+																
 																<button type="button" class="btn btn-link" onclick="clickDetail(${meetingDetail.meeting.mId})">
 																查看详情
 																</button>

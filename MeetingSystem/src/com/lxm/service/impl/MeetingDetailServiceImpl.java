@@ -1,20 +1,19 @@
 package com.lxm.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.lxm.bean.MeetingDetail;
 import com.lxm.dao.MeetingDetailMapper;
 import com.lxm.service.MeetingDetailService;
-import com.lxm.util.Const;
 
 @Service
 public class MeetingDetailServiceImpl implements MeetingDetailService {
 
-	@Autowired
+	@Resource
 	MeetingDetailMapper meetingDetailMapper;
 
 	public List<MeetingDetail> paginateMeetingDetailByExample(MeetingDetail meetingDetail, int pageIndex, int pageSize) {

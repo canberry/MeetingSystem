@@ -96,4 +96,11 @@ public class MeetingController {
 		request.setAttribute("documents", documents);
 		return "/query_meeting_detail";
 	}
+	
+	@RequestMapping("/queryMeetingByMyScheduled")
+	public String queryMeetingByMyScheduled(HttpServletRequest request) {
+		
+		
+		return "";
+	}
 }

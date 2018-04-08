@@ -65,6 +65,12 @@ function hideURLbar() {
 		<!-- time -->
 		<script type="text/javascript" src="laydate/laydate.js"></script>
 		<!-- //timessss -->
+		
+		<!-- upload -->
+		<link href="fileupload/css/iconfont.css" rel="stylesheet" type="text/css"/>
+        <link href="fileupload/css/fileUpload.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="fileupload/js/fileUpload.js"></script>
+		<!-- //upload -->
 	</head>
 
 	<body>
@@ -285,23 +291,40 @@ $('.close').click(function() {
 										会议记录
 									</h2>
 									<nav class="nav-sidebar">
+									
+									<form id="downform" method="post"></form>
 									<ul class="nav tabs">
 										<c:forEach var="document" items="${documents}"
 											varStatus="status">
-											<li class="">
-												<a href="downloadfile.jsp?path=${document.path}">
-													${status.count}、${document.dName}</a>
+											<li class="" id="doc${document.docId}" 
+											    onclick="down('${document.path}')" title="点击下载此文件">
+												<a>${status.count}、${document.docName}</a>
 											</li>
 										</c:forEach>
-										
+
 										<c:if test="${documents.isEmpty()}">
 										    <li class="">
 												<a><i>未上传记录</i></a>
 											</li>
 										</c:if>
+										
+										<c:if test="${param.action != 1}">
+											<c:if test="${md.role == 'recorder'}">
+											    <li class="" data-toggle="modal" data-target="#myModal">
+												    <a><i><strong>点击上传</strong></i></a>
+											    </li>
+											</c:if>
+										</c:if>
 									</ul>
 									</nav>
 								</c:if>
+<script type="text/javascript">
+function down(filePath) {
+	var ac = "<%=basePath%>document/downloadDocument?path=" + filePath;
+	$("#downform").attr("action", ac);
+	$("#downform").submit();
+}
+</script>
 
 								<h2>
 									借用资源
@@ -335,16 +358,150 @@ $('.close').click(function() {
 												<div class="float-left">
 													<div class="btn-group m-r-sm mail-hidden-options"
 														style="display: inline-block;">
-
+														
+														<input id="mid" value="${meeting.mId}" type="hidden">
 														<c:if test="${param.action != 1}">
 															<c:if test="${md.role == 'recorder'}">
 																<h4>
-																	<a class="label label-warning">上传会议记录</a>
+																	<a class="label label-warning" data-toggle="modal" data-target="#myModal">上传会议记录</a>
 																</h4>
+																<h4>
+																	<a class="label label-info" data-toggle="modal" data-target="#deleteModal">删除会议记录</a>
+																</h4>
+																
+																<div class="modal fade" id="deleteModal" tabindex="-1"
+																	role="dialog" aria-labelledby="deleteModalLabel"
+																	aria-hidden="true" style="display: none;">
+																	<div class="modal-dialog">
+																		<div class="modal-content">
+																			<div class="modal-header">
+																				<button type="button" class="close second"
+																					data-dismiss="modal" aria-hidden="true">
+																					×
+																				</button>
+																				<h2 class="modal-title">
+																					删除会议记录
+																				</h2>
+																			</div>
+																			<div class="modal-body">
+																				<nav class="nav-sidebar">
+																				<ul class="nav tabs">
+																					<c:forEach var="document" items="${documents}"
+																						varStatus="status">
+																						<li class="" id="record${document.docId}">
+																							<a>${status.count}、${document.docName}
+																								<button class="share__btn"
+																									style="background: #3B5999; float: right" 
+																									onclick="remove('${document.docId}', '${document.path}')">
+																									删除
+																								</button> </a>
+																						</li>
+																					</c:forEach>
+																					<c:if test="${documents.isEmpty()}">
+																						<li class="">
+																							<a><i>未上传记录</i></a>
+																						</li>
+																					</c:if>
+																				</ul>
+																				</nav>
+																			</div>
+																			<div class="modal-footer">
+																				<button type="button" class="btn btn-default"
+																					data-dismiss="modal">
+																					Close
+																				</button>
+																			</div>
+<script type="text/javascript">
+function remove(docId, path) {
+	    if (!confirm("确认删除？")) {
+	    	return false;
+	    }
+	
+	    $.post("<%=basePath%>document/removeDocument", 
+            {docId : docId,
+	    	 path : path}, 
+		    function(data) {
+                if (data == "ok") {
+                	var did = "#record" + docId;
+                	var doc = "#doc" + docId;
+                	$(did).html("");
+                	$(doc).html("");
+                } else {
+                	alert("删除失败");
+                }
+		});
+}
+</script>
+																		</div>
+																		<!-- /.modal-content -->
+																	</div>
+																	<!-- /.modal-dialog -->
+																</div>
+																
+																<div class="modal fade" id="myModal" tabindex="-1"
+																	role="dialog" aria-labelledby="myModalLabel"
+																	aria-hidden="true" style="display: none;">
+																	<div class="modal-dialog">
+																		<div class="modal-content">
+																			<div class="modal-header">
+																				<button type="button" class="close second"
+																					data-dismiss="modal" aria-hidden="true">
+																					×
+																				</button>
+																				<h2 class="modal-title">
+																					上传会议记录
+																				</h2>
+																			</div>
+																			<div class="modal-body">
+																				<hr>
+
+																				<div id="fileUploadContent" class="fileUploadContent"></div>
+<script type="text/javascript">
+var meetingId = $("#mid").val();
+$("#fileUploadContent").initUpload(
+		{
+			"uploadUrl" : "<%=basePath%>document/addDocument?meetingId=" + meetingId, //上传文件信息地址
+			"size" : 204800,//文件大小限制，单位kb,默认不限制
+			"maxFileNumber" : 3,//文件个数限制，为整数
+			"onUpload" : onUploadFun, //在上传后执行的函数
+			"fileType" : [ 'png', 'jpg', 'docx', 'doc', 'pdf', 'ppt', 'pptx',
+					'xlsx', 'xls', 'txt', 'vsdx' ] //文件类型限制，默认不限制，注意写的是文件后缀
+		});
+
+function onUploadFun(opt, data) {
+	if (data == "ok") {
+		uploadTools.uploadSuccess(opt);//显示上传成功
+		clickDetail(clickDetail());
+	} else {
+		uploadTools.uploadError(opt);//显示上传错误
+		alert("上传失败")
+	}
+}
+
+function clickDetail() {
+	var action = $("#action").val();
+	var meetingId = $("#mid").val();
+	window.location.href = "<%=basePath%>meeting/queryMeetingDetailAndResourceById?meetingId=" + meetingId + "&action=" + action;
+}
+</script>
+																			</div>
+
+																			<div class="modal-footer">
+																				<button type="button" class="btn btn-default"
+																					data-dismiss="modal">
+																					Close
+																				</button>
+																			</div>
+																		</div>
+																		<!-- /.modal-content -->
+																	</div>
+																	<!-- /.modal-dialog -->
+																</div>
 
 															</c:if>
 														</c:if>
-
+														
+														<input type="hidden" id="action" value="${param.action}"/>
 														<c:if test="${param.action == 1}">
 														    <h4 id="yes"><span class="label label-primary">已同意</span></h4>
 														    <h4 id="no"><span class="label label-default">已拒绝</span></h4>
@@ -367,7 +524,6 @@ $('.close').click(function() {
 																	</c:choose>
 																</c:otherwise>
 															</c:choose>
-															<input type="hidden" id="action" value="${param.action}"/>
 														</c:if>
 <script type="text/javascript">
 $("#yes").hide();
@@ -378,7 +534,6 @@ function changeWill(mId, will) {
 		"will" : will
 	}, function(data) {
 		if (data == "ok") {
-			var action = $("#action").val();
 			if (will == "yes") {
 			    $("#yes").show();
 				$("#doyes").hide();

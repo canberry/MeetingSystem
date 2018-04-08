@@ -1,8 +1,8 @@
 package com.lxm.bean;
 
 public class Document {
-	private int dId;
-	private String dName;
+	private int docId;
+	private String docName;
 	private String path;
 	private Meeting meeting;
 
@@ -10,35 +10,35 @@ public class Document {
 		super();
 	}
 
-	public Document(String dName, String path, Meeting meeting) {
+	public Document(String docName, String path, Meeting meeting) {
 		super();
-		this.dName = dName;
+		this.docName = docName;
 		this.path = path;
 		this.meeting = meeting;
 	}
 
-	public Document(int dId, String dName, String path, Meeting meeting) {
+	public Document(int docId, String docName, String path, Meeting meeting) {
 		super();
-		this.dId = dId;
-		this.dName = dName;
+		this.docId = docId;
+		this.docName = docName;
 		this.path = path;
 		this.meeting = meeting;
 	}
 
-	public int getdId() {
-		return dId;
+	public int getDocId() {
+		return docId;
 	}
 
-	public void setdId(int dId) {
-		this.dId = dId;
+	public void setDocId(int docId) {
+		this.docId = docId;
 	}
 
-	public String getdName() {
-		return dName;
+	public String getDocName() {
+		return docName;
 	}
 
-	public void setdName(String dName) {
-		this.dName = dName;
+	public void setDocName(String docName) {
+		this.docName = docName;
 	}
 
 	public String getPath() {
@@ -59,7 +59,7 @@ public class Document {
 
 	@Override
 	public String toString() {
-		return "Document [dId=" + dId + ", dName=" + dName + ", path=" + path
-				+ ", meeting=" + meeting + "]";
+		return "Document [docId=" + docId + ", docName=" + docName + ", path="
+				+ path + ", meeting=" + meeting + "]";
 	}
 }

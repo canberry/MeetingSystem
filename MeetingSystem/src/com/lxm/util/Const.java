@@ -34,4 +34,7 @@ public class Const {
 	
 	public static final String MODE_HISTORY = "history";
 	public static final String MODE_FUTURE = "future";
+	
+	public static final String Path_TOSAVE_DOCUMENT = "upload/document/";
+	public static final String Path_TOSAVE_AVATAR = "upload/avatar/";
 }
