@@ -12,4 +12,5 @@ public interface MeetingDetailMapper {
 	public void modify(MeetingDetail meetingDetail);
 	public List<MeetingDetail> paginationBeforeNow(@Param("meetingDetail")MeetingDetail meetingDetail, @Param("nowTime")String nowTime, @Param("pageStart")int pageStart, @Param("pageSize")int pageSize);
 	public int getRowsBeforeNow(@Param("meetingDetail")MeetingDetail meetingDetail, @Param("nowTime")String nowTime);
+	public void add(MeetingDetail meetingDetail);
 }

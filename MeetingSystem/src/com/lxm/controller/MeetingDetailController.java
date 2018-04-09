@@ -1,13 +1,18 @@
 package com.lxm.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lxm.bean.Meeting;
@@ -41,7 +46,7 @@ public class MeetingDetailController {
 		getExample(Const.MODE_FUTURE, meetingDetail, meeting, request);
 		
 		logger.info("meeting detail example: " + meetingDetail);
-		List<MeetingDetail> meetingDetails = meetingDetailService.paginateMeetingDetailByExample(meetingDetail, pageIndex, pageSize);
+		List<MeetingDetail> meetingDetails = meetingDetailService.paginateMeetingDetailsByExample(meetingDetail, pageIndex, pageSize);
 		logger.info("size: " + meetingDetails.size() + ". query meetingdetails: " + meetingDetails);		
 		int totalPages = meetingDetailService.totalPages(meetingDetail, pageSize);
 		
@@ -72,7 +77,7 @@ public class MeetingDetailController {
 		}
 		
 		logger.info("meeting detail example: " + meetingDetail);
-		List<MeetingDetail> meetingDetails = meetingDetailService.paginateMeetingDetailBeforeNow(meetingDetail, nowTime, pageIndex, pageSize);
+		List<MeetingDetail> meetingDetails = meetingDetailService.paginateMeetingDetailsBeforeNow(meetingDetail, nowTime, pageIndex, pageSize);
 		logger.info("size: " + meetingDetails.size() + ". query meetingdetails: " + meetingDetails);		
 		int totalPages = meetingDetailService.totalPagesBeforeNow(meetingDetail, nowTime, pageSize);
 		
@@ -106,7 +111,7 @@ public class MeetingDetailController {
 		}
 		
 		logger.info("meeting detail example: " + meetingDetail);
-		List<MeetingDetail> meetingDetails = meetingDetailService.paginateMeetingDetailBeforeNow(meetingDetail, nowTime, pageIndex, pageSize);
+		List<MeetingDetail> meetingDetails = meetingDetailService.paginateMeetingDetailsBeforeNow(meetingDetail, nowTime, pageIndex, pageSize);
 		logger.info("size: " + meetingDetails.size() + ". query meetingdetails: " + meetingDetails);		
 		int totalPages = meetingDetailService.totalPagesBeforeNow(meetingDetail, nowTime, pageSize);
 		

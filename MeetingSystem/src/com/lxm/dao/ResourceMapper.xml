@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace：必须与对应的接口全类名一致
+	 id:必须与对应接口的某个对应的方法名一致	-->
+<mapper namespace="com.lxm.dao.ResourceMapper">
+
+	<resultMap type="Resource" id="resourceMap">
+		<!-- column值是数据表的列名，property值是实体类的get属性 -->
+		<id column="r_id" property="rId" /> <!-- 唯一的主键 -->
+		<result column="r_name" property="rName" /> <!-- 可以有多个 -->
+		<result column="total" property="total" />
+		<result column="remain" property="remain" />
+	</resultMap>
+
+    <select id="queryAvailable" resultMap="resourceMap">
+        select * from resource where remain > 0 
+    </select>
+    
+</mapper>

@@ -62,6 +62,10 @@ function hideURLbar() {
 </script>
 		<!--//skycons-icons-->
 		
+		<!-- time -->
+		<script type="text/javascript" src="laydate/laydate.js"></script>
+		<!-- //timessss -->
+		
 		<!-- upload -->
 		<link href="fileupload/css/iconfont.css" rel="stylesheet" type="text/css"/>
         <link href="fileupload/css/fileUpload.css" rel="stylesheet" type="text/css">
@@ -576,9 +580,9 @@ function changeWill(mId, will) {
 											</div>
 											<table class="table">
 												<tbody>
-													<tr class="table-row">
+												<tr class="table-row">
 														<td class="table-img" style="width: 17%">
-															<strong>#</strong>
+														    <strong>#</strong>
 														</td>
 														<td class="table-text" style="width: 31%">
 															<strong>人员信息</strong>
@@ -590,10 +594,9 @@ function changeWill(mId, will) {
 															<strong>重要性</strong>
 														</td>
 														<td style="width: 17%">
-															<strong>意愿</strong>
+														    <strong>意愿</strong>
 														</td>
-													</tr>
-													<c:forEach var="meetingDetail" items="${meetingDetails}">
+														<c:forEach var="meetingDetail" items="${meetingDetails}">
 														<tr class="table-row">
 															<td class="table-img" style="width: 17%">
 																<img src="${meetingDetail.user.avatar}" alt="" />
@@ -607,40 +610,40 @@ function changeWill(mId, will) {
 																</p>
 															</td>
 															<td style="width: 17%">
-																<c:choose>
-																	<c:when test="${meetingDetail.role == 'recorder'}">
-																		<span class="work">记录员</span>
-																	</c:when>
-																	<c:when test="${meetingDetail.role == 'master'}">
-																		<span class="ur">主持人</span>
-																	</c:when>
-																	<c:otherwise>
-																		<span class="fam">参与者</span>
-																	</c:otherwise>
-																</c:choose>
+															    <c:choose>
+															        <c:when test="${meetingDetail.role == 'recorder'}">
+															            <span class="work">记录员</span>
+															        </c:when>
+															        <c:when test="${meetingDetail.role == 'master'}">
+															            <span class="ur">主持人</span>
+															        </c:when>
+															        <c:otherwise>
+															            <span class="fam">参与者</span>
+															        </c:otherwise>
+															    </c:choose>
 															</td>
 															<td style="width: 17%">
-																<c:choose>
-																	<c:when test="${meetingDetail.optional == 'no'}">
-																		<span class="label label-danger">必须参加</span>
-																	</c:when>
-																	<c:otherwise>
-																		<span class="label label-success">&nbsp;可选的&nbsp;</span>
-																	</c:otherwise>
-																</c:choose>
+															    <c:choose>
+															        <c:when test="${meetingDetail.optional == 'no'}">
+															            <span class="label label-danger">必须参加</span>
+															        </c:when>
+															        <c:otherwise>
+															            <span class="label label-success">&nbsp;可选的&nbsp;</span>
+															        </c:otherwise>
+															    </c:choose>
 															</td>
 															<td style="width: 17%">
-																<c:choose>
-																	<c:when test="${meetingDetail.will == 'no'}">
-																		<span class="label label-default">已拒绝</span>
-																	</c:when>
-																	<c:when test="${meetingDetail.will == 'yes'}">
-																		<span class="label label-primary">已同意</span>
-																	</c:when>
-																	<c:otherwise>
-																		<i class="fa fa-star-half-o icon-state-warning">不确定</i>
-																	</c:otherwise>
-																</c:choose>
+															    <c:choose>
+															        <c:when test="${meetingDetail.will == 'no'}">
+															            <span class="label label-default">已拒绝</span>
+															        </c:when>
+															        <c:when test="${meetingDetail.will == 'yes'}">
+															            <span class="label label-primary">已同意</span>
+															        </c:when>
+															        <c:otherwise>
+															            <i class="fa fa-star-half-o icon-state-warning">不确定</i>
+															        </c:otherwise>
+															    </c:choose>
 															</td>
 														</tr>
 													</c:forEach>
@@ -745,7 +748,7 @@ function changeWill(mId, will) {
 									<a href="<%=basePath%>meeting/queryMeetingByMyScheduled?pageIndex=1">我的预约</a>
 								</li>
 								<li id="menu-academico-boletim">
-									<a href="<%=basePath%>resource/queryAvailableResources">新建预约</a>
+									<a href="add_meeting.jsp">新建预约</a>
 								</li>
 							</ul>
 						</li>

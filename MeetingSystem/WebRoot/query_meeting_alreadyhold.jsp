@@ -673,10 +673,10 @@ function jump(pageIndex) {
 							<span class="fa fa-angle-right" style="float: right"></span> </a>
 							<ul id="menu-academico-sub">
 								<li id="menu-academico-avaliacoes">
-									<a href="query_myreservedmeeting.jsp">我的预约</a>
+									<a href="<%=basePath%>meeting/queryMeetingByMyScheduled?pageIndex=1">我的预约</a>
 								</li>
 								<li id="menu-academico-boletim">
-									<a href="add_meeting.jsp">新建预约</a>
+									<a href="<%=basePath%>resource/queryAvailableResources">新建预约</a>
 								</li>
 							</ul>
 						</li>

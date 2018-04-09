@@ -16,7 +16,7 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 	@Resource
 	MeetingDetailMapper meetingDetailMapper;
 
-	public List<MeetingDetail> paginateMeetingDetailByExample(MeetingDetail meetingDetail, int pageIndex, int pageSize) {
+	public List<MeetingDetail> paginateMeetingDetailsByExample(MeetingDetail meetingDetail, int pageIndex, int pageSize) {
 		int pageStart = pageSize * (pageIndex - 1);
 		return meetingDetailMapper.pagination(meetingDetail, pageStart, pageSize);			
 	}
@@ -34,7 +34,7 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 		meetingDetailMapper.modify(meetingDetail);
 	}
 
-	public List<MeetingDetail> paginateMeetingDetailBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageIndex, int pageSize) {
+	public List<MeetingDetail> paginateMeetingDetailsBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageIndex, int pageSize) {
 		int pageStart = pageSize * (pageIndex - 1);
 		return meetingDetailMapper.paginationBeforeNow(meetingDetail, nowTime, pageStart, pageSize);
 	}
@@ -42,5 +42,9 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 	public int totalPagesBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageSize) {
 		int r = meetingDetailMapper.getRowsBeforeNow(meetingDetail, nowTime);
 		return calTotalPages(r, pageSize);
+	}
+
+	public void addMeetingDetail(MeetingDetail meetingDetail) {
+		meetingDetailMapper.add(meetingDetail);
 	}
 }

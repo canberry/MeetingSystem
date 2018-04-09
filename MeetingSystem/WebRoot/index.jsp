@@ -258,7 +258,7 @@ $('.close').click(function() {
 									<a href="<%=basePath%>meeting/queryMeetingByMyScheduled?pageIndex=1">我的预约</a>
 								</li>
 								<li id="menu-academico-boletim">
-									<a href="add_meeting.jsp">新建预约</a>
+									<a href="<%=basePath%>resource/queryAvailableResources">新建预约</a>
 								</li>
 							</ul>
 						</li>

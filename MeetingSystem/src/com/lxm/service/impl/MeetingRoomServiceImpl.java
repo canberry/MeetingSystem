@@ -25,4 +25,8 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 		int r = meetingRoomMapper.getRows(meetingRoom);
 		return r  % pageSize == 0 ? r / pageSize : r / pageSize + 1;
 	}
+
+	public List<MeetingRoom> queryMeetingRoomsToScheduled(String startTime, String endTime, int capacity) {
+		return meetingRoomMapper.queryAvailable(startTime, endTime, capacity);
+	}
 }

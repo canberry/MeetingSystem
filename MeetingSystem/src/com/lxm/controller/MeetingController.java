@@ -1,24 +1,29 @@
 package com.lxm.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lxm.bean.Document;
 import com.lxm.bean.Meeting;
 import com.lxm.bean.MeetingDetail;
 import com.lxm.bean.MeetingResource;
 import com.lxm.bean.MeetingRoom;
+import com.lxm.bean.Resource;
 import com.lxm.bean.User;
 import com.lxm.service.MeetingService;
 import com.lxm.util.Const;
@@ -98,9 +103,100 @@ public class MeetingController {
 	}
 	
 	@RequestMapping("/queryMeetingByMyScheduled")
-	public String queryMeetingByMyScheduled(HttpServletRequest request) {
+	public String queryMeetingByMyScheduled(Meeting meeting, HttpServletRequest request) {
+		int pageSize = 5;
+		int pageIndex = 1;
+		String piStr = request.getParameter("pageIndex");
+		if (piStr == null) {
+			piStr = "1";
+		}
+		pageIndex = Integer.parseInt(piStr);
+		logger.info("pageIndex: " + pageIndex);
+		
+		getExample(meeting, request);
+		
+		logger.info("meeting example: " + meeting);
+		List<Meeting> meetings = meetingService.paginateMeetingsByExample(meeting, pageIndex, pageSize);
+		logger.info("size: " + meetings.size() + ". query meetings: " + meetings);		
+		int totalPages = meetingService.totalPages(meeting, pageSize);
+		
+		request.setAttribute("meetings", meetings);
+		request.setAttribute("pageIndex", pageIndex);
+		request.setAttribute("totalPages", totalPages);
+		request.setAttribute("meeting", meeting);		
+		return "/query_meeting_myscheduled";
+	}
+	
+	private void getExample(Meeting meeting, HttpServletRequest request) {
+		if (meeting == null) {
+			meeting = new Meeting();
+		}
+		
+		User user = (User) request.getSession().getAttribute("user");
+		meeting.setScheduler(user);
+		
+		MeetingRoom meetingRoom = new MeetingRoom();
+		meetingRoom.setNo(request.getParameter("no"));
+		meeting.setMeetingRoom(meetingRoom);
+	}
+	
+	@RequestMapping("/addMeeting")
+	@ResponseBody
+	public String addMeeting(Meeting meeting, int mrId, @RequestParam("mds")String mds, 
+			@RequestParam("mrs")String mrs, HttpServletRequest request) {
+		MeetingRoom meetingRoom = new MeetingRoom();
+		meetingRoom.setMrId(mrId);
+		meeting.setMeetingRoom(meetingRoom );
+		User scheduler = (User) request.getSession().getAttribute("user");
+		meeting.setScheduler(scheduler);
+		logger.info("meeting to insert: " + meeting);
+		
+		List<MeetingDetail> meetingDetails = new ArrayList<MeetingDetail>();
+		MeetingDetail mdetail;
+		JSONArray mdsjarray = JSONArray.fromObject(mds);
+		for (Object obj : mdsjarray) {
+			JSONObject jo = JSONObject.fromObject(obj);
+			int userId = jo.getInt("userId");
+			String role = jo.getString("role");
+			String optional = jo.getString("optional");
+			
+			mdetail = new MeetingDetail();
+			mdetail.setRole(role);
+			mdetail.setOptional(optional);
+			User user = new User();
+			user.setUserId(userId);
+			mdetail.setUser(user);
+			
+			meetingDetails.add(mdetail);
+		}
+		logger.info("size: " + meetingDetails.size() + " mds to insert: " + meetingDetails);
+		
+		List<MeetingResource> meetingResources = new ArrayList<MeetingResource>();
+		MeetingResource mresource;
+		JSONArray mrsjarray = JSONArray.fromObject(mrs);
+		for (Object obj : mrsjarray) {
+			JSONObject jo = JSONObject.fromObject(obj);
+			int rId = jo.getInt("rId");
+			int number = jo.getInt("number");
+			
+			mresource = new MeetingResource();
+			mresource.setNumber(number);
+			Resource resource = new Resource();
+			resource.setrId(rId);
+			mresource.setResource(resource);
+			
+			meetingResources.add(mresource);
+		}
+		logger.info("size: " + meetingResources.size() + " mds to insert: " + meetingResources);
 		
 		
-		return "";
+		logger.info("start to insert meeting...");
+		try {
+			meetingService.addMeeting(meeting, meetingDetails, meetingResources);			
+			return String.valueOf(meeting.getmId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
 	}
 }

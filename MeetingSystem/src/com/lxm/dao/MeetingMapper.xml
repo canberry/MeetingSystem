@@ -99,8 +99,46 @@
 		</collection>
 	</resultMap>
 
-	<select id="queryByExample" parameterType="Meeting" resultMap="meetingMap">
+	<select id="pagination" resultMap="meetingMap">
 		select * from (meeting m inner join meeting_room mr on m.mr_id = mr.mr_id) 
+		inner join user u on m.scheduler= u.user_id 
+		<where>
+			<if test="meeting != null and meeting.mId != 0">
+				and m_id = #{meeting.mId}
+	        </if>
+			<if test="meeting != null and meeting.mName != null and meeting.mName != ''">
+				and m_name like '%${meeting.mName}%'
+	        </if>
+			<if test="meeting != null and meeting.startTime != null and meeting.startTime != ''">
+			    <![CDATA[ and DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meeting.startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+	        </if>
+	        <if test="meeting != null and meeting.endTime != null and meeting.endTime != ''">
+	            <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{meeting.endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+	        </if>
+	        <if test="meeting != null and meeting.scheduledTime != null and meeting.scheduledTime != ''">
+	            <![CDATA[ and DATE_FORMAT(scheduled_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meeting.scheduledTime}, '%Y-%m-%d %H:%i:%s') ]]>
+	        </if>
+	        <if test="meeting != null and meeting.cancel != null and meeting.cancel != ''">
+	            and cancel = #{meeting.cancel}
+	        </if>
+	        <if test="meeting != null and meeting.hold != null and meeting.hold != ''">
+	            and hold = #{meeting.hold}
+	        </if>
+	        <if test="meeting != null and meeting.meetingRoom != null and meeting.meetingRoom.mrId != 0">
+	            and m.mr_id = #{meeting.meetingRoom.mrId}	        
+	        </if>
+	        <if test="meeting != null and meeting.meetingRoom != null and meeting.meetingRoom.no != ''">
+	            and mr.no like '%${meeting.meetingRoom.no}%'	        
+	        </if>
+	        <if test="meeting != null and meeting.scheduler != null and meeting.scheduler.userId != 0">
+	            and m.scheduler = #{meeting.scheduler.userId}
+	        </if>
+		</where>
+		order by m_id limit #{pageStart}, #{pageSize}
+	</select>
+	
+	<select id="getRows" parameterType="Meeting" resultType="int">
+		select count(*) from (meeting m inner join meeting_room mr on m.mr_id = mr.mr_id) 
 		inner join user u on m.scheduler= u.user_id 
 		<where>
 			<if test="mId != 0">
@@ -140,7 +178,7 @@
 		select * from meeting 
 		<where>
 		    <if test="mId != 0">
-				and m_id=#{mId}
+				and m_id = #{mId}
 	        </if>
 			<if test="startTime != null and startTime != ''">
 			    <![CDATA[ and DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
@@ -149,7 +187,10 @@
 	            <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 			</if>
 			<if test="meetingRoom != null and meetingRoom.mrId != 0">
-	            and mr_id=#{meetingRoom.mrId}
+	            and mr_id = #{meetingRoom.mrId}
+	        </if>
+	        <if test="scheduler != null and scheduler.userId != 0">
+	            and scheduler = #{scheduler.userId}
 	        </if>
 		</where>
 	</select>
@@ -177,4 +218,8 @@
         where m.m_id=#{meetingId}
     </select>
     
+    <insert id="add" parameterType="Meeting" keyProperty="mId" useGeneratedKeys="true">
+        insert into meeting(m_name, start_time, end_time, description, mr_id, scheduler) 
+        values(#{mName}, #{startTime}, #{endTime}, #{description}, #{meetingRoom.mrId}, #{scheduler.userId})
+    </insert>
 </mapper>

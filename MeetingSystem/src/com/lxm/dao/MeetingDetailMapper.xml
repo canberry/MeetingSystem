@@ -247,4 +247,9 @@
         </where>
 	</select>
 
+    <insert id="add" parameterType="MeetingDetail">
+        insert into meeting_detail(m_id, user_id, md_role, optional) 
+        values(#{meeting.mId}, #{user.userId}, #{role}, #{optional})
+    </insert>
+    
 </mapper>

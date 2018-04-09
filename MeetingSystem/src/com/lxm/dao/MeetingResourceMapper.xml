@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace：必须与对应的接口全类名一致
+	 id:必须与对应接口的某个对应的方法名一致	-->
+<mapper namespace="com.lxm.dao.MeetingResourceMapper">
+
+    <insert id="add" parameterType="MeetingResource">
+        insert into meeting_resource(m_id, r_id, number) 
+        values(#{meeting.mId}, #{resource.rId}, #{number})
+    </insert>
+    
+    <update id="modifyResource" parameterType="MeetingResource">
+        update resource set remain = remain - #{number} where r_id = #{resource.rId}
+    </update>
+    
+</mapper>

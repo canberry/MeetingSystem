@@ -7,4 +7,5 @@ import com.lxm.bean.MeetingRoom;
 public interface MeetingRoomService {
 	public List<MeetingRoom> paginateMeetingRoomsByExample(MeetingRoom meetingRoom, int pageIndex, int pageSize);
 	public int totalPages(MeetingRoom meetingRoom, int pageSize);
+	public List<MeetingRoom> queryMeetingRoomsToScheduled(String startTime, String endTime, int capacity);
 }

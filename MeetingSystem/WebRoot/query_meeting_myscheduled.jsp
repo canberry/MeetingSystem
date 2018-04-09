@@ -64,7 +64,7 @@ function hideURLbar() {
 		
 		<!-- time -->
 		<script type="text/javascript" src="laydate/laydate.js"></script>
-		<!-- //timessss -->
+		<!-- //time -->
 	</head>
 
 	<body>
@@ -190,7 +190,7 @@ $('.close').click(function() {
 									<a href="index.jsp">主页</a>
 								</li>
 								<li class="active">
-									我的会议
+									我的预约
 								</li>
 							</ol>
 						</div>
@@ -199,26 +199,26 @@ $('.close').click(function() {
 						<!-- content -->
 						<div class="graph-visual tables-main">
 							<h3 class="inner-tittle two">
-								即将召开
+								预约的会议
 							</h3>
 
 							<!-- search -->
 							<div>
-								<form action="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold" 
+								<form action="<%=basePath%>meeting/queryMeetingByMyScheduled" 
 								      onsubmit="return check()" method="Post">
 									<div class="input-group input-group-in">
 										<input type="text" name="mName" id="mName"
-											value="${md.meeting.mName}"
+											value="${meeting.mName}"
 											style="width: 30%; margin-left: 5px" class="form-control"
 											placeholder="按会议主题查询" title="按会议主题查询">
 										<input type="text" name="no" id="no"
-											value="${md.meeting.meetingRoom.no}"
+											value="${meeting.meetingRoom.no}"
 											style="width: 30%; margin-left: 10px" class="form-control"
 											placeholder="按会议室编号查询" title="按会议室编号查询">
 										<input type="text" name="userName" id="userName"
-											value="${md.meeting.scheduler.userName}"
+											value="${meeting.scheduler.userName}"
 											style="width: 30%; margin-left: 10px" class="form-control"
-											placeholder="按预定人查询" title="按预定人查询">
+											placeholder="按预定人查询" title="按预定人查询" readonly="readonly">
 										<span class="input-group-btn" style="width: 25%">
 											<button class="btn btn-success" type="submit" title="按条件查询">
 												<i class="fa fa-search"></i>
@@ -228,44 +228,27 @@ $('.close').click(function() {
 									</div>
 									<div class="input-group input-group-in">
 										<select name="cancel" id="cancel"
-											style="width: 32%; height: 48px; margin-left: 5px" class="form-control"
+											style="width: 46%; height: 48px; margin-left: 5px" class="form-control"
 											title="按会议状态查询">
 											<option value="">按会议状态查询</option>
 											<option value="no" id="cancelno">正常进行</option>
 											<option value="yes" id="cancelyes">已经取消</option>
 										</select>
-										<input type="hidden" id="cancelid" value="${md.meeting.cancel}">
-										<select name="role" id="role"
-											style="width: 33%; height: 48px; margin-left: 10px" class="form-control"
-											title="按参与角色查询">
-											<option value="">按参与角色查询</option>
-											<option value="participant" id="participant">参与者</option>
-											<option value="recorder" id="recorder">记录员</option>
-											<option value="master" id="master">主持人</option>
-										</select>
-										<input type="hidden" id="roleid" value="${md.role}">
+										<input type="hidden" id="cancelid" value="${meeting.cancel}">
 										<input name="scheduledTime" id="scheduledTime" placeholder="按预约时间查询" 
 											class="laydate-icon timeUstyle stateUTime" 
-											style="color: black; width: 30%; margin-left: 10px" 
-											value="${md.meeting.scheduledTime}">
+											style="color: black; width: 47%; margin-left: 10px" 
+											value="${meeting.scheduledTime}">
 									</div>
 									<div class="input-group input-group-in">
-									    <select name="optional" id="optional"
-											style="width: 30%; height: 48px; margin-left: 5px" class="form-control"
-											title="按必须参与查询">
-											<option value="">按重要性查询</option>
-											<option value="no" id="optionalno">Required</option>
-											<option value="yes" id="optionalyes">Optional</option>
-										</select>
-										<input type="hidden" id="optionalid" value="${md.optional}">
 										<input name="startTime" id="startTime"  placeholder="按开始时间查询" 
 											class="laydate-icon timeUstyle stateUTime" 
-											style="color: black; width: 30%; margin-left: 10px" 
-											value="${md.meeting.startTime}"> -
+											style="color: black; width: 39.5%; margin-left: 5px" 
+											value="${meeting.startTime}"> -
 										<input name="endTime" id="endTime" placeholder="按结束时间查询" 
 											class="laydate-icon timeUstyle stateUTime" 
-											style="color: black; width: 30%; margin-left: 0px" 
-											value="${md.meeting.endTime}">
+											style="color: black; width: 40.5%; margin-left: 0px" 
+											value="${meeting.endTime}">
 									</div>
 								</form>
 								<div class="alert alert-danger" role="alert" id="error">
@@ -276,7 +259,7 @@ $("#error").hide();
 function check() {
 	var st = $("#startTime").val();
 	var et = $("#endTime").val();
-	if (et != "") {
+	if (st != "" && et != "") {
 		if (st >= et) {
 			$("#error").html("<strong>输入错误!</strong>开始时间要小于结束时间");
 			$("#error").show();
@@ -291,10 +274,6 @@ function check() {
 
 var cancel = "#cancel" + $("#cancelid").val();
 $(cancel).attr("selected", "selected");
-var role = "#" + $("#roleid").val();
-$(role).attr("selected", "selected");
-var optional = "#optional" + $("#optionalid").val();
-$(optional).attr("selected", "selected");
 
 var scheduled = {  
     elem: '#scheduledTime',  
@@ -312,7 +291,7 @@ $("#startTime").click(function(){
     var obj={
     	elem: '#startTime',
     	format: 'YYYY-MM-DD hh:mm',
-    	min: laydate.now(0,"YYYY-MM-DD hh:mm:ss"), //设定最小日期为当前日期
+    	min: "1900-01-01 00:00:00", //设定最小日期为当前日期
     	max: '2099-06-16 23:59:59', //最大日期 
     	istime: true,
     	istoday: false,
@@ -330,7 +309,7 @@ $("#endTime").click(function(){
     var obj={
     	elem: '#endTime',
     	format: 'YYYY-MM-DD hh:mm',
-        min: laydate.now(0,"YYYY-MM-DD hh:mm:ss"),  
+        min: "1900-01-01 00:00:00",  
         max: '2099-06-16 23:59:59',
         istime: true,
         istoday: false,
@@ -339,7 +318,7 @@ $("#endTime").click(function(){
             start.max = datas; //结束日选好后，重置开始日的最大日期  
         } 
     };  
-    start&&(obj.min=start);  
+    start&&(obj.min=start);
     laydate(obj);  
 });  
 </script>
@@ -351,17 +330,17 @@ $("#endTime").click(function(){
 								<div class="panel-group tool-tips graph-form" id="accordion"
 									role="tablist" aria-multiselectable="true">
 
-									<c:forEach var="meetingDetail" items="${meetingDetails}"
+									<c:forEach var="mt" items="${meetings}"
 										varStatus="status">
-										<fmt:parseDate var="startObj" value="${meetingDetail.meeting.startTime}" type="DATE"
+										<fmt:parseDate var="startObj" value="${mt.startTime}" type="DATE"
 											pattern="yyyy-MM-dd HH:mm" />
 										<fmt:formatDate var="startTime" value='${startObj}'
 											pattern='yyyy-MM-dd HH:mm' />
-										<fmt:parseDate var="endObj" value="${meetingDetail.meeting.endTime}" type="DATE"
+										<fmt:parseDate var="endObj" value="${mt.endTime}" type="DATE"
 											pattern="yyyy-MM-dd HH:mm" />
 										<fmt:formatDate var="endTime" value='${endObj}'
 											pattern='yyyy-MM-dd HH:mm' />
-										<fmt:parseDate var="scheduledObj" value="${meetingDetail.meeting.scheduledTime}" type="DATE"
+										<fmt:parseDate var="scheduledObj" value="${mt.scheduledTime}" type="DATE"
 											pattern="yyyy-MM-dd HH:mm" />
 										<fmt:formatDate var="scheduledTime" value='${scheduledObj}'
 											pattern='yyyy-MM-dd HH:mm' />
@@ -373,7 +352,7 @@ $("#endTime").click(function(){
 														data-parent="#accordion" href="#collapse${status.count}"
 														aria-expanded="false"
 														aria-controls="collapse${status.count}">
-														#${status.count}&nbsp;&nbsp;${meetingDetail.meeting.mName}
+														#${status.count}&nbsp;&nbsp;${mt.mName}
 														<span style="float: right">${startTime} ~ ${endTime}</span></a>
 												</h4>
 											</div>
@@ -391,7 +370,7 @@ $("#endTime").click(function(){
 																	<tr>
 																		<th width="50%">
 																			<code>
-																				<strong>会议主题：</strong>&nbsp;${meetingDetail.meeting.mName}
+																				<strong>会议主题：</strong>&nbsp;${mt.mName}
 																			</code>
 																		</th>
 																		<th width="50%">
@@ -399,7 +378,7 @@ $("#endTime").click(function(){
 																				<strong>状&nbsp;&nbsp;态：</strong>&nbsp;
 																				<c:choose>
 																					<c:when
-																						test="${meetingDetail.meeting.cancel == 'no'}">
+																						test="${mt.cancel == 'no'}">
 																				    正常
 																				    </c:when>
 																					<c:otherwise>
@@ -426,30 +405,20 @@ $("#endTime").click(function(){
 																	<tr>
 																		<td>
 																			<code>
-																				<strong>会&nbsp;议&nbsp;室：</strong>&nbsp;${meetingDetail.meeting.meetingRoom.no}
+																				<strong>会&nbsp;议&nbsp;室：</strong>&nbsp;${mt.meetingRoom.no}
 																			</code>
 																		</td>
 																		<td>
 																			<code>
 																				<strong>会议角色：</strong>&nbsp;
-																				<c:choose>
-																					<c:when test="${meetingDetail.role == 'recorder'}">
-																				    记录员
-																				    </c:when>
-																					<c:when test="${meetingDetail.role == 'master'}">
-																				    主持人
-																				    </c:when>
-																					<c:otherwise>
-																				    参与者
-																				    </c:otherwise>
-																				</c:choose>
+																				*
 																			</code>
 																		</td>
 																	</tr>
 																	<tr>
 																		<td>
 																			<code>
-																				<strong>预定人：</strong>&nbsp;${meetingDetail.meeting.scheduler.userName}
+																				<strong>预定人：</strong>&nbsp;${mt.scheduler.userName}
 																			</code>
 																		</td>
 																		<td>
@@ -464,87 +433,19 @@ $("#endTime").click(function(){
 														
 														<div class="col-md-6 page_1" style="width: 15%">
 															<div class="list-group list-group-alternate">
-																<div class="n" id="div-yes${meetingDetail.meeting.mId}">
-																	<button class="btn btn-lg btn-default">
-																	已确认参加
-																	</button>
-																</div>
-																<div class="n" id="div-no${meetingDetail.meeting.mId}">
-																	<button class="btn btn-sm btn-default">
-																	已拒绝参加
-																	</button>
-																</div>
-																<c:choose>
-																	<c:when test="${meetingDetail.optional == 'no'}">
-																		<span class="btn btn-lg btn-danger">必须参加</span>
-																	</c:when>
-																	<c:otherwise>
-																		<c:choose>
-																			<c:when test="${meetingDetail.will == 'yes'}">
-																				<button class="btn btn-lg btn-default">
-																				已确认参加
-																				</button>
-																			</c:when>
-																			<c:when test="${meetingDetail.will == 'no'}">
-																				<button class="btn btn-sm btn-default">
-																				已拒绝参加
-																				</button>
-																			</c:when>
-																			<c:otherwise>
-																				<button type="button"
-																					class="btn btn-lg btn-success warning_1"
-																					onclick="changeWill('${meetingDetail.meeting.mId}', 'yes')"
-																					id="will-yes${meetingDetail.meeting.mId}">
-																					&nbsp;参&nbsp;&nbsp;加&nbsp;
-																				</button>
-																				<button type="button"
-																					class="btn btn-lg btn-warning warning_11"
-																					onclick="changeWill('${meetingDetail.meeting.mId}', 'no', this)"
-																					id="will-no${meetingDetail.meeting.mId}">
-																					不参加
-																				</button>
-																			</c:otherwise>
-																		</c:choose>
-																	</c:otherwise>
-																</c:choose>
-																<button type="button" class="btn btn-link" onclick="clickDetail(${meetingDetail.meeting.mId})">
-																查看详情
+																<button type="button" class="btn btn-lg btn-success warning_1" onclick="modifyMeeting('${mt.mId}')">
+																修改
+																</button>
+																<button type="button" class="btn btn-link" onclick="clickDetail(${mt.mId})">
+																详情
 																</button>
 															</div>
 														</div>
 														<div class="clearfix">
 														</div>
 <script type="text/javascript">
-$("div.n").hide();
-function changeWill(mId, will) {
-    $.post("<%=basePath%>meetingDetail/modifyWill", 
-        {
-    	    "mId": mId,
-    	    "will": will
-        }, 
-		function(data) {
-		    if (data == "ok") {
-		    	var yeswill = "#will-yes" + mId;
-		    	var nowill = "#will-no" + mId;
-		    	var yes = "#div-yes" + mId;
-		    	var no = "#div-no" + mId;
-		    	if (will == "yes") {
-		            $(yeswill).hide();
-		            $(nowill).hide();
-		            $(yes).show();
-		    	} else {
-            	    $(yeswill).hide();
-		            $(nowill).hide();
-		            $(no).show();		    		
-		    	}
-            } else {
-            	alert("操作失败!");
-            }
-    });
-}
-
 function clickDetail(meetingId) {
-	window.location.href = "<%=basePath%>meeting/queryMeetingDetailAndResourceById?meetingId=" + meetingId + "&action=1";
+	window.location.href = "<%=basePath%>meeting/queryMeetingDetailAndResourceById?meetingId=" + meetingId + "&action=4";
 }
 </script>
 													</div>

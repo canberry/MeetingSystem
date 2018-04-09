@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- namespace：必须与对应的接口全类名一致
+	<!-- namespace：必须与对应的接口全类名一致
 	 id:必须与对应接口的某个对应的方法名一致	-->
 <mapper namespace="com.lxm.dao.UserMapper">
 
@@ -13,66 +13,105 @@
 		<result column="user_name" property="userName" /> <!-- 可以有多个 -->
 		<result column="user_role" property="userRole" />
 	</resultMap>
+	
+	<resultMap type="User" id="uMap">
+		<!-- column值是数据表的列名，property值是实体类的get属性 -->
+		<id column="user_id" property="userId" /> <!-- 唯一的主键 -->
+		<result column="user_name" property="userName" /> <!-- 可以有多个 -->
+		<result column="sex" property="sex" />
+		<result column="position" property="position" />
+	</resultMap>
 
 	<select id="login" parameterType="User" resultType="int">
-		select count(*) from user where user_name=#{userName} and password=#{password}
+		select
+		count(*) from user where user_name=#{userName} and
+		password=#{password}
 	</select>
-	
-	<select id="queryById" parameterType="int" resultMap="userMap">
-        select * from user where user_id=#{userId}
-	</select>
-	
-	<select id="queryByExample" parameterType="User" resultMap="userMap">
-	    select * from user
-	    <where>
-	        <if test="userId != 0">
-	             and user_id=#{userId}
-	        </if>
-	        <if test="userName != null and userName != ''">
-	             and user_name=#{userName}
-	        </if>
-	        <if test="password != null and password !=''">
-	             and password=#{password}
-	        </if>
-	    </where>
-	</select>
-	
-    <insert id="add" parameterType="User" keyProperty="userId" useGeneratedKeys="true">
-        insert into user(user_name, password) values(#{userName}, #{password})
-    </insert>
 
-    <update id="modify" parameterType="User">
-        update user 
-        <set>
-            <if test="password != null and password != ''">
-                password = #{password}, 
+	<select id="queryById" parameterType="int" resultMap="userMap">
+		select * from user where user_id=#{userId}
+	</select>
+
+	<select id="queryByExample" parameterType="User" resultMap="userMap">
+		select * from user
+		<where>
+			<if test="userId != 0">
+				and user_id=#{userId}
+	        </if>
+			<if test="userName != null and userName != ''">
+				and user_name=#{userName}
+	        </if>
+			<if test="password != null and password !=''">
+				and password=#{password}
+	        </if>
+		</where>
+	</select>
+
+	<select id="queryLikeExample" resultMap="userMap">
+		select * from user where user_name like '%${userName}%' 
+	</select>
+
+	<insert id="add" parameterType="User" keyProperty="userId"
+		useGeneratedKeys="true">
+		insert into user(user_name, password) values(#{userName}, #{password})
+	</insert>
+
+	<update id="modify" parameterType="User">
+		update user
+		<set>
+			<if test="password != null and password != ''">
+				password = #{password}, 
             </if>
-            <if test="signature != null and signature != ''">
-                signature = #{signature}, 
+			<if test="signature != null and signature != ''">
+				signature = #{signature}, 
             </if>
-            <if test="avatar != null and avatar != ''">
-                avatar = #{avatar}, 
+			<if test="avatar != null and avatar != ''">
+				avatar = #{avatar}, 
             </if>
-            <if test="sex != null and sex != ''">
-                sex = #{sex}, 
+			<if test="sex != null and sex != ''">
+				sex = #{sex}, 
             </if>
-            <if test="userRole != null and userRole != ''">
-                user_role = #{userRole}, 
+			<if test="userRole != null and userRole != ''">
+				user_role = #{userRole}, 
             </if>
-            <if test="nickname != null and nickname != ''">
-                nickname = #{nickname},
+			<if test="nickname != null and nickname != ''">
+				nickname = #{nickname},
             </if>
-            <if test="mobile != null and mobile != ''">
-                mobile = #{mobile},
+			<if test="mobile != null and mobile != ''">
+				mobile = #{mobile},
             </if>
-            <if test="email != null and email != ''">
-                email = #{email},
+			<if test="email != null and email != ''">
+				email = #{email},
             </if>
-            <if test="address != null and address != ''">
-                address = #{address},
+			<if test="address != null and address != ''">
+				address = #{address},
             </if>
-        </set>
-        where user_id=#{userId}
-    </update>
-    
+		</set>
+		where user_id=#{userId}
+	</update>
+
+	<select id="queryAvailableUsersByIds" resultMap="uMap">
+		SELECT DISTINCT(u.user_id), u.user_name, u.sex, u.position FROM USER u INNER JOIN
+		meeting_detail md ON u.user_id = md.user_id WHERE u.user_id IN 
+		<foreach collection="userIds" index="index" item="item" 
+		         open="(" separator="," close=")">
+		#{item}
+		</foreach>
+		AND EXISTS (
+		(SELECT * FROM meeting AS m WHERE
+		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND m.m_id = md.m_id)
+		UNION
+		(SELECT * FROM meeting mt WHERE
+		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND mt.m_id = md.m_id)
+		UNION
+		(SELECT * FROM meeting AS me WHERE
+		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND me.m_id = md.m_id)
+		)
+    </select>
 </mapper>

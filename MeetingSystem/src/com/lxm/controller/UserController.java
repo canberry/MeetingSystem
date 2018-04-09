@@ -1,8 +1,14 @@
 package com.lxm.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lxm.bean.MeetingDetail;
 import com.lxm.bean.User;
 import com.lxm.service.UserService;
 import com.lxm.util.Const;
@@ -32,7 +39,7 @@ public class UserController {
 	public String login(User user, HttpServletRequest request) {
 		logger.info("before login user: " + user);
 		if (userService.login(user)) { // success
-			List<User> users = userService.queryByUsersExample(user);
+			List<User> users = userService.queryUsersByExample(user);
 			if (users == null || users.isEmpty() || users.size() != 1) {
 				return "fail";
 			}
@@ -62,7 +69,7 @@ public class UserController {
 		User user = new User();
 		user.setUserName(userName);
 		logger.info("before queryUserName user: " + user);
-		List<User> users = userService.queryByUsersExample(user);
+		List<User> users = userService.queryUsersByExample(user);
 		if (users == null || users.isEmpty()) {
 			logger.info("username is not existed");
 			return "ok";
@@ -145,5 +152,40 @@ public class UserController {
 		logger.info("avatar modify user success");
 		
 		return "redirect:/user/changeUserSession?userId=" + user.getUserId(); // change session
+	}
+	
+	@RequestMapping("/queryUsersByName")
+	public void queryUsersByName(String uname, HttpServletResponse response) throws IOException {
+		logger.info("uname: " + uname);
+		List<User> users = userService.queryUsersLikeName(uname);
+		logger.info("users size: " + users.size());
+		logger.info("users: " + users);
+
+		JSONArray datas = JSONArray.fromObject(users);
+		response.setCharacterEncoding(Const.ENCODING_UTF8);
+		response.getWriter().print(datas.toString());
+	}
+	
+	@RequestMapping("/queryAvailableUsersByIds")
+	public void queryAvailableUsersByIds(@RequestParam("uids")String uids, 
+			@RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime, 
+			HttpServletResponse response) throws IOException {
+		logger.info("startt: " + startTime + " endt: " + endTime);
+		
+		List<Integer> userIds = new ArrayList<Integer>();
+		JSONArray jarray = JSONArray.fromObject(uids);
+		for (Object obj : jarray) {
+			JSONObject jo = JSONObject.fromObject(obj);
+			int userId = jo.getInt("userId");
+			userIds.add(userId);
+		}
+
+		logger.info("size: " + userIds.size() + " ids: " + userIds);
+		List<User> users = userService.queryAvailableUsersByIds(userIds, startTime, endTime);
+		logger.info("users: " + users); // not available
+
+		JSONArray datas = JSONArray.fromObject(users);
+		response.setCharacterEncoding(Const.ENCODING_UTF8);
+		response.getWriter().print(datas.toString());
 	}
 }

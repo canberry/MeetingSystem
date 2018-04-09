@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- namespace：必须与对应的接口全类名一致
+	<!-- namespace：必须与对应的接口全类名一致
 	 id:必须与对应接口的某个对应的方法名一致	-->
 <mapper namespace="com.lxm.dao.MeetingRoomMapper">
-	
+
 	<resultMap type="MeetingRoom" id="meetingRoomMap">
 		<!-- column值是数据表的列名，property值是实体类的get属性 -->
 		<id column="mr_id" property="mrId" /> <!-- 唯一的主键 -->
@@ -14,36 +14,56 @@
 		<result column="capacity" property="capacity" />
 		<result column="occupation" property="occupation" />
 	</resultMap>
-	
+
 	<select id="pagination" resultMap="meetingRoomMap">
-	    select * from meeting_room 
-	    <where>
-	        <if test="meetingRoom.no != null and meetingRoom.no !=''">
-	            and no like '%${meetingRoom.no}%' 
+		select * from meeting_room
+		<where>
+			<if test="meetingRoom.no != null and meetingRoom.no !=''">
+				and no like '%${meetingRoom.no}%' 
 	        </if>
-	        <if test="meetingRoom.mrName != null and meetingRoom.mrName != ''">
-	            and mr_name like '%${meetingRoom.mrName}%'
+			<if test="meetingRoom.mrName != null and meetingRoom.mrName != ''">
+				and mr_name like '%${meetingRoom.mrName}%'
 	        </if>
-	        <if test="meetingRoom.capacity > 0">
-	            and capacity >= #{meetingRoom.capacity}
+			<if test="meetingRoom.capacity > 0">
+				and capacity >= #{meetingRoom.capacity}
 	        </if>
-	    </where>
-	    order by mr_id limit #{pageStart}, #{pageSize}
+		</where>
+		order by mr_id limit #{pageStart}, #{pageSize}
 	</select>
-	
+
 	<select id="getRows" parameterType="MeetingRoom" resultType="int">
-	    select count(*) from meeting_room 
-	    <where>
-	        <if test="no != null and no !=''">
-	            and no like '%${no}%' 
+		select count(*) from meeting_room
+		<where>
+			<if test="no != null and no !=''">
+				and no like '%${no}%' 
 	        </if>
-	        <if test="mrName != null and mrName != ''">
-	            and mr_name like '%${mrName}%'
+			<if test="mrName != null and mrName != ''">
+				and mr_name like '%${mrName}%'
 	        </if>
-	        <if test="capacity > 0">
-	            and capacity >= #{capacity}
+			<if test="capacity > 0">
+				and capacity >= #{capacity}
 	        </if>
-	    </where>
+		</where>
 	</select>
-    
+
+	<select id="queryAvailable" resultMap="meetingRoomMap">
+		SELECT * FROM meeting_room AS mr WHERE capacity >= #{capacity} AND 
+		NOT EXISTS ( 
+		(SELECT * FROM meeting AS m WHERE 
+		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 
+		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 
+		AND m.mr_id = mr.mr_id) 
+		UNION 
+		(SELECT * FROM meeting AS mt WHERE 
+		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]> 
+		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>  
+		AND mt.mr_id = mr.mr_id) 
+		UNION 
+		(SELECT * FROM meeting AS me WHERE 
+		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND me.mr_id = mr.mr_id) 
+		)
+	</select>
+
 </mapper>
