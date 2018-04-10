@@ -436,6 +436,9 @@ $("#endTime").click(function(){
 																<button type="button" class="btn btn-lg btn-success warning_1" onclick="modifyMeeting('${mt.mId}')">
 																修改
 																</button>
+																<button type="button" class="btn btn-lg btn-warning warning_11" onclick="modifyMeeting('${mt.mId}')">
+																归还资源
+																</button>
 																<button type="button" class="btn btn-link" onclick="clickDetail(${mt.mId})">
 																详情
 																</button>
@@ -446,6 +449,10 @@ $("#endTime").click(function(){
 <script type="text/javascript">
 function clickDetail(meetingId) {
 	window.location.href = "<%=basePath%>meeting/queryMeetingDetailAndResourceById?meetingId=" + meetingId + "&action=4";
+}
+
+function modifyMeeting(mid) {
+	window.location.href = "<%=basePath%>meeting/queryMeetingDRsById?meetingId=" + mid;
 }
 </script>
 													</div>

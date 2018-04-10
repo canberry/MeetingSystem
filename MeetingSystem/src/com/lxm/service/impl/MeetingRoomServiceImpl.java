@@ -29,4 +29,8 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 	public List<MeetingRoom> queryMeetingRoomsToScheduled(String startTime, String endTime, int capacity) {
 		return meetingRoomMapper.queryAvailable(startTime, endTime, capacity);
 	}
+
+	public List<MeetingRoom> queryMeetingRoomsToScheduledWithouMid(int mId, String startTime, String endTime, int capacity) {
+		return meetingRoomMapper.queryAvailableWithoutMid(mId, startTime, endTime, capacity);
+	}
 }

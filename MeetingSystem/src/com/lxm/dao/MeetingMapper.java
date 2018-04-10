@@ -14,4 +14,5 @@ public interface MeetingMapper {
 	public List<Meeting> pagination(@Param("meeting")Meeting meeting, @Param("pageStart")int pageStart, @Param("pageSize")int pageSize);
 	public int getRows(Meeting meeting);
 	public void add(Meeting meeting);
+	public void modify(Meeting meeting);
 }

@@ -6,4 +6,5 @@ import com.lxm.bean.Resource;
 
 public interface ResourceService {
 	public List<Resource> queryAvailableResources();
+	public List<Resource> queryUnAddResources(int meetingId);
 }

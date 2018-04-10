@@ -12,4 +12,5 @@ public interface UserService {
 	public void modifyUser(User user);
 	public List<User> queryUsersLikeName(String userName);
 	public List<User> queryAvailableUsersByIds(List<Integer> userIds, String startTime, String endTime);
+	public List<User> queryAvailableUsersByIdsAndMId(int mId, List<Integer> userIds, String startTime, String endTime);
 }

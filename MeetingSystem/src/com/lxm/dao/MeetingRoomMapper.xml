@@ -52,17 +52,37 @@
 		(SELECT * FROM meeting AS m WHERE 
 		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 
 		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 
-		AND m.mr_id = mr.mr_id) 
+		AND m.cancel = 'no' AND m.mr_id = mr.mr_id) 
 		UNION 
 		(SELECT * FROM meeting AS mt WHERE 
 		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]> 
 		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>  
-		AND mt.mr_id = mr.mr_id) 
+		AND mt.cancel = 'no' AND mt.mr_id = mr.mr_id) 
 		UNION 
 		(SELECT * FROM meeting AS me WHERE 
 		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
-		AND me.mr_id = mr.mr_id) 
+		AND me.cancel = 'no' AND me.mr_id = mr.mr_id) 
+		)
+	</select>
+	
+	<select id="queryAvailableWithoutMid" resultMap="meetingRoomMap">
+		SELECT * FROM meeting_room AS mr WHERE capacity >= #{capacity} AND 
+		NOT EXISTS ( 
+		(SELECT * FROM meeting AS m WHERE m.m_id != #{mId} and 
+		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 
+		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 
+		AND m.cancel = 'no' AND m.mr_id = mr.mr_id) 
+		UNION 
+		(SELECT * FROM meeting AS mt WHERE mt.m_id != #{mId} and 
+		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]> 
+		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>  
+		AND mt.cancel = 'no' AND mt.mr_id = mr.mr_id) 
+		UNION 
+		(SELECT * FROM meeting AS me WHERE me.m_id != #{mId} and  
+		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND me.cancel = 'no' AND me.mr_id = mr.mr_id) 
 		)
 	</select>
 

@@ -193,7 +193,7 @@
                 <![CDATA[ and DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{nowTime}, '%Y-%m-%d %H:%i:%s') ]]>
             </if>
         </where>
-        order by m.start_time limit #{pageStart}, #{pageSize}
+        order by m.start_time DESC limit #{pageStart}, #{pageSize}
 	</select>
 
 	<select id="getRowsBeforeNow" parameterType="MeetingDetail" resultType="int">
@@ -251,5 +251,9 @@
         insert into meeting_detail(m_id, user_id, md_role, optional) 
         values(#{meeting.mId}, #{user.userId}, #{role}, #{optional})
     </insert>
+    
+    <delete id="removByMId" parameterType="int">
+        delete from meeting_detail where m_id = #{mId}
+    </delete>
     
 </mapper>

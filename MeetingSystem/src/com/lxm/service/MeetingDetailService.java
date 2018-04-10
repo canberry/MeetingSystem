@@ -11,4 +11,5 @@ public interface MeetingDetailService {
 	public List<MeetingDetail> paginateMeetingDetailsBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageIndex, int pageSize);
 	public int totalPagesBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageSize);
 	public void addMeetingDetail(MeetingDetail meetingDetail);
+	public void removeMeetingDetailsByMId(int mId);
 }

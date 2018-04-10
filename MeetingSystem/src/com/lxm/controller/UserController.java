@@ -188,4 +188,27 @@ public class UserController {
 		response.setCharacterEncoding(Const.ENCODING_UTF8);
 		response.getWriter().print(datas.toString());
 	}
+	
+	@RequestMapping("/queryAvailableUsersByIdsAndMId")
+	public void queryAvailableUsersByIdsAndMId(@RequestParam("uids")String uids, @RequestParam("meetingId")int mId, 
+			@RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime, 
+			HttpServletResponse response) throws IOException {
+		logger.info("startt: " + startTime + " endt: " + endTime);
+		
+		List<Integer> userIds = new ArrayList<Integer>();
+		JSONArray jarray = JSONArray.fromObject(uids);
+		for (Object obj : jarray) {
+			JSONObject jo = JSONObject.fromObject(obj);
+			int userId = jo.getInt("userId");
+			userIds.add(userId);
+		}
+
+		logger.info("size: " + userIds.size() + " ids: " + userIds);
+		List<User> users = userService.queryAvailableUsersByIdsAndMId(mId, userIds, startTime, endTime);
+		logger.info("users: " + users); // not available
+
+		JSONArray datas = JSONArray.fromObject(users);
+		response.setCharacterEncoding(Const.ENCODING_UTF8);
+		response.getWriter().print(datas.toString());
+	}
 }

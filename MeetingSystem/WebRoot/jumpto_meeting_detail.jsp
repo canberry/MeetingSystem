@@ -16,7 +16,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="keywords" content="" />
-		<meta http-equiv="refresh" content="3; url=<%=basePath%>meeting/queryMeetingDetailAndResourceById?meetingId=${param.mid}&action=4">
+		<meta http-equiv="refresh" content="2; url=<%=basePath%>meeting/queryMeetingDetailAndResourceById?meetingId=${param.mid}&action=4">
 		
 		<script type="application/x-javascript">
 addEventListener("load", function() {
@@ -50,8 +50,8 @@ function hideURLbar() {
 				<h3>
 					<i class="fa fa-smile-o"></i>
 				</h3>
-				<span>预定成功</span><br/>
-				<span>3秒后自动跳转详情页面</span>
+				<span>操作成功</span><br/>
+				<span>2秒后自动跳转详情页面</span>
 				<p>
 					如你的浏览器没有自动跳转，请点击这里
 				</p>

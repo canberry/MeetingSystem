@@ -101,17 +101,43 @@
 		(SELECT * FROM meeting AS m WHERE
 		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
-		AND m.m_id = md.m_id)
+		AND m.cancel = 'no' AND m.m_id = md.m_id)
 		UNION
 		(SELECT * FROM meeting mt WHERE
 		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
-		AND mt.m_id = md.m_id)
+		AND mt.cancel = 'no' AND mt.m_id = md.m_id)
 		UNION
 		(SELECT * FROM meeting AS me WHERE
 		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
-		AND me.m_id = md.m_id)
+		AND me.cancel = 'no' AND me.m_id = md.m_id)
 		)
     </select>
+    
+    	<select id="queryAvailableUsersByIdsAndMId" resultMap="uMap">
+		SELECT DISTINCT(u.user_id), u.user_name, u.sex, u.position FROM USER u INNER JOIN
+		meeting_detail md ON u.user_id = md.user_id WHERE u.user_id IN 
+		<foreach collection="userIds" index="index" item="item" 
+		         open="(" separator="," close=")">
+		#{item}
+		</foreach>
+		AND EXISTS (
+		(SELECT * FROM meeting AS m WHERE m.m_id != #{mId} AND 
+		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND m.cancel = 'no' AND m.m_id = md.m_id)
+		UNION
+		(SELECT * FROM meeting mt WHERE mt.m_id != #{mId} AND 
+		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND mt.cancel = 'no' AND mt.m_id = md.m_id)
+		UNION
+		(SELECT * FROM meeting AS me WHERE me.m_id != #{mId} AND 
+		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
+		AND me.cancel = 'no' AND me.m_id = md.m_id)
+		)
+    </select>
+    
 </mapper>

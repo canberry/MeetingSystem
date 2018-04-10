@@ -499,14 +499,13 @@ function clickDetail() {
 
 															</c:if>
 														</c:if>
-														
+
 														<c:if test="${param.action == 4}">
-														    <h4 id="yes"><span class="label label-primary">修改会议</span></h4>
-														    <h4>
-																	<a class="label label-info">修改会议</a>
-																</h4>
+															<h4>
+																<a class="label label-info" href="<%=basePath%>meeting/queryMeetingDRsById?meetingId=${meeting.mId}">修改会议</a>
+															</h4>
 														</c:if>
-														
+
 														<input type="hidden" id="action" value="${param.action}"/>
 														<c:if test="${param.action == 1}">
 														    <h4 id="yes"><span class="label label-primary">已同意</span></h4>

@@ -19,4 +19,8 @@ public class ResourceServiceImpl implements ResourceService {
 		return resourceMapper.queryAvailable();
 	}
 
+	public List<Resource> queryUnAddResources(int meetingId) {
+		return resourceMapper.queryUnAddResources(meetingId);
+	}
+
 }

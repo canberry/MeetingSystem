@@ -102,6 +102,32 @@ public class MeetingController {
 		return "/query_meeting_detail";
 	}
 	
+	@RequestMapping("/queryMeetingDRsById")
+	public String queryMeetingDRsById(int meetingId, HttpServletRequest request) {
+		logger.info("meetingId: " + meetingId);
+		
+		Meeting meeting = meetingService.queryMeetingById(meetingId);
+		logger.info("after query meeting: " + meeting);
+		Meeting meetingDRD = meetingService.queryMeetingDetailAndResourceById(meetingId);
+		if (meetingDRD == null) {
+			meetingDRD = new Meeting();
+		}
+		logger.info("after query meetingDRs: ");
+		List<MeetingDetail> meetingDetails = meetingDRD.getMeetingDetails();
+		logger.info("mds: " + meetingDetails);
+		List<MeetingResource> meetingResources = meetingDRD.getMeetingResources();
+		logger.info("mrs: " + meetingResources);
+		
+		List<Resource> unAddResources = meetingService.queryUnAddResources(meetingId);
+		logger.info("unadd rs: " + unAddResources);
+		
+		request.setAttribute("meeting", meeting);
+		request.setAttribute("meetingDetails", meetingDetails);
+		request.setAttribute("meetingResources", meetingResources);
+		request.setAttribute("unAddResources", unAddResources);
+		return "/modify_meeting";
+	}
+	
 	@RequestMapping("/queryMeetingByMyScheduled")
 	public String queryMeetingByMyScheduled(Meeting meeting, HttpServletRequest request) {
 		int pageSize = 5;
@@ -187,12 +213,69 @@ public class MeetingController {
 			
 			meetingResources.add(mresource);
 		}
-		logger.info("size: " + meetingResources.size() + " mds to insert: " + meetingResources);
+		logger.info("size: " + meetingResources.size() + " mrs to insert: " + meetingResources);
 		
 		
 		logger.info("start to insert meeting...");
 		try {
 			meetingService.addMeeting(meeting, meetingDetails, meetingResources);			
+			return String.valueOf(meeting.getmId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
+	}
+	
+	@RequestMapping("/modifyMeeting")
+	@ResponseBody
+	public String modifyMeeting(Meeting meeting, int mrId, @RequestParam("mds")String mds, 
+			@RequestParam("mrs")String mrs, HttpServletRequest request) {
+		MeetingRoom meetingRoom = new MeetingRoom();
+		meetingRoom.setMrId(mrId);
+		meeting.setMeetingRoom(meetingRoom );
+		logger.info("meeting to insert: " + meeting);
+		
+		List<MeetingDetail> meetingDetails = new ArrayList<MeetingDetail>(); // to insert 
+		MeetingDetail mdetail;
+		JSONArray mdsjarray = JSONArray.fromObject(mds);
+		for (Object obj : mdsjarray) {
+			JSONObject jo = JSONObject.fromObject(obj);
+			int userId = jo.getInt("userId");
+			String role = jo.getString("role");
+			String optional = jo.getString("optional");
+			
+			mdetail = new MeetingDetail();
+			mdetail.setRole(role);
+			mdetail.setOptional(optional);
+			User user = new User();
+			user.setUserId(userId);
+			mdetail.setUser(user);
+			
+			meetingDetails.add(mdetail);
+		}
+		logger.info("size: " + meetingDetails.size() + " mds to insert: " + meetingDetails);
+		
+		List<MeetingResource> meetingResources = new ArrayList<MeetingResource>(); // to insert
+		MeetingResource mresource;
+		JSONArray mrsjarray = JSONArray.fromObject(mrs);
+		for (Object obj : mrsjarray) {
+			JSONObject jo = JSONObject.fromObject(obj);
+			int rId = jo.getInt("rId");
+			int number = jo.getInt("number");
+			
+			mresource = new MeetingResource();
+			mresource.setNumber(number);
+			Resource resource = new Resource();
+			resource.setrId(rId);
+			mresource.setResource(resource);
+			
+			meetingResources.add(mresource);
+		}
+		logger.info("size: " + meetingResources.size() + " mrs to insert: " + meetingResources);
+		
+		logger.info("start to modify meeting...");
+		try {
+			meetingService.modifyMeeting(meeting, meetingDetails, meetingResources);			
 			return String.valueOf(meeting.getmId());
 		} catch (Exception e) {
 			e.printStackTrace();

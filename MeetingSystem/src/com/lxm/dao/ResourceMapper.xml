@@ -18,4 +18,9 @@
         select * from resource where remain > 0 
     </select>
     
+    <select id="queryUnAddResources" parameterType="int" resultMap="resourceMap">
+        SELECT * FROM resource WHERE r_id NOT IN 
+        (SELECT r_id FROM meeting_resource WHERE m_id = #{meetingId})
+    </select>
+    
 </mapper>

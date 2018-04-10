@@ -74,6 +74,7 @@
 		    <association property="resource" javaType="Resource">
 		        <id column="r_id" property="rId" />
 		        <result column="r_name" property="rName" />
+		        <result column="remain" property="remain" />
 		    </association>
 		</collection>
 		
@@ -209,7 +210,7 @@
     <select id="queryDetailById" parameterType="int" resultMap="mdrMap">
         select m.m_id, md.user_id, u.user_name, u.avatar, u.position, 
         md.md_role, md.will, md.optional, 
-        mr.r_id, mr.number, r.r_name, 
+        mr.r_id, mr.number, r.r_name, r.remain, 
         d.d_id, d.d_name, d.path
         from ((meeting m inner join 
         (meeting_detail md inner join user u on md.user_id = u.user_id) on m.m_id = md.m_id) 
@@ -222,4 +223,11 @@
         insert into meeting(m_name, start_time, end_time, description, mr_id, scheduler) 
         values(#{mName}, #{startTime}, #{endTime}, #{description}, #{meetingRoom.mrId}, #{scheduler.userId})
     </insert>
+    
+    <update id="modify" parameterType="Meeting">
+        update meeting set m_name=#{mName}, start_time=#{startTime}, end_time=#{endTime}, 
+        description=#{description}, mr_id=#{meetingRoom.mrId}, cancel=#{cancel} 
+        where m_id=#{mId}
+    </update>
+    
 </mapper>

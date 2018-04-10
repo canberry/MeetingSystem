@@ -47,4 +47,8 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 	public void addMeetingDetail(MeetingDetail meetingDetail) {
 		meetingDetailMapper.add(meetingDetail);
 	}
+
+	public void removeMeetingDetailsByMId(int mId) {
+		meetingDetailMapper.removByMId(mId);
+	}
 }

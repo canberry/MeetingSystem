@@ -49,4 +49,13 @@ public class UserServiceImpl implements UserService {
 		params.put("endTime", endTime);
 		return userMapper.queryAvailableUsersByIds(params);
 	}
+
+	public List<User> queryAvailableUsersByIdsAndMId(int mId, List<Integer> userIds, String startTime, String endTime) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userIds", userIds);
+		params.put("startTime", startTime);
+		params.put("endTime", endTime);
+		params.put("mId", mId);
+		return userMapper.queryAvailableUsersByIdsAndMId(params);
+	}
 }

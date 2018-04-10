@@ -15,4 +15,5 @@ public interface UserMapper {
 	public void modify(User user);
 	public List<User> queryLikeExample(@Param("userName")String userName);
 	public List<User> queryAvailableUsersByIds(Map<String, Object> params);
+	public List<User> queryAvailableUsersByIdsAndMId(Map<String, Object> params);
 }

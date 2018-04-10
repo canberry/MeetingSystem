@@ -63,4 +63,18 @@ public class MeetingRoomController {
 		response.setCharacterEncoding(Const.ENCODING_UTF8);
 		response.getWriter().print(datas.toString());
 	}
+	
+	@RequestMapping("/queryMeetingRoomsToScheduledWithouMid")
+	public void queryMeetingRoomsToScheduledWithouMid(int mId, String startTime, String endTime,
+			int cap, HttpServletResponse response) throws IOException {
+		logger.info("mId: " + mId + " startTime: " + startTime + " endTime: " + endTime + " expect capacity: " + cap);
+		List<MeetingRoom> meetingRooms = meetingRoomService
+				.queryMeetingRoomsToScheduledWithouMid(mId, startTime, endTime, cap);
+		logger.info("meetingrooms size: " + meetingRooms.size());
+		logger.info("meetingrooms: " + meetingRooms);
+
+		JSONArray datas = JSONArray.fromObject(meetingRooms);
+		response.setCharacterEncoding(Const.ENCODING_UTF8);
+		response.getWriter().print(datas.toString());
+	}
 }
