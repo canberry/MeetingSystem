@@ -90,7 +90,7 @@ function hideURLbar() {
 							<div class="srch">
 								<button></button>
 							</div>
-							<script type="text/javascript">
+<script type="text/javascript">
 $('.main-search').hide();
 $('button').click(function() {
 	$('.main-search').show();
@@ -99,6 +99,65 @@ $('button').click(function() {
 $('.close').click(function() {
 	$('.main-search').hide();
 });
+
+
+var isLoaded = false;
+function req() {
+	$.ajax({
+        type: "post",
+        url: "<%=basePath%>message/queryUnReadMessage",
+        dataType: "json",
+        beforeSend: function() {
+            isLoaded = false;
+        },
+        success: function(data) {
+        	var num = data[0].msgNum;
+        	$("#unreadnum").html(num);
+        	
+        	$("#unreadmsgs").html("");
+        	var headerhtml = "<li><div class='notification_header'>" + 
+        	                 "<h3>你有 " + num + " 条未读消息</h3></div></li>";
+        	$("#unreadmsgs").append(headerhtml);
+        	
+        	var messages = data[0].messages;
+        	for (var i = 0; i < messages.length; i++) {
+        		var message = messages[i];
+        		var msgId = message.messageId; // to query detail
+        		var avatar = message.sendUser.avatar;
+        		var sendUserName = message.sendUser.userName;
+        		var msgName = message.messageName;
+        		var sendTime = message.sendTime;
+        		
+        		var innerhtml = "<li><a onclick='queryMsgById(" + msgId + ")'><div class='user_img'>" + 
+        		                "<img src='" + avatar + "' alt=''></div>" + 
+        		                "<div class='notification_desc'><p>" + sendUserName + "</p><p>" + msgName + "</p>" + 
+        		                "<p><span>" + sendTime + "</span></p>" + 
+        		                "</div><div class='clearfix'></div></a></li>";
+        		$("#unreadmsgs li:eq(" + i + ")").after(innerhtml);
+        	}
+        	
+        	var footerhtml = "<li><div class='notification_bottom'>" + 
+        	                 "<a href='<%=basePath%>message/queryMessageToMe'>查看更多>></a></div></li>";
+        	$("#unreadmsgs li:eq(" + messages.length + ")").after(footerhtml);
+        	
+        },
+        complete: function() {
+            isLoaded = true;
+        },
+        error: function() {
+            console.log('请求失败!');
+        }
+    });
+}
+
+req();
+setInterval(function() {
+	isLoaded && req();
+}, 3000);
+
+function queryMsgById(msgId) {
+	window.location.href = "<%=basePath%>message/queryMessageById?msgId=" + msgId;
+}
 </script>
 							<!--/profile_details-->
 							<div class="profile_details_left">
@@ -106,67 +165,9 @@ $('.close').click(function() {
 									<li class="dropdown note">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown"
 											aria-expanded="false"><i class="fa fa-bell-o"></i> <span
-											class="badge">5</span> </a>
+											class="badge" id="unreadnum">0</span> </a>
 
-										<ul class="dropdown-menu two">
-											<li>
-												<div class="notification_header">
-													<h3>
-														You have 5 new notification
-													</h3>
-												</div>
-											</li>
-											<li>
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li class="odd">
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in5.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li>
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in8.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li>
-												<div class="notification_bottom">
-													<a href="#">See all notification</a>
-												</div>
-											</li>
-										</ul>
+										<ul class="dropdown-menu two" id="unreadmsgs"></ul>
 									</li>
 									<div class="clearfix"></div>
 								</ul>
@@ -420,21 +421,6 @@ $("#endTime").click(function() {
 											<div class="clearfix"></div> </a>
 									</li>
 									<li class="">
-										<a> <strong>会议状态:&nbsp;&nbsp;&nbsp;&nbsp;</strong> 
-										    <select name="cancel" id="cancel"
-												style="width: 100%; height: 48px; margin-left: 5px"
-												class="form-control" title="请选择会议状态">
-												<option value="no" id="cancelno">
-													正常
-												</option>
-												<option value="yes" id="cancelyes">
-													取消
-												</option>
-											</select>
-										</a>
-										<input type="hidden" id="cancelid" value="${md.meeting.cancel}">
-									</li>
-									<li class="">
 										<a>
 										    <strong>预定人:&nbsp;&nbsp;&nbsp;&nbsp;</strong>${meeting.scheduler.userName}
 										</a>
@@ -558,9 +544,6 @@ $("#endTime").click(function() {
 							</div>
 <script type="text/javascript">
 $("#numerror").hide();
-
-var cancel = "#cancel" + $("#cancelid").val();
-$(cancel).attr("selected", "selected");
 
 function checkNumber(rid) {
 	if ($("#suberror").html() == "<strong>输入错误！</strong>请正确填写借用资源") {
@@ -965,7 +948,7 @@ $("#user-modal-button").hide();
 														</td>
 														<td style="width: 17%" class="rowDelete" data-row="${status.count}">
 															<h4>
-																<a class="label label-warning" title="删除此用户">删除</a>
+																<a class="label label-warning" title="删除此用户" onclick="clickDelete()">删除</a>
 															</h4>
 														</td>
 													</tr>
@@ -1151,7 +1134,6 @@ function checkAndSub() {
 	var description = $("#description").val();
 	var mrId = $("#mrId").val();
 	var mId = $("#mId").val();
-	var cancel = $("#cancel").val();
 	
 	if (startTime == "" || endTime == "") {
 		$("#suberror").html("<strong>输入错误！</strong>请输入会议时间");
@@ -1197,7 +1179,6 @@ function checkAndSub() {
 			 "mName" : mName,
 			 "description" : description,
 			 "mrId" : mrId,
-			 "cancel" : cancel, 
 			 "mId" : mId
 			 },
 		type : "post",

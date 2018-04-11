@@ -92,7 +92,7 @@ function hideURLbar() {
 							<div class="srch">
 								<button></button>
 							</div>
-							<script type="text/javascript">
+<script type="text/javascript">
 $('.main-search').hide();
 $('button').click(function() {
 	$('.main-search').show();
@@ -101,6 +101,65 @@ $('button').click(function() {
 $('.close').click(function() {
 	$('.main-search').hide();
 });
+
+
+var isLoaded = false;
+function req() {
+	$.ajax({
+        type: "post",
+        url: "<%=basePath%>message/queryUnReadMessage",
+        dataType: "json",
+        beforeSend: function() {
+            isLoaded = false;
+        },
+        success: function(data) {
+        	var num = data[0].msgNum;
+        	$("#unreadnum").html(num);
+        	
+        	$("#unreadmsgs").html("");
+        	var headerhtml = "<li><div class='notification_header'>" + 
+        	                 "<h3>你有 " + num + " 条未读消息</h3></div></li>";
+        	$("#unreadmsgs").append(headerhtml);
+        	
+        	var messages = data[0].messages;
+        	for (var i = 0; i < messages.length; i++) {
+        		var message = messages[i];
+        		var msgId = message.messageId; // to query detail
+        		var avatar = message.sendUser.avatar;
+        		var sendUserName = message.sendUser.userName;
+        		var msgName = message.messageName;
+        		var sendTime = message.sendTime;
+        		
+        		var innerhtml = "<li><a onclick='queryMsgById(" + msgId + ")'><div class='user_img'>" + 
+        		                "<img src='" + avatar + "' alt=''></div>" + 
+        		                "<div class='notification_desc'><p>" + sendUserName + "</p><p>" + msgName + "</p>" + 
+        		                "<p><span>" + sendTime + "</span></p>" + 
+        		                "</div><div class='clearfix'></div></a></li>";
+        		$("#unreadmsgs li:eq(" + i + ")").after(innerhtml);
+        	}
+        	
+        	var footerhtml = "<li><div class='notification_bottom'>" + 
+        	                 "<a href='<%=basePath%>message/queryMessageToMe'>查看更多>></a></div></li>";
+        	$("#unreadmsgs li:eq(" + messages.length + ")").after(footerhtml);
+        	
+        },
+        complete: function() {
+            isLoaded = true;
+        },
+        error: function() {
+            console.log('请求失败!');
+        }
+    });
+}
+
+req();
+setInterval(function() {
+	isLoaded && req();
+}, 3000);
+
+function queryMsgById(msgId) {
+	window.location.href = "<%=basePath%>message/queryMessageById?msgId=" + msgId;
+}
 </script>
 							<!--/profile_details-->
 							<div class="profile_details_left">
@@ -108,67 +167,9 @@ $('.close').click(function() {
 									<li class="dropdown note">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown"
 											aria-expanded="false"><i class="fa fa-bell-o"></i> <span
-											class="badge">5</span> </a>
+											class="badge" id="unreadnum">0</span> </a>
 
-										<ul class="dropdown-menu two">
-											<li>
-												<div class="notification_header">
-													<h3>
-														You have 5 new notification
-													</h3>
-												</div>
-											</li>
-											<li>
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li class="odd">
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in5.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li>
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in8.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li>
-												<div class="notification_bottom">
-													<a href="#">See all notification</a>
-												</div>
-											</li>
-										</ul>
+										<ul class="dropdown-menu two" id="unreadmsgs"></ul>
 									</li>
 									<div class="clearfix"></div>
 								</ul>
@@ -260,7 +261,7 @@ $('.close').click(function() {
 										</a>
 									</li>
 									<li class="">
-										<a>
+										<a id="displaycancel">
 										    <strong>会议状态:&nbsp;&nbsp;&nbsp;&nbsp;</strong>
 										    <c:choose>
 										        <c:when test="${meeting.cancel == 'no'}">
@@ -329,7 +330,7 @@ function down(filePath) {
 									借用资源
 								</h2>
 								<nav class="nav-sidebar">
-								<ul class="nav tabs">
+								<ul class="nav tabs" id="displayresources">
 									<c:forEach var="meetingResource" items="${meetingResources}"
 										varStatus="status">
 										<li>
@@ -415,7 +416,7 @@ function remove(docId, path) {
 	    if (!confirm("确认删除？")) {
 	    	return false;
 	    }
-	
+	    
 	    $.post("<%=basePath%>document/removeDocument", 
             {docId : docId,
 	    	 path : path}, 
@@ -500,12 +501,27 @@ function clickDetail() {
 															</c:if>
 														</c:if>
 
-														<c:if test="${param.action == 4}">
-															<h4>
-																<a class="label label-info" href="<%=basePath%>meeting/queryMeetingDRsById?meetingId=${meeting.mId}">修改会议</a>
-															</h4>
-														</c:if>
+														<div id="stateid${meeting.mId}">
+															<c:if
+																test="${param.action == 4 && meeting.cancel == 'no'}">
+																<h4>
+																	<a class="label label-info"
+																		href="<%=basePath%>meeting/queryMeetingDRsById?meetingId=${meeting.mId}">修改会议</a>
+																</h4>
+																<h4>
+																	<a class="label label-default"
+																		onclick="modifyMeeting('${meeting.mId}')">取消会议</a>
+																</h4>
 
+																<c:if test="${!meetingResources.isEmpty()}">
+																	<h4 id="mmrid${meeting.mId}">
+																		<a class="label label-warning"
+																			onclick="removeMeetingResources('${meeting.mId}')">归还资源</a>
+																	</h4>
+																</c:if>
+															</c:if>
+														</div>
+														
 														<input type="hidden" id="action" value="${param.action}"/>
 														<c:if test="${param.action == 1}">
 														    <h4 id="yes"><span class="label label-primary">已同意</span></h4>
@@ -551,6 +567,34 @@ function changeWill(mId, will) {
 		} else {
 			alert("操作失败!");
 		}
+	});
+}
+
+function modifyMeeting(mid) {
+	$.post("<%=basePath%>meeting/modifyMeetingCancel",
+		{meetingId : mid, 
+		 cancel: "yes"}, 
+		function(data) {
+			if (data == "ok") {
+				$("#stateid" + mid).hide();
+				$("#displaycancel").html("<strong>会议状态:&nbsp;&nbsp;&nbsp;&nbsp;</strong>已取消");
+				$("#displayresources").html("<li class=''><a><i>未借用</i></a></li>");
+            } else {
+            	alert("取消失败");
+            }
+	});
+}
+
+function removeMeetingResources(mid) {
+	$.post("<%=basePath%>meetingResource/removeMeetingResourcesByMId",
+		{meetingId : mid}, 
+		function(data) {
+			if (data == "ok") {
+				$("#mmrid" + mid).hide();
+				$("#displayresources").html("<li class=''><a><i>未借用</i></a></li>");
+            } else {
+            	alert("归还失败");
+            }
 	});
 }
 </script>

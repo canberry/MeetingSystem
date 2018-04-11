@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lxm.bean.MeetingDetail;
 import com.lxm.bean.User;
 import com.lxm.service.UserService;
 import com.lxm.util.Const;

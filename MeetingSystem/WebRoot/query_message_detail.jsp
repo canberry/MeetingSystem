@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
 	String path = request.getContextPath();
@@ -55,17 +57,11 @@ function hideURLbar() {
 		<!--skycons-icons-->
 		<script src="js/skycons.js">
 </script>
+
 		<script src="js/jquery.easydropdown.js">
 </script>
-		<!--//skycons-icons-->
 
-		<!-- fullcalendar -->
-		<link href='css/fullcalendar.css' rel='stylesheet' />
-		<script src='js/moment.min.js'>
-</script>
-		<script src='js/fullcalendar.min.js'>
-</script>
-		<!-- //fullcalendar -->
+		<!--//skycons-icons-->
 	</head>
 
 	<body>
@@ -184,298 +180,68 @@ function queryMsgById(msgId) {
 					<!-- //header-ends -->
 
 
+					<!--//outer-wp-->
 					<div class="outter-wp">
-
-						<!--sub-heard-part-->
+						<!--/sub-heard-part-->
 						<div class="sub-heard-part">
 							<ol class="breadcrumb m-b-0">
 								<li>
-									<a href="index.jsp">主页</a>
+									<a href="index.jsp">首页</a>
 								</li>
 								<li>
-									<a href="<%=basePath%>meetingRoom/queryMeetingRoom">会议室</a>
+									<a href="<%=basePath%>message/queryMessageToMe">消息中心</a>
 								</li>
 								<li class="active">
-									会议室详情
+									消息详情
 								</li>
 							</ol>
 						</div>
-						<!--//sub-heard-part-->
+						<!--/sub-heard-part-->
+						<!--/inbox-->
+						<div class="inbox-mail">
+							<!-- tab content -->
 
-						<!--calender-->
-						<div class="cal-main">
-							<div class="calender graph-form">
-							    <input type="hidden" id="mrId" value="${param.mrId}" >
-								<h2 class="inner-tittle" id="h2title">
-									${param.no} 占用情况
-								</h2>
-								
-								<div id="calendar"></div>
-								
-							</div>
-						</div>
-						<!--//calender-->
-<script type="text/javascript">
-var getAjaxFun = function(url, data, method) {
-	$.ajax({
-		async: false,
-	    cache: false,
-	    type: 'POST',
-	    dataType: "json",
-	    url: url,
-	    data: data,
-	    success: function(data) {
-		    method(data);
-	    },
-	    error: function() {
-	    	alert("请求失败");
-	    }
-	});
-};
+							<div class="tab-pane active text-style" id="tab3">
+								<div class="inbox-right">
 
-(function ($) {
-	var calendar;
-	function calendarInit() {
-		calendar = $("#calendar").fullCalendar({
-			firstDay: 1,
-		    isRTL: false,
-		    weekends: true,
-		    defaultView: "month",
-		    allDaySlot: true,
-		    allDayText: "今日",
-		    slotMinutes: 30,
-		    defaultEventMinutes: 120,
-		    eventLimit: true,
-		    allDayDefault: false,
-		    header: {
-			    left: "prevYear,nextYear today",
-			    center: "prev title next",
-			    right: "month,agendaWeek,agendaDay"
-		    },
-		    timeFormat: 'H:mm',
-		    editable: false,
-		    droppable: false,   //这允许事情被扔到日历上！！！  
-            selectable: true,   //是否选中对应元素  
-            selectHelper: false,  
-            events: calendearSelect,//初始化日程表  
-            eventClick: calendearSelectEdit
-		});
-	}
-	
-	function calendearSelect(start, end, timezone, callback) {
-		var fstart = $.fullCalendar.formatDate(start, "YYYY-MM-DD HH:mm:ss");
-		var fend = $.fullCalendar.formatDate(end, "YYYY-MM-DD HH:mm:ss");
-		var mrId = $("#mrId").val();
-	    getAjaxFun(
-	    	"<%=basePath%>meeting/queryMeetingByTime",
-	    	{
-	    		"startTime": fstart,
-	    		"endTime": fend,
-	    		"mrId": mrId
-	    	},
-	    	function (reData) {
-	    		var events = [];
-	    		for (var i = 0; i < reData.length; i++) {
-	    			var meeting = reData[i];
-	    			var title = meeting.mName;
-	    			if (meeting != null) {
-	    				var color;
-	    				var hold = meeting.hold;
-	    				var cancel = meeting.cancel;
-	    				if (hold == "no" && cancel == "no") {
-	    					color = "red";
-	    				} else if (cancel != "no") {
-	    					color = "grey";
-	    				} else {
-	    					color = "green";
-	    				}
-	    				
-	    				var tjson = {
-	    					id: meeting.mId,
-	    					title: title,
-	    					start: meeting.startTime,
-	    					end: meeting.endTime,
-	    					color: color
-	    				};
-	    				events.push(tjson);
-	    			}
-	    		}
-	    		callback(events); 
-	    	});
-	}
-	
-	function calendearSelectEdit(calEvent, jsEvent, view) {
-		getAjaxFun(
-	    	"<%=basePath%>/meeting/queryMeetingById",
-	    	{
-	    		"meetingId": calEvent.id,
-	    	},
-	    	function (reData) {
-	    		
-	    		if (reData.length == 1) {
-	    			var meeting = reData[0];
-	    			if (meeting != null) {
-	    				var fstart =  $.fullCalendar.formatDate(calEvent.start, "YYYY-MM-DD HH:mm:ss");
-	    				var fend = $.fullCalendar.formatDate(calEvent.end, "YYYY-MM-DD HH:mm:ss");
-	    				var hold;
-	    				if (meeting.hold == "no") {
-	    					hold = "未召开";
-	    				} else {
-	    					hold = "已召开"
-	    				}
-	    				var cancel;
-	    				if (meeting.cancel == "no") {
-	    					cancel = "正常";
-	    				} else {
-	    					cancel = "已取消";
-	    				}
-	    				
-	    				$("#m-name").html(meeting.mName);
-	    				$("#starttime").html(fstart);
-	    				$("#endtime").html(fend);
-	    				$("#mr-no").html(meeting.meetingRoom.no);
-	    				$("#s-name").html(meeting.scheduler.userName);
-	    				$("#s-time").html(meeting.scheduledTime);
-	    				$("#status").html(cancel + " / " + hold);
-	    				$("#description").html(meeting.description);
-	    			}
-	    		}
-	        }
-	    );
-		
-		$("#modal-button").click();
-	}
-	
-	calendarInit(); 
-})(window.jQuery);
-
-
-</script>
-
-						<button type="button" id="modal-button" class="btn btn-primary btn-lg" 
-							data-toggle="modal" data-target="#eventModal">
-							Launch modal
-						</button>
-						<!-- event modal-dialog -->
-						<div class="modal fade" id="eventModal" tabindex="-1"
-							role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
-							style="display: none;">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<button type="button" class="close second"
-											data-dismiss="modal" aria-hidden="true">
-											×
-										</button>
-										<h2 class="modal-title">
-											会议摘要
-										</h2>
-									</div>
-
-
-									<div class="modal-body">
-										<!--content-->
-										<div class="profile-section-inner">
-											<div class="col-md-6 profile-info">
-												<div class="main-grid3">
-													<div class="p-20">
-														<div class="about-info-p">
-															<strong>会议主题</strong>
-															<br>
-															<p class="text-muted" id="m-name">
-																*
-															</p>
-														</div>
-														<div class="about-info-p">
-															<strong>开始时间</strong>
-															<br>
-															<p class="text-muted" id="starttime">
-																*
-															</p>
-														</div>
-														<div class="about-info-p">
-															<strong>结束时间</strong>
-															<br>
-															<p class="text-muted" id="endtime">
-																*
-															</p>
-														</div>
-														<div class="about-info-p m-b-0">
-															<strong>会议室</strong>
-															<br>
-															<p class="text-muted" id="mr-no">
-																*
-															</p>
-														</div>
-													</div>
-												</div>
+									<div class="mailbox-content">
+										<!--Compose New Message -->
+										<div class="compose-mail-box">
+											<div class="compose-bg">
+												消息内容
 											</div>
-											<div class="col-md-6 profile-info two">
-												<div class="main-grid3 p-skill">
-													<div class="p-20">
-														<div class="about-info-p">
-															<strong>预定人</strong>
-															<br>
-															<p class="text-muted" id="s-name">
-																*
-															</p>
-														</div>
-														<div class="about-info-p">
-															<strong>预定时间</strong>
-															<br>
-															<p class="text-muted" id="s-time">
-																*
-															</p>
-														</div>
-														<div class="about-info-p">
-															<strong>状态</strong>
-															<br>
-															<p class="text-muted" id="status">
-																*
-															</p>
-														</div>
-														<div class="about-info-p">
-															<strong>&nbsp;</strong>
-															<br>
-															<p class="text-muted">
-																&nbsp;
-															</p>
-														</div>
-													</div>
-													<div class="clearfix"></div>
-												</div>
+											<div class="panel-body">
+												<fmt:parseDate var="startObj" value="${message.sendTime}"
+													type="DATE" pattern="yyyy-MM-dd HH:mm" />
+												<fmt:formatDate var="sendTime" value='${startObj}'
+													pattern='yyyy-MM-dd HH:mm' />
+												<form class="com-mail">
+													<strong>发件人： </strong><input type="text" class="form-control1 control3"
+														value="${message.sendUser.userName}" placeholder="From :">
+													<strong>收件人： </strong><input type="text" class="form-control1 control3"
+														value="${message.receiveUser.userName}" placeholder="To :">
+													<strong>发送时间： </strong><input type="text" class="form-control1 control3"
+														value="${sendTime}" placeholder="Subject :">
+													<strong>主题： </strong><input type="text" class="form-control1 control3"
+														value="${message.messageName}" placeholder="Subject :">
+													<strong>内容： </strong><textarea rows="6" class="form-control1 control2"
+														placeholder="Message :">${message.content}</textarea>
+												</form>
 											</div>
-											<div class="clearfix"></div>
-											<h3 class="my-inner-tittle" style="font-size: 20px">
-													会议描述
-												</h3>
-												<div class="main-grid3 p-skill">
-													<p id="description">
-														*
-													</p>
-												</div>
-											<div class="clearfix"></div>
 										</div>
-										<!--//content-->
-									</div>
-									
-									<div class="modal-footer">
-										<button type="button" class="btn btn-default" data-dismiss="modal">
-											取消
-										</button>
+										<!--//Compose New Message -->
 									</div>
 								</div>
-<script type="text/javascript">
-$("#modal-button").hide();
-</script>
-								<!-- /.modal-content -->
 							</div>
-							<!-- /.event modal-dialog -->
+
+							<div class="clearfix">
+							</div>
 						</div>
 
-
-						<!--//outer-wp-->
 					</div>
+					<!--//outer-wp-->
+										
+										
 				</div>
 			</div>
 			<!--//content-inner-->
@@ -557,23 +323,7 @@ $("#modal-button").hide();
 								</li>
 							</ul>
 						</li>
-						<li>
-							<a href="#"><i class="lnr lnr-envelope"></i> <span>消息中心</span>
-							<span class="fa fa-angle-right" style="float: right"></span>
-							</a>
-							<ul>
-								<li>
-									<a href="inbox.jsp"><i class="fa fa-inbox"></i>&nbsp;&nbsp;收件箱</a>
-								</li>
-								<li>
-									<a href="compose.jsp"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;已发送</a>
-								</li>
-								<li>
-									<a href="add_message.jsp"><span class="lnr lnr-highlight"></span>&nbsp;&nbsp;写&nbsp;&nbsp;信</a>
-								</li>
-
-							</ul>
-						</li>
+						<li><a href="<%=basePath%>message/queryMessageToMe"><i class="lnr lnr-envelope"></i> <span>消息中心</span></a></li>
 					</ul>
 				</div>
 			</div>

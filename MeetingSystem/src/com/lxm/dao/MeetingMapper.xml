@@ -225,8 +225,27 @@
     </insert>
     
     <update id="modify" parameterType="Meeting">
-        update meeting set m_name=#{mName}, start_time=#{startTime}, end_time=#{endTime}, 
-        description=#{description}, mr_id=#{meetingRoom.mrId}, cancel=#{cancel} 
+        update meeting 
+        <set>
+            <if test="mName != null and mName != ''">
+                m_name=#{mName}, 
+            </if>
+            <if test="startTime != null and startTime != ''">
+                start_time=#{startTime}, 
+            </if>
+            <if test="endTime != null and endTime != ''">
+                end_time=#{endTime}, 
+            </if>
+            <if test="description != null and description != ''">
+                description=#{description}, 
+            </if>
+            <if test="meetingRoom != null and meetingRoom.mrId != 0">
+                mr_id=#{meetingRoom.mrId}, 
+            </if>
+            <if test="cancel != null and cancel != ''">
+                cancel=#{cancel} 
+            </if>
+        </set>
         where m_id=#{mId}
     </update>
     

@@ -107,7 +107,7 @@ function hideURLbar() {
 							<div class="srch">
 								<button></button>
 							</div>
-							<script type="text/javascript">
+<script type="text/javascript">
 $('.main-search').hide();
 $('button').click(function() {
 	$('.main-search').show();
@@ -116,6 +116,65 @@ $('button').click(function() {
 $('.close').click(function() {
 	$('.main-search').hide();
 });
+
+
+var isLoaded = false;
+function req() {
+	$.ajax({
+        type: "post",
+        url: "<%=basePath%>message/queryUnReadMessage",
+        dataType: "json",
+        beforeSend: function() {
+            isLoaded = false;
+        },
+        success: function(data) {
+        	var num = data[0].msgNum;
+        	$("#unreadnum").html(num);
+        	
+        	$("#unreadmsgs").html("");
+        	var headerhtml = "<li><div class='notification_header'>" + 
+        	                 "<h3>你有 " + num + " 条未读消息</h3></div></li>";
+        	$("#unreadmsgs").append(headerhtml);
+        	
+        	var messages = data[0].messages;
+        	for (var i = 0; i < messages.length; i++) {
+        		var message = messages[i];
+        		var msgId = message.messageId; // to query detail
+        		var avatar = message.sendUser.avatar;
+        		var sendUserName = message.sendUser.userName;
+        		var msgName = message.messageName;
+        		var sendTime = message.sendTime;
+        		
+        		var innerhtml = "<li><a onclick='queryMsgById(" + msgId + ")'><div class='user_img'>" + 
+        		                "<img src='" + avatar + "' alt=''></div>" + 
+        		                "<div class='notification_desc'><p>" + sendUserName + "</p><p>" + msgName + "</p>" + 
+        		                "<p><span>" + sendTime + "</span></p>" + 
+        		                "</div><div class='clearfix'></div></a></li>";
+        		$("#unreadmsgs li:eq(" + i + ")").after(innerhtml);
+        	}
+        	
+        	var footerhtml = "<li><div class='notification_bottom'>" + 
+        	                 "<a href='<%=basePath%>message/queryMessageToMe'>查看更多>></a></div></li>";
+        	$("#unreadmsgs li:eq(" + messages.length + ")").after(footerhtml);
+        	
+        },
+        complete: function() {
+            isLoaded = true;
+        },
+        error: function() {
+            console.log('请求失败!');
+        }
+    });
+}
+
+req();
+setInterval(function() {
+	isLoaded && req();
+}, 3000);
+
+function queryMsgById(msgId) {
+	window.location.href = "<%=basePath%>message/queryMessageById?msgId=" + msgId;
+}
 </script>
 							<!--/profile_details-->
 							<div class="profile_details_left">
@@ -123,67 +182,9 @@ $('.close').click(function() {
 									<li class="dropdown note">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown"
 											aria-expanded="false"><i class="fa fa-bell-o"></i> <span
-											class="badge">5</span> </a>
+											class="badge" id="unreadnum">0</span> </a>
 
-										<ul class="dropdown-menu two">
-											<li>
-												<div class="notification_header">
-													<h3>
-														You have 5 new notification
-													</h3>
-												</div>
-											</li>
-											<li>
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li class="odd">
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in5.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li>
-												<a href="#">
-													<div class="user_img">
-														<img src="images/in8.jpg" alt="">
-													</div>
-													<div class="notification_desc">
-														<p>
-															Lorem ipsum dolor sit amet
-														</p>
-														<p>
-															<span>1 hour ago</span>
-														</p>
-													</div>
-													<div class="clearfix"></div> </a>
-											</li>
-											<li>
-												<div class="notification_bottom">
-													<a href="#">See all notification</a>
-												</div>
-											</li>
-										</ul>
+										<ul class="dropdown-menu two" id="unreadmsgs"></ul>
 									</li>
 									<div class="clearfix"></div>
 								</ul>

@@ -15,12 +15,12 @@
 	</resultMap>
 
     <select id="queryAvailable" resultMap="resourceMap">
-        select * from resource where remain > 0 
+        select * from resource where remain > 0 and r_state='no' 
     </select>
     
     <select id="queryUnAddResources" parameterType="int" resultMap="resourceMap">
         SELECT * FROM resource WHERE r_id NOT IN 
-        (SELECT r_id FROM meeting_resource WHERE m_id = #{meetingId})
+        (SELECT r_id FROM meeting_resource WHERE m_id = #{meetingId}) and remain > 0 and r_state='no' 
     </select>
     
 </mapper>

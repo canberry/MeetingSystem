@@ -22,11 +22,12 @@
 				and no like '%${meetingRoom.no}%' 
 	        </if>
 			<if test="meetingRoom.mrName != null and meetingRoom.mrName != ''">
-				and mr_name like '%${meetingRoom.mrName}%'
+				and mr_name like '%${meetingRoom.mrName}%' 
 	        </if>
 			<if test="meetingRoom.capacity > 0">
-				and capacity >= #{meetingRoom.capacity}
+				and capacity >= #{meetingRoom.capacity} 
 	        </if>
+	        and mr_state='no'
 		</where>
 		order by mr_id limit #{pageStart}, #{pageSize}
 	</select>
@@ -43,11 +44,12 @@
 			<if test="capacity > 0">
 				and capacity >= #{capacity}
 	        </if>
+	        and mr_state='no'
 		</where>
 	</select>
 
 	<select id="queryAvailable" resultMap="meetingRoomMap">
-		SELECT * FROM meeting_room AS mr WHERE capacity >= #{capacity} AND 
+		SELECT * FROM meeting_room AS mr WHERE capacity >= #{capacity} AND mr_state='no' and 
 		NOT EXISTS ( 
 		(SELECT * FROM meeting AS m WHERE 
 		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 
@@ -67,7 +69,7 @@
 	</select>
 	
 	<select id="queryAvailableWithoutMid" resultMap="meetingRoomMap">
-		SELECT * FROM meeting_room AS mr WHERE capacity >= #{capacity} AND 
+		SELECT * FROM meeting_room AS mr WHERE capacity >= #{capacity} AND mr_state='no' and 
 		NOT EXISTS ( 
 		(SELECT * FROM meeting AS m WHERE m.m_id != #{mId} and 
 		<![CDATA[ DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]> 

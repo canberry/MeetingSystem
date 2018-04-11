@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace：必须与对应的接口全类名一致
+	 id:必须与对应接口的某个对应的方法名一致	-->
+<mapper namespace="com.lxm.dao.MessageMapper">
+
+	<resultMap type="Message" id="msgMap">
+		<!-- column值是数据表的列名，property值是实体类的get属性 -->
+		<id column="message_id" property="messageId" /> <!-- 唯一的主键 -->
+		<result column="message_name" property="messageName" /> <!-- 可以有多个 -->
+		<result column="send_time" property="sendTime" />
+		<result column="content" property="content" />
+		<result column="scan" property="scan" />
+		
+		<association property="sendUser" javaType="User">
+		    <id column="send_user_id" property="userId" />
+		    <result column="user_name" property="userName" />
+		    <result column="avatar" property="avatar" />
+		    <result column="position" property="position" />
+		</association>
+		
+		<association property="receiveUser" javaType="User">
+		    <id column="receive_user_id" property="userId" />
+		</association>
+	</resultMap>
+	
+	<resultMap type="Message" id="mMap">
+		<!-- column值是数据表的列名，property值是实体类的get属性 -->
+		<id column="message_id" property="messageId" /> <!-- 唯一的主键 -->
+		<result column="message_name" property="messageName" /> <!-- 可以有多个 -->
+		<result column="send_time" property="sendTime" />
+		<result column="content" property="content" />
+		<result column="scan" property="scan" />
+		
+		<association property="receiveUser" javaType="User">
+		    <id column="receive_user_id" property="userId" />
+		    <result column="user_name" property="userName" />
+		    <result column="avatar" property="avatar" />
+		    <result column="position" property="position" />
+		</association>
+	</resultMap>
+
+    <select id="queryUnReadMsgByRcvUserId" parameterType="int" resultMap="msgMap">
+        select * from message inner join user on user.user_id = message.send_user_id 
+        where receive_user_id = #{userId} and 
+        receive_state = 'no' and scan = 'no' 
+        order by send_time desc 
+    </select>
+    
+    <insert id="add" parameterType="Message">
+        insert into message(message_name, content, send_user_id, receive_user_id) 
+        values(#{messageName}, #{content}, #{sendUser.userId}, #{receiveUser.userId})
+    </insert>
+    
+    <select id="queryByExample" parameterType="Message" resultMap="msgMap">
+        select * from message inner join user on user.user_id = message.send_user_id 
+        <where>
+            <if test="receiveUser != null and receiveUser.userId != 0">
+                and receive_user_id = #{receiveUser.userId}
+            </if>
+            <if test="scan != null and scan != ''">
+                and scan = #{scan}
+            </if>
+            <if test="receiveState != null and receiveState != ''">
+                and receive_state = #{receiveState}
+            </if>
+        </where>
+        order by send_time desc 
+    </select>
+    
+    <select id="queryFromMwByExample" parameterType="Message" resultMap="mMap">
+        select * from message inner join user on user.user_id = message.receive_user_id 
+        <where>
+            <if test="sendUser != null and sendUser.userId != 0">
+                and send_user_id = #{sendUser.userId}
+            </if>
+            <if test="scan != null and scan != ''">
+                and scan = #{scan}
+            </if>
+            <if test="sendState != null and sendState != ''">
+                and send_state = #{sendState}
+            </if>
+        </where>
+        order by send_time desc 
+    </select>
+    
+    <update id="modify" parameterType="Message">
+        update message 
+        <set>
+            <if test="sendState != null and sendState != ''">
+                send_state = #{sendState}, 
+            </if>
+            <if test="receiveState != null and receiveState != ''">
+                receive_state = #{receiveState}, 
+            </if>
+            <if test="scan != null and scan != ''">
+                scan = #{scan}, 
+            </if>
+        </set>
+        where message_id = #{messageId}
+    </update>
+    
+    <select id="queryById" parameterType="int" resultMap="msgMap">
+        select * from message inner join user on user.user_id = message.send_user_id 
+        where message_id = #{msgId}
+    </select>
+    
+</mapper>

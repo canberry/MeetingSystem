@@ -23,6 +23,7 @@ import com.lxm.bean.Meeting;
 import com.lxm.bean.MeetingDetail;
 import com.lxm.bean.MeetingResource;
 import com.lxm.bean.MeetingRoom;
+import com.lxm.bean.Message;
 import com.lxm.bean.Resource;
 import com.lxm.bean.User;
 import com.lxm.service.MeetingService;
@@ -218,7 +219,19 @@ public class MeetingController {
 		
 		logger.info("start to insert meeting...");
 		try {
-			meetingService.addMeeting(meeting, meetingDetails, meetingResources);			
+			String messageName = "新的会议: " + meeting.getmName();
+			String content = scheduler.getUserName() + "  预定了会议: " + meeting.getmName() + "," + 
+			                 "    开始时间: " + meeting.getStartTime() + "," + 
+			                 "    结束时间: " + meeting.getEndTime() + "," + 
+			                 "    请去查看详情";
+			User sendUser = new User();
+			sendUser.setUserId(scheduler.getUserId());
+			Message message = new Message();
+			message.setMessageName(messageName);
+			message.setContent(content);
+			message.setSendUser(sendUser);
+			
+			meetingService.addMeeting(meeting, meetingDetails, meetingResources, message);			
 			return String.valueOf(meeting.getmId());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -275,8 +288,53 @@ public class MeetingController {
 		
 		logger.info("start to modify meeting...");
 		try {
-			meetingService.modifyMeeting(meeting, meetingDetails, meetingResources);			
+			User scheduler = (User) request.getSession().getAttribute("user");
+			String messageName = "修改会议: " + meeting.getmName();
+			String content = scheduler.getUserName() + "  修改了会议: " + meeting.getmName() + "," + 
+			                 "    开始时间: " + meeting.getStartTime() + "," + 
+			                 "    结束时间: " + meeting.getEndTime() + "," +
+			                 "    请去查看详情";
+			User sendUser = new User();
+			sendUser.setUserId(scheduler.getUserId());
+			Message message = new Message();
+			message.setMessageName(messageName);
+			message.setContent(content);
+			message.setSendUser(sendUser);
+			
+			meetingService.modifyMeeting(meeting, meetingDetails, meetingResources, message);			
 			return String.valueOf(meeting.getmId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
+	}
+	
+	@RequestMapping("/modifyMeetingCancel")
+	@ResponseBody
+	public String modifyMeetingCancel(int meetingId, String cancel, HttpServletRequest request) {
+		logger.info("meetingId:" + meetingId + " cancel: " + cancel);
+		Meeting meeting = meetingService.queryMeetingById(meetingId);
+		Meeting m = meetingService.queryMeetingDetailAndResourceById(meetingId);
+		meeting.setMeetingDetails(m.getMeetingDetails());
+		meeting.setCancel(cancel);
+		
+		logger.info("start to modify meeting...");
+		try {
+			User scheduler = (User) request.getSession().getAttribute("user");
+			String messageName = "取消会议: " + meeting.getmName();
+			String content = scheduler.getUserName() + "  取消了会议: " + meeting.getmName() + "," + 
+					"    开始时间: " + meeting.getStartTime() + "," +
+					"    结束时间: " + meeting.getEndTime() + "," +
+				    "    请去查看详情";
+			User sendUser = new User();
+			sendUser.setUserId(scheduler.getUserId());
+			Message message = new Message();
+			message.setMessageName(messageName);
+			message.setContent(content);
+			message.setSendUser(sendUser);
+			
+			meetingService.modifyMeetingCancel(meeting, message);
+			return "ok";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "fail";

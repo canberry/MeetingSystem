@@ -13,6 +13,7 @@ public class User {
 	private String email;
 	private String address;
 	private String position;
+	private String userState;
 
 	public User() {
 		super();
@@ -163,6 +164,14 @@ public class User {
 	public void setPosition(String position) {
 		this.position = position;
 	}
+	
+	public String getUserState() {
+		return userState;
+	}
+
+	public void setUserState(String userState) {
+		this.userState = userState;
+	}
 
 	@Override
 	public String toString() {
@@ -171,6 +180,6 @@ public class User {
 				+ ", avatar=" + avatar + ", sex=" + sex + ", userRole="
 				+ userRole + ", nickname=" + nickname + ", mobile=" + mobile
 				+ ", email=" + email + ", address=" + address + ", position="
-				+ position + "]";
+				+ position + ", userState=" + userState + "]";
 	}
 }

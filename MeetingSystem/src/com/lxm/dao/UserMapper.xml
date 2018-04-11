@@ -25,7 +25,7 @@
 	<select id="login" parameterType="User" resultType="int">
 		select
 		count(*) from user where user_name=#{userName} and
-		password=#{password}
+		password=#{password} and user_state='no'
 	</select>
 
 	<select id="queryById" parameterType="int" resultMap="userMap">
@@ -48,7 +48,7 @@
 	</select>
 
 	<select id="queryLikeExample" resultMap="userMap">
-		select * from user where user_name like '%${userName}%' 
+		select * from user where user_name like '%${userName}%' and user_state='no' 
 	</select>
 
 	<insert id="add" parameterType="User" keyProperty="userId"
@@ -115,7 +115,7 @@
 		)
     </select>
     
-    	<select id="queryAvailableUsersByIdsAndMId" resultMap="uMap">
+    <select id="queryAvailableUsersByIdsAndMId" resultMap="uMap">
 		SELECT DISTINCT(u.user_id), u.user_name, u.sex, u.position FROM USER u INNER JOIN
 		meeting_detail md ON u.user_id = md.user_id WHERE u.user_id IN 
 		<foreach collection="userIds" index="index" item="item" 

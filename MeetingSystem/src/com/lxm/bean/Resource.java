@@ -5,6 +5,7 @@ public class Resource {
 	private String rName;
 	private int total;
 	private int remain;
+	private int rState;
 
 	public Resource() {
 		super();
@@ -57,9 +58,17 @@ public class Resource {
 		this.remain = remain;
 	}
 
+	public int getrState() {
+		return rState;
+	}
+
+	public void setrState(int rState) {
+		this.rState = rState;
+	}
+
 	@Override
 	public String toString() {
 		return "Resource [rId=" + rId + ", rName=" + rName + ", total=" + total
-				+ ", remain=" + remain + "]";
+				+ ", remain=" + remain + ", rState=" + rState + "]";
 	}
 }

@@ -8,6 +8,8 @@ public class Message {
 	private String scan;
 	private User sendUser;
 	private User receiveUser;
+	private String sendState;
+	private String receiveState;
 
 	public Message() {
 		super();
@@ -92,11 +94,28 @@ public class Message {
 		this.receiveUser = receiveUser;
 	}
 
+	public String getSendState() {
+		return sendState;
+	}
+
+	public void setSendState(String sendState) {
+		this.sendState = sendState;
+	}
+
+	public String getReceiveState() {
+		return receiveState;
+	}
+
+	public void setReceiveState(String receiveState) {
+		this.receiveState = receiveState;
+	}
+
 	@Override
 	public String toString() {
 		return "Message [messageId=" + messageId + ", messageName="
 				+ messageName + ", sendTime=" + sendTime + ", content="
 				+ content + ", scan=" + scan + ", sendUser=" + sendUser
-				+ ", receiveUser=" + receiveUser + "]";
+				+ ", receiveUser=" + receiveUser + ", sendState=" + sendState
+				+ ", receiveState=" + receiveState + "]";
 	}
 }

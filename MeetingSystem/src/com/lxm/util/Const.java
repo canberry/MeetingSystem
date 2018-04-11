@@ -37,4 +37,7 @@ public class Const {
 	
 	public static final String Path_TOSAVE_DOCUMENT = "upload/document/";
 	public static final String Path_TOSAVE_AVATAR = "upload/avatar/";
+	
+	public static final String STATE_NO = "no";
+	public static final String STATE_YES = "yes";
 }

@@ -6,6 +6,7 @@ public class MeetingRoom {
 	private String mrName;
 	private int capacity;
 	private String occupation;
+	private String mrState;
 
 	public MeetingRoom() {
 		super();
@@ -69,10 +70,18 @@ public class MeetingRoom {
 		this.no = no;
 	}
 
+	public String getMrState() {
+		return mrState;
+	}
+
+	public void setMrState(String mrState) {
+		this.mrState = mrState;
+	}
+
 	@Override
 	public String toString() {
 		return "MeetingRoom [mrId=" + mrId + ", mrName=" + mrName
 				+ ", capacity=" + capacity + ", occupation=" + occupation 
-				+ ", no=" + no + "]";
+				+ ", no=" + no + ", mrState=" + mrState + "]";
 	}
 }
