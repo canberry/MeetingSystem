@@ -46,20 +46,12 @@ public class UserController {
 			request.getSession().setAttribute("user", u);
 			logger.info("after login u: " + u);
 			
-			String authority = u.getUserRole();
-			if (authority.equals(Const.AUTHORITY_ORDINARY)) { // ordinary
-				logger.info("want to index.jsp");
-				return "ordinary ok";
-			} else if (authority.equals(Const.AUTHORITY_ADMIN)) { // admin
-				logger.info("want to admin_index.jsp");
-				return "admin ok";
-			}
+			logger.info("want to index.jsp");
+			return "ordinary ok";
 		} else { // fail to login
 			logger.info("fail to login");
 			return "fail";
 		}
-
-		return "fail";
 	}
 
 	@RequestMapping("/queryUserName")

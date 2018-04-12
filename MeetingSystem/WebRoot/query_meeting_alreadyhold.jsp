@@ -606,104 +606,222 @@ function jump(pageIndex) {
 
 
 			<!--/sidebar-menu-->
-			<div class="sidebar-menu">
-				<header class="logo">
-				<a class="sidebar-icon"> <span class="fa fa-bars"></span></a>
-				<a href="index.jsp"> <span id="logo">
-						<h1>
-							MMS
-						</h1> </span> <!--<img id="logo" src="" alt="Logo"/>--> </a>
-				</header>
-				<div style="border-top: 1px solid rgba(69, 74, 84, 0.7)"></div>
-				<!--/down-->
-				<div class="down">
-					<a href="query_myuserinfo.jsp" title="更换头像"><img src="${sessionScope.user.avatar}" alt="avatar/default_avatar.jpg"> </a>
-					<a href="query_myuserinfo.jsp" title="修改昵称"><span class=" name-caret">${sessionScope.user.nickname}</span> </a>
-					<p>
-					    ${sessionScope.user.signature}
-					</p>
-					<ul>
-						<li>
-							<a class="tooltips" href="query_myuserinfo.jsp"><span>我的</span><i
-								class="lnr lnr-user"></i> </a>
-						</li>
-						<li>
-							<a class="tooltips" href="query_myuserinfo.jsp"><span>设置</span><i
-								class="lnr lnr-cog"></i> </a>
-						</li>
-						<li>
-							<a class="tooltips" href="<%=basePath%>user/loginout"><span>退出</span><i
-								class="lnr lnr-power-switch"></i> </a>
-						</li>
-					</ul>
-				</div>
-				<!--//down-->
-				<div class="menu">
-					<ul id="menu">
-						<li id="menu-academico">
-							<a href="#"><i class="fa fa-table"></i> <span>会议室查询</span> 
-							<span class="fa fa-angle-right"
-								style="float: right"></span> </a>
-							<ul id="menu-academico-sub">
-								<li id="menu-academico-avaliacoes">
-									<a href="<%=basePath%>meetingRoom/queryMeetingRoom?pageIndex=1">会&nbsp;议&nbsp;室</a>
-								</li>
-								<li id="menu-academico-boletim">
-									<a href="query_mr_monthview.jsp">月&nbsp;视&nbsp;图</a>
-								</li>
-							</ul>
-						</li>
-						<li id="menu-academico">
-							<a><i class="fa fa-file-text-o"></i> <span>我的会议</span> 
-							<span class="fa fa-angle-right" style="float: right"></span>
-							</a>
-							<ul id="menu-academico-sub">
-							    <li id="menu-academico-avaliacoes">
-									<a href="query_meetingtobehold_view.jsp">会议日程</a>
-								</li>
-								<li id="menu-academico-avaliacoes">
-									<a href="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold?pageIndex=1">即将召开</a>
-								</li>
-								<li id="menu-academico-boletim">
-									<a href="<%=basePath%>meetingDetail/queryMeetingDetailAlreadyHold?pageIndex=1">历史会议</a>
-								</li>
-								<li id="menu-academico-avaliacoes">
-									<a href="<%=basePath%>meetingDetail/queryMeetingDetailByRole?pageIndex=1">上传记录</a>
-								</li>
-							</ul>
-						</li>
-						<li id="menu-academico">
-							<a href="#"><i class="lnr lnr-book"></i> <span>会议预约</span> 
-							<span class="fa fa-angle-right" style="float: right"></span> </a>
-							<ul id="menu-academico-sub">
-								<li id="menu-academico-avaliacoes">
-									<a href="<%=basePath%>meeting/queryMeetingByMyScheduled?pageIndex=1">我的预约</a>
-								</li>
-								<li id="menu-academico-boletim">
-									<a href="<%=basePath%>resource/queryAvailableResources">新建预约</a>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<a href="#"><i class="lnr lnr-envelope"></i> <span>消息中心</span>
-							<span class="fa fa-angle-right" style="float: right"></span>
-							</a>
+			<c:choose>
+				<c:when test="${sessionScope.user.userRole == 'admin'}">
+					<div class="sidebar-menu">
+						<header class="logo">
+						<a class="sidebar-icon"> <span class="fa fa-bars"></span>
+						</a>
+						<a href="index.jsp"> <span id="logo">
+								<h1>
+									MMS
+								</h1> </span> <!--<img id="logo" src="" alt="Logo"/>--> </a>
+						</header>
+						<div style="border-top: 1px solid rgba(69, 74, 84, 0.7)"></div>
+						<!--/down-->
+						<div class="down">
+							<a href="query_myuserinfo.jsp" title="更换头像"><img
+									src="${sessionScope.user.avatar}"
+									alt="avatar/default_avatar.jpg"> </a>
+							<a href="query_myuserinfo.jsp" title="修改昵称"><span
+								class=" name-caret">${sessionScope.user.nickname}</span> </a>
+							<p>
+								${sessionScope.user.signature}
+							</p>
 							<ul>
 								<li>
-									<a href="inbox.jsp"><i class="fa fa-inbox"></i>&nbsp;&nbsp;收件箱</a>
+									<a class="tooltips" href="query_myuserinfo.jsp"><span>我的</span><i
+										class="lnr lnr-user"></i> </a>
 								</li>
 								<li>
-									<a href="compose.jsp"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;已发送</a>
+									<a class="tooltips" href="query_myuserinfo.jsp"><span>设置</span><i
+										class="lnr lnr-cog"></i> </a>
 								</li>
 								<li>
-									<a href="add_message.jsp"><span class="lnr lnr-highlight"></span>&nbsp;&nbsp;写&nbsp;&nbsp;信</a>
+									<a class="tooltips" href="<%=basePath%>user/loginout"><span>退出</span><i
+										class="lnr lnr-power-switch"></i> </a>
 								</li>
-
 							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
+						</div>
+						<!--//down-->
+						<div class="menu">
+							<ul id="menu">
+								<li id="menu-academico">
+									<a><i class="fa fa-table"></i> <span>会议室查询</span>
+										<span class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a href="<%=basePath%>meetingRoom/queryMeetingRoom">会&nbsp;议&nbsp;室</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a href="query_mr_monthview.jsp">月&nbsp;视&nbsp;图</a>
+										</li>
+									</ul>
+								</li>
+								<li id="menu-academico">
+									<a><i class="fa fa-file-text-o"></i> <span>会议查询</span> <span
+										class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a href="query_meetingtobehold_view.jsp">会议日程</a>
+										</li>
+										<li id="menu-academico-avaliacoes">
+											<a
+												href="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold?pageIndex=1">即将召开</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a
+												href="<%=basePath%>meetingDetail/queryMeetingDetailAlreadyHold?pageIndex=1">历史会议</a>
+										</li>
+										<li id="menu-academico-avaliacoes">
+											<a
+												href="<%=basePath%>meetingDetail/queryMeetingDetailByRole?pageIndex=1">上传记录</a>
+										</li>
+									</ul>
+								</li>
+								<li id="menu-academico">
+									<a><i class="lnr lnr-book"></i> <span>会议预约</span>
+										<span class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a
+												href="<%=basePath%>meeting/queryMeetingByMyScheduled?pageIndex=1">我的预约</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a href="<%=basePath%>resource/queryAvailableResources">新建预约</a>
+										</li>
+									</ul>
+								</li>
+								<li id="menu-academico">
+									<a><i class="lnr lnr-layers"></i> <span>人员管理</span>
+										<span class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a href="query_user.jsp">查询修改</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a href="add_user.jsp">添加人员</a>
+										</li>
+									</ul>
+								</li>
+								<li id="menu-academico">
+									<a><i class="lnr lnr-chart-bars"></i> <span>资源管理</span>
+										<span class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a href="query_resource.jsp">查询修改</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a href="add_resource.jsp">添加设备</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href="<%=basePath%>message/queryMessageToMe"><i
+										class="lnr lnr-envelope"></i> <span>消息中心</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</c:when>
+				
+				<c:otherwise>
+					<div class="sidebar-menu">
+						<header class="logo">
+						<a class="sidebar-icon"> <span class="fa fa-bars"></span>
+						</a>
+						<a href="index.jsp"> <span id="logo">
+								<h1>
+									MMS
+								</h1> </span> <!--<img id="logo" src="" alt="Logo"/>--> </a>
+						</header>
+						<div style="border-top: 1px solid rgba(69, 74, 84, 0.7)"></div>
+						<!--/down-->
+						<div class="down">
+							<a href="query_myuserinfo.jsp" title="更换头像"><img
+									src="${sessionScope.user.avatar}"
+									alt="avatar/default_avatar.jpg"> </a>
+							<a href="query_myuserinfo.jsp" title="修改昵称"><span
+								class=" name-caret">${sessionScope.user.nickname}</span> </a>
+							<p>
+								${sessionScope.user.signature}
+							</p>
+							<ul>
+								<li>
+									<a class="tooltips" href="query_myuserinfo.jsp"><span>我的</span><i
+										class="lnr lnr-user"></i> </a>
+								</li>
+								<li>
+									<a class="tooltips" href="query_myuserinfo.jsp"><span>设置</span><i
+										class="lnr lnr-cog"></i> </a>
+								</li>
+								<li>
+									<a class="tooltips" href="<%=basePath%>user/loginout"><span>退出</span><i
+										class="lnr lnr-power-switch"></i> </a>
+								</li>
+							</ul>
+						</div>
+						<!--//down-->
+						<div class="menu">
+							<ul id="menu">
+								<li id="menu-academico">
+									<a><i class="fa fa-table"></i> <span>会议室查询</span> <span
+										class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a href="<%=basePath%>meetingRoom/queryMeetingRoom">会&nbsp;议&nbsp;室</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a href="query_mr_monthview.jsp">月&nbsp;视&nbsp;图</a>
+										</li>
+									</ul>
+								</li>
+								<li id="menu-academico">
+									<a><i class="fa fa-file-text-o"></i> <span>我的会议</span> <span
+										class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a href="query_meetingtobehold_view.jsp">会议日程</a>
+										</li>
+										<li id="menu-academico-avaliacoes">
+											<a
+												href="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold?pageIndex=1">即将召开</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a
+												href="<%=basePath%>meetingDetail/queryMeetingDetailAlreadyHold?pageIndex=1">历史会议</a>
+										</li>
+										<li id="menu-academico-avaliacoes">
+											<a
+												href="<%=basePath%>meetingDetail/queryMeetingDetailByRole?pageIndex=1">上传记录</a>
+										</li>
+									</ul>
+								</li>
+								<li id="menu-academico">
+									<a><i class="lnr lnr-book"></i> <span>会议预约</span> <span
+										class="fa fa-angle-right" style="float: right"></span> </a>
+									<ul id="menu-academico-sub">
+										<li id="menu-academico-avaliacoes">
+											<a
+												href="<%=basePath%>meeting/queryMeetingByMyScheduled?pageIndex=1">我的预约</a>
+										</li>
+										<li id="menu-academico-boletim">
+											<a href="<%=basePath%>resource/queryAvailableResources">新建预约</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href="<%=basePath%>message/queryMessageToMe"><i
+										class="lnr lnr-envelope"></i> <span>消息中心</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</c:otherwise>
+			</c:choose>
+			
 			<div class="clearfix"></div>
 		</div>
 		<script>
