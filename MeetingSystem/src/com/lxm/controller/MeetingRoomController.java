@@ -12,8 +12,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lxm.bean.MeetingRoom;
+import com.lxm.bean.User;
 import com.lxm.service.MeetingRoomService;
 import com.lxm.util.Const;
 
@@ -75,5 +77,52 @@ public class MeetingRoomController {
 		JSONArray datas = JSONArray.fromObject(meetingRooms);
 		response.setCharacterEncoding(Const.ENCODING_UTF8);
 		response.getWriter().print(datas.toString());
+	}
+	
+	@RequestMapping("/queryMeetingRoomById")
+	public String queryMeetingBy(int mrId, HttpServletRequest request) {
+		MeetingRoom meetingRoom = meetingRoomService.queryMeetingRoomById(mrId);
+		logger.info("query mr by id: " + meetingRoom);
+		request.setAttribute("meetingRoom", meetingRoom);
+		return "/query_meetingroom_byid";
+	}
+	
+	@RequestMapping("/queryMeetingRoomByNo")
+	@ResponseBody
+	public String queryMeetingRoomByNo(String no, int mrId) {
+		logger.info("no: " + no);
+		int num = meetingRoomService.queryMeetingRoomNumByNo(no, mrId);
+		if (num == 0) {
+			logger.info("not exist the mr no");
+			return "ok";
+		} else {
+			logger.info("exist the mr no");
+			return "fail";
+		}
+	}
+	
+	@RequestMapping("/modifyMeetingRoom")
+	public String modifyMeetingRoom(MeetingRoom meetingRoom) {
+		logger.info("modify meetingroom: " + meetingRoom);
+		meetingRoomService.modifyMeetingRoom(meetingRoom);
+		
+		return "redirect:/meetingRoom/queryMeetingRoom";
+	}
+	
+	@RequestMapping("/addMeetingRoom")
+	public String addMeetingRoom(MeetingRoom meetingRoom) {
+		logger.info("add meetingroom: " + meetingRoom);
+		meetingRoomService.addMeetingRoom(meetingRoom);
+		
+		return "redirect:/meetingRoom/queryMeetingRoom";
+	}
+	
+	@RequestMapping("/removeMeetingRoom")
+	public String removeMeetingRoom(int mrId, HttpServletRequest request) {
+		logger.info("mrid: " + mrId + " start to remove meetingroom...");
+		User user = (User) request.getSession().getAttribute("user");
+		meetingRoomService.removeMeetingRoom(mrId, user);
+		
+		return "redirect:/meetingRoom/queryMeetingRoom";
 	}
 }
