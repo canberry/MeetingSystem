@@ -193,7 +193,7 @@ function queryMsgById(msgId) {
 									<a href="index.jsp">主页</a>
 								</li>
 								<li class="active">
-									会议室查询
+									会议日程
 								</li>
 							</ol>
 						</div>
@@ -202,12 +202,12 @@ function queryMsgById(msgId) {
 						<!--calender-->
 						<div class="cal-main">
 							<div class="calender graph-form">
-								<h2 class="inner-tittle">
-									月视图
+								<h2 class="inner-tittle" id="h2title">
+									即将召开会议日程
 								</h2>
 								
 								<div id="calendar"></div>
-							
+								
 							</div>
 						</div>
 						<!--//calender-->
@@ -261,9 +261,8 @@ var getAjaxFun = function(url, data, method) {
 	function calendearSelect(start, end, timezone, callback) {
 		var fstart = $.fullCalendar.formatDate(start, "YYYY-MM-DD HH:mm:ss");
 		var fend = $.fullCalendar.formatDate(end, "YYYY-MM-DD HH:mm:ss");
-		
 	    getAjaxFun(
-	    	"<%=basePath%>meeting/queryMeetingByTime",
+	    	"<%=basePath%>meetingDetail/queryMeetingToBeHoldByTime",
 	    	{
 	    		"startTime": fstart,
 	    		"endTime": fend
@@ -271,7 +270,7 @@ var getAjaxFun = function(url, data, method) {
 	    	function (reData) {
 	    		var events = [];
 	    		for (var i = 0; i < reData.length; i++) {
-	    			var meeting = reData[i];
+	    			var meeting = reData[i].meeting;
 	    			var title = meeting.mName;
 	    			if (meeting != null) {
 	    				var color;
@@ -301,7 +300,7 @@ var getAjaxFun = function(url, data, method) {
 	
 	function calendearSelectEdit(calEvent, jsEvent, view) {
 		getAjaxFun(
-	    	"<%=basePath%>meeting/queryMeetingById",
+	    	"<%=basePath%>/meeting/queryMeetingById",
 	    	{
 	    		"meetingId": calEvent.id,
 	    	},
@@ -325,6 +324,7 @@ var getAjaxFun = function(url, data, method) {
 	    					cancel = "已取消";
 	    				}
 	    				
+	    				$("#mid").val(meeting.mId);
 	    				$("#m-name").html(meeting.mName);
 	    				$("#starttime").html(fstart);
 	    				$("#endtime").html(fend);
@@ -366,6 +366,7 @@ var getAjaxFun = function(url, data, method) {
 											会议摘要
 										</h2>
 									</div>
+
 
 									<div class="modal-body">
 										<!--content-->
@@ -454,6 +455,11 @@ var getAjaxFun = function(url, data, method) {
 									</div>
 									
 									<div class="modal-footer">
+									    <input type="hidden" id="mid">
+									    <button type="button" class="btn btn-lg btn-warning warning_11" data-dismiss="modal" 
+									            onclick="clickDetail()">
+											查看详情
+										</button>
 										<button type="button" class="btn btn-default" data-dismiss="modal">
 											取消
 										</button>
@@ -461,6 +467,11 @@ var getAjaxFun = function(url, data, method) {
 								</div>
 <script type="text/javascript">
 $("#modal-button").hide();
+
+function clickDetail() {
+	var meetingId = $("#mid").val();
+	window.location.href = "<%=basePath%>meeting/queryMeetingDetailAndResourceById?meetingId=" + meetingId + "&action=1";
+}
 </script>
 								<!-- /.modal-content -->
 							</div>

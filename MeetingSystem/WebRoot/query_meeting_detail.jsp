@@ -539,8 +539,14 @@ function clickDetail() {
 																			<h4><span class="label label-default">已拒绝</span></h4>
 																		</c:when>
 																		<c:otherwise>
-																			<a id="doyes" class="label label-primary" onclick="changeWill(${meeting.mId}, 'yes')">参加</a>
-																			<a id="dono" class="label label-default" onclick="changeWill(${meeting.mId}, 'no')">不参加</a>
+																			<a id="doyes" class="label label-primary" 
+																			   onclick="changeWill(${meeting.mId}, 'yes', 
+																			           '${meeting.scheduler.userId}', '${meeting.mName}', 
+																					   '${startTime}', '${endTime}')">参加</a>
+																			<a id="dono" class="label label-default" 
+																			   onclick="changeWill(${meeting.mId}, 'no', 
+																			           '${meeting.scheduler.userId}', '${meeting.mName}', 
+																					   '${startTime}', '${endTime}')">不参加</a>
 																		</c:otherwise>
 																	</c:choose>
 																</c:otherwise>
@@ -549,10 +555,14 @@ function clickDetail() {
 <script type="text/javascript">
 $("#yes").hide();
 $("#no").hide();
-function changeWill(mId, will) {
+function changeWill(mId, will, schedulerId, mName, startTime, endTime) {
 	$.post("<%=basePath%>meetingDetail/modifyWill", {
 		"mId" : mId,
-		"will" : will
+		"will" : will,
+		"schedulerUserId": schedulerId,
+		"mName": mName,
+		"startTime": startTime,
+		"endTime": endTime
 	}, function(data) {
 		if (data == "ok") {
 			if (will == "yes") {
@@ -765,10 +775,13 @@ function removeMeetingResources(mid) {
 							</ul>
 						</li>
 						<li id="menu-academico">
-							<a href="#"><i class="fa fa-file-text-o"></i> <span>我的会议</span> 
+							<a><i class="fa fa-file-text-o"></i> <span>我的会议</span> 
 							<span class="fa fa-angle-right" style="float: right"></span>
 							</a>
 							<ul id="menu-academico-sub">
+							    <li id="menu-academico-avaliacoes">
+									<a href="query_meetingtobehold_view.jsp">会议日程</a>
+								</li>
 								<li id="menu-academico-avaliacoes">
 									<a href="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold?pageIndex=1">即将召开</a>
 								</li>

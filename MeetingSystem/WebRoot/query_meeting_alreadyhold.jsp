@@ -654,10 +654,13 @@ function jump(pageIndex) {
 							</ul>
 						</li>
 						<li id="menu-academico">
-							<a href="#"><i class="fa fa-file-text-o"></i> <span>我的会议</span> 
+							<a><i class="fa fa-file-text-o"></i> <span>我的会议</span> 
 							<span class="fa fa-angle-right" style="float: right"></span>
 							</a>
 							<ul id="menu-academico-sub">
+							    <li id="menu-academico-avaliacoes">
+									<a href="query_meetingtobehold_view.jsp">会议日程</a>
+								</li>
 								<li id="menu-academico-avaliacoes">
 									<a href="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold?pageIndex=1">即将召开</a>
 								</li>

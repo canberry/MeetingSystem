@@ -4,10 +4,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lxm.bean.MeetingDetail;
+import com.lxm.bean.Message;
 import com.lxm.dao.MeetingDetailMapper;
+import com.lxm.dao.MessageMapper;
 import com.lxm.service.MeetingDetailService;
 
 @Service
@@ -15,6 +18,8 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 
 	@Resource
 	MeetingDetailMapper meetingDetailMapper;
+	@Autowired
+	MessageMapper messageMapper;
 
 	public List<MeetingDetail> paginateMeetingDetailsByExample(MeetingDetail meetingDetail, int pageIndex, int pageSize) {
 		int pageStart = pageSize * (pageIndex - 1);
@@ -26,12 +31,17 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 		return calTotalPages(r, pageSize);
 	}
 	
+	public int getRows(MeetingDetail meetingDetail) {
+		return meetingDetailMapper.getRows(meetingDetail);
+	}
+	
 	private int calTotalPages(int r, int pageSize) {
 		return r  % pageSize == 0 ? r / pageSize : r / pageSize + 1;
 	}
 
-	public void modifyMeetingDetail(MeetingDetail meetingDetail) {
+	public void modifyMeetingDetail(MeetingDetail meetingDetail, Message message) {
 		meetingDetailMapper.modify(meetingDetail);
+		messageMapper.add(message);
 	}
 
 	public List<MeetingDetail> paginateMeetingDetailsBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageIndex, int pageSize) {

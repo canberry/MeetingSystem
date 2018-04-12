@@ -494,13 +494,17 @@ $("#endTime").click(function(){
 																			<c:otherwise>
 																				<button type="button"
 																					class="btn btn-lg btn-success warning_1"
-																					onclick="changeWill('${meetingDetail.meeting.mId}', 'yes')"
+																					onclick="changeWill('${meetingDetail.meeting.mId}', 'yes', 
+																					'${meetingDetail.meeting.scheduler.userId}', '${meetingDetail.meeting.mName}', 
+																					'${startTime}', '${endTime}')"
 																					id="will-yes${meetingDetail.meeting.mId}">
 																					&nbsp;参&nbsp;&nbsp;加&nbsp;
 																				</button>
 																				<button type="button"
 																					class="btn btn-lg btn-warning warning_11"
-																					onclick="changeWill('${meetingDetail.meeting.mId}', 'no', this)"
+																					onclick="changeWill('${meetingDetail.meeting.mId}', 'no', 
+																					'${meetingDetail.meeting.scheduler.userId}', '${meetingDetail.meeting.mName}', 
+																					'${startTime}', '${endTime}')"
 																					id="will-no${meetingDetail.meeting.mId}">
 																					不参加
 																				</button>
@@ -517,11 +521,15 @@ $("#endTime").click(function(){
 														</div>
 <script type="text/javascript">
 $("div.n").hide();
-function changeWill(mId, will) {
+function changeWill(mId, will, schedulerId, mName, startTime, endTime) {
     $.post("<%=basePath%>meetingDetail/modifyWill", 
         {
     	    "mId": mId,
-    	    "will": will
+    	    "will": will,
+    	    "schedulerUserId": schedulerId,
+    	    "mName": mName,
+    	    "startTime": startTime,
+    	    "endTime": endTime
         }, 
 		function(data) {
 		    if (data == "ok") {
@@ -715,10 +723,13 @@ function jump(pageIndex) {
 							</ul>
 						</li>
 						<li id="menu-academico">
-							<a href="#"><i class="fa fa-file-text-o"></i> <span>我的会议</span> 
+							<a><i class="fa fa-file-text-o"></i> <span>我的会议</span> 
 							<span class="fa fa-angle-right" style="float: right"></span>
 							</a>
 							<ul id="menu-academico-sub">
+							    <li id="menu-academico-avaliacoes">
+									<a href="query_meetingtobehold_view.jsp">会议日程</a>
+								</li>
 								<li id="menu-academico-avaliacoes">
 									<a href="<%=basePath%>meetingDetail/queryMeetingDetailToBeHold?pageIndex=1">即将召开</a>
 								</li>

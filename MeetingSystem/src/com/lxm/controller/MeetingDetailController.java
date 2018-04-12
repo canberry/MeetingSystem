@@ -1,9 +1,13 @@
 package com.lxm.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+
+import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lxm.bean.Meeting;
 import com.lxm.bean.MeetingDetail;
 import com.lxm.bean.MeetingRoom;
+import com.lxm.bean.Message;
 import com.lxm.bean.User;
 import com.lxm.service.MeetingDetailService;
 import com.lxm.util.Const;
@@ -51,6 +56,35 @@ public class MeetingDetailController {
 		request.setAttribute("totalPages", totalPages);
 		request.setAttribute("md", meetingDetail);
 		return "/query_meeting_tobehold";
+	}
+	
+	@RequestMapping("/queryMeetingToBeHoldByTime")
+	public void queryMeetingToBeHoldByTime(HttpServletRequest request, HttpServletResponse response) throws IOException {		
+		MeetingDetail meetingDetail = new MeetingDetail();
+		User user = (User) request.getSession().getAttribute("user");
+		meetingDetail.setUser(user);
+		
+		String startTime = request.getParameter("startTime");
+		String endTime = request.getParameter("endTime");
+		String nowTime = getNowTime(Const.DATEFORMAT_HM);
+		if (startTime.compareTo(nowTime) < 0 && endTime.compareTo(nowTime) < 0) {
+			startTime = nowTime;
+		}
+		Meeting meeting = new Meeting();
+		meeting.setStartTime(startTime);
+		meeting.setEndTime(endTime);
+		meetingDetail.setMeeting(meeting);
+		
+		int pageSize = meetingDetailService.getRows(meetingDetail);
+		int pageIndex = 1;
+		
+		logger.info("meeting detail example: " + meetingDetail);
+		List<MeetingDetail> meetingDetails = meetingDetailService.paginateMeetingDetailsByExample(meetingDetail, pageIndex, pageSize);
+		logger.info("size: " + meetingDetails.size() + ". query meetingdetails: " + meetingDetails);		
+		
+		JSONArray datas = JSONArray.fromObject(meetingDetails);
+		response.setCharacterEncoding(Const.ENCODING_UTF8);
+		response.getWriter().print(datas.toString());
 	}
 	
 	@RequestMapping("/queryMeetingDetailAlreadyHold")
@@ -145,7 +179,10 @@ public class MeetingDetailController {
 	
 	@RequestMapping("/modifyWill")
 	@ResponseBody
-	public String modifyWill(int mId, String will, HttpServletRequest request) {
+	public String modifyWill(int mId, String will, 
+			int schedulerUserId, String mName, 
+			String startTime, String endTime, 
+			HttpServletRequest request) {
 		MeetingDetail meetingDetail = new MeetingDetail();
 		Meeting meeting = new Meeting();
 		meeting.setmId(mId);
@@ -158,7 +195,33 @@ public class MeetingDetailController {
 		
 		logger.info("modify md example: " + meetingDetail);
 		try {
-			meetingDetailService.modifyMeetingDetail(meetingDetail);
+			String w = "";
+			if (will.equals(Const.WILL_YES)) {
+				w = "同意参加";
+			} else if (will.equals(Const.WILL_NO)) {
+				w = "不能参加";
+			} else {
+				w = "不确定是否参加";
+			}
+			
+			String messageName = "会议回复: " + mName;
+			String content = ((User)request.getSession().getAttribute("user")).getUserName() + 
+			                 "  回复了会议: " + mName + "," + 
+			                 "    开始时间: " + startTime + "," + 
+			                 "    结束时间: " + endTime + "," +
+			                 "    TA 的回复是: " + w + "," +
+			                 "    请去查看详情";
+			User sendUser = new User();
+			sendUser.setUserId(user.getUserId());
+			User receiveUser = new User();
+			receiveUser.setUserId(schedulerUserId);
+			Message message = new Message();
+			message.setMessageName(messageName);
+			message.setContent(content);
+			message.setSendUser(sendUser);
+			message.setReceiveUser(receiveUser);
+			
+			meetingDetailService.modifyMeetingDetail(meetingDetail, message);
 			return "ok";
 		} catch (Exception e) {
 			e.printStackTrace();
