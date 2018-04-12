@@ -186,7 +186,7 @@ function queryMsgById(msgId) {
 									<a href="index.jsp">主页</a>
 								</li>
 								<li class="active">
-									会议室
+									人员管理
 								</li>
 							</ol>
 						</div>
@@ -195,16 +195,16 @@ function queryMsgById(msgId) {
 						<!-- content -->
 						<div class="graph-visual tables-main">
 							<h3 class="inner-tittle two">
-								会议室列表
+								人员列表
 							</h3>
 
 							<!-- search -->
 							<div>
-								<form action="<%=basePath%>meetingRoom/queryMeetingRoom" method="Post" onsubmit="return check()">
+								<form action="<%=basePath%>user/queryUsers" method="Post" onsubmit="return check()">
 									<div class="input-group input-group-in">
-										<input type="text" name="no" id="no" value="${meetingRoom.no}" 
+										<input type="text" name="userName" id="userName" value="${user.userName}" 
 											style="width: 30%; margin-left: 5px" class="form-control"
-											placeholder="按会议室编号查询" title="按会议室编号查询">
+											placeholder="按用户名查询" title="按用户名查询">
 										<input type="text" name="mrName" id="mrName" value="${meetingRoom.mrName}" 
 											style="width: 30%; margin-left: 10px" class="form-control"
 											placeholder="按会议室用途查询" title="按会议室用途查询">

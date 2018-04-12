@@ -1,5 +1,4 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
-<%@ page import="com.lxm.bean.MeetingRoom" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%
@@ -57,8 +56,10 @@ function hideURLbar() {
 		<!--skycons-icons-->
 		<script src="js/skycons.js">
 </script>
+
 		<script src="js/jquery.easydropdown.js">
 </script>
+
 		<!--//skycons-icons-->
 	</head>
 
@@ -177,7 +178,7 @@ function queryMsgById(msgId) {
 					</div>
 					<!-- //header-ends -->
 
-					<!--//outer-wp-->
+
 					<div class="outter-wp">
 						<!--sub-heard-part-->
 						<div class="sub-heard-part">
@@ -186,234 +187,162 @@ function queryMsgById(msgId) {
 									<a href="index.jsp">主页</a>
 								</li>
 								<li class="active">
-									会议室
+									<a a href="<%=basePath%>meetingRoom/queryMeetingRoom">会议室</a>
+								</li>
+								<li class="active">
+									会议室修改
 								</li>
 							</ol>
 						</div>
 						<!--//sub-heard-part-->
 
-						<!-- content -->
-						<div class="graph-visual tables-main">
-							<h3 class="inner-tittle two">
-								会议室列表
-							</h3>
-
-							<!-- search -->
-							<div>
-								<form action="<%=basePath%>meetingRoom/queryMeetingRoom" method="Post" onsubmit="return check()">
-									<div class="input-group input-group-in">
-										<input type="text" name="no" id="no" value="${meetingRoom.no}" 
-											style="width: 30%; margin-left: 5px" class="form-control"
-											placeholder="按会议室编号查询" title="按会议室编号查询">
-										<input type="text" name="mrName" id="mrName" value="${meetingRoom.mrName}" 
-											style="width: 30%; margin-left: 10px" class="form-control"
-											placeholder="按会议室用途查询" title="按会议室用途查询">
-										<input type="text" name="capacity" id="capacity" value="${meetingRoom.capacity}"  
-											style="width: 30%; margin-left: 10px" class="form-control"
-											placeholder="按会议室容量查询" title="按会议室容量查询">
-										<span class="input-group-btn" style="width: 25%">
-											<button class="btn btn-success" type="submit" title="按条件查询">
-												<i class="fa fa-search"></i>
-											</button>
-										</span>
-										<input type="hidden" name="pageIndex" value="1" id="pi" />
-									</div>
-								</form>
-								<div class="alert alert-danger" role="alert" id="error">
-									<strong>Oh snap!</strong>
+						<!--/set-1-->
+						<div class="set-1">
+							<div class="col-md-6 graph-2" style="margin-left: 20%">
+								<h3 class="inner-tittle two">
+									修改会议室
+								</h3>
+								<div class="alert alert-danger" role="alert" id="errorinfo">
+									<strong>请输入修改信息！</strong>
 								</div>
+								<div class="grid-1">
+									<div class="form-body">
+										<form class="form-horizontal" action="<%=basePath%>meetingRoom/modifyMeetingRoom"
+										      onsubmit="return check()" method="post">
+										    <input type="hidden" id="mrId" name="mrId" value="${meetingRoom.mrId}">
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">
+												编号
+												</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" 
+													    id="no" name="no" onblur="checkNo()" 
+														placeholder="请输入会议室编号" value="${meetingRoom.no}">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputPassword3" class="col-sm-2 control-label">
+												用途
+												</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control"
+														id="mrName" name="mrName" onblur="checkName()" 
+														placeholder="请输入会议室用途" value="${meetingRoom.mrName}">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputPassword3" class="col-sm-2 control-label">
+												容量
+												</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control"
+														id="capacity" name="capacity" onblur="checkCap()" 
+														placeholder="请输入会议室容量" value="${meetingRoom.capacity}">
+												</div>
+											</div>
+											<div class="col-sm-offset-2">
+												<button type="reset" class="btn btn-default" onclick="toreset()">
+												重置
+												</button>
+												<button type="submit" class="btn btn-default">
+												确认修改
+												</button>
+											</div>
+											<div class="clearfix"></div>
+										</form>
+									</div>
 <script type="text/javascript">
-$("#error").hide();
-function check() {
-	var capacity = $("#capacity").val();
+$("#errorinfo").hide();
+
+$.ajaxSetup({
+    async : false
+});
+
+function toreset() {
+	$("#errorinfo").html("<strong>请输入修改信息！</strong>");
+	$("#errorinfo").hide();
+}
+
+function checkNo() {
+	var no = $("#no").val();
+	var mrId = $("#mrId").val();
 	
-	var re = /^[0-9]*$/;
-	if (capacity == "") {
-		$("#capacity").val("0");
-		return true;
-	} else if (re.test(capacity)) {
+	if (no == "") {
+		$("#errorinfo").html("<strong>输入错误！</strong>会议室编号输入不能为空");
+        $("#errorinfo").show();
+        return false;
+	}
+	
+	$.post("<%=basePath%>meetingRoom/queryMeetingRoomByNo", 
+		{no : no,
+		 mrId : mrId}, 
+		function(data) {
+			if (data == "ok") {
+				$("#errorinfo").html("");
+            	$("#errorinfo").hide();
+            } else {
+            	$("#errorinfo").html("<strong>非常抱歉！</strong>此会议室编号已经存在，请重新输入");
+            	$("#errorinfo").show();
+            }
+    });
+	
+	if ($("#errorinfo").html() == "") {
 		return true;
 	} else {
-		$("#error").html("<strong>输入错误!</strong>  容量只能是数字.");
-		$("#error").show();
 		return false;
 	}
 }
-</script>
-							</div>
-							<!-- //search -->
-							<c:if test="${sessionScope.user.userRole == 'admin'}">
-								<h4 style="float: right; margin-top: 0px">
-									<a class="label label-warning" title="添加会议室"
-										href="add_meetingroom.jsp">添加</a>
-								</h4>
-								<div class="clearfix"></div>
-							</c:if>
 
-							<div class="graph">
-								<div class="tables">
-									<table class="table table-hover">
-										<thead>
-											<tr>
-												<th width="15%">
-													#
-												</th>
-												<th width="20%">
-													编号
-												</th>
-												<th width="25%">
-													名称
-												</th>
-												<th width="15%">
-													容量
-												</th>
-												<th width="25%">
-													操作
-												</th>
-											</tr>
-										</thead>
-										<tbody>
-											<c:forEach var="meetingRoom" items="${meetingRooms}"
-												varStatus="status">
-												<tr>
-													<th scope="row">
-														${status.count}
-													</th>
-													<td>
-														${meetingRoom.no}
-													</td>
-													<td>
-														${meetingRoom.mrName}
-													</td>
-													<td>
-														${meetingRoom.capacity}
-													</td>
-													<td>
-														<div class="share share_size_large share_type_twitter" 
-															style="width: 50px">
-															<a class="share__btn"
-																href="query_mr_detail.jsp?mrId=${meetingRoom.mrId}&no=${meetingRoom.no}">查看</a>
-														</div>
-
-														<c:if test="${sessionScope.user.userRole == 'admin'}">
-															<div class="share share_size_large share_type_facebook"
-																style="width: 50px">
-																<a class="share__btn"
-																	href="<%=basePath%>meetingRoom/queryMeetingRoomById?mrId=${meetingRoom.mrId}">修改</a>
-															</div>
-															<div class="share share_size_large share_type_gplus"
-																style="width: 50px">
-																<a class="share__btn"
-																	href="<%=basePath%>meetingRoom/removeMeetingRoom?mrId=${meetingRoom.mrId}">删除</a>
-															</div>
-														</c:if>
-													</td>
-												</tr>
-											</c:forEach>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div class="clearfix"></div>
-
-							<div style="margin-left: 25%; text-align: center; float: left">
-								<nav>
-								<ul class="pagination">
-									<c:if test="${pageIndex == 1}">
-										<li class="disabled">
-											<a>«首页</a>
-										</li>
-										<li class="disabled">
-											<a aria-label="Previous"><span aria-hidden="true">&lt上一页</span>
-											</a>
-										</li>
-									</c:if>
-									<c:if test="${pageIndex > 1}">
-										<li>
-											<a onclick="jump('1')">«首页</a>
-										</li>
-										<li>
-											<a onclick="jump(${pageIndex - 1})" aria-label="Previous"><span
-												aria-hidden="true">&lt上一页</span> </a>
-										</li>
-									</c:if>
-									<li class="active">
-										<a>${pageIndex}<span class="sr-only">(current)</span> </a>
-									</li>
-									<c:if test="${pageIndex < totalPages}">
-										<li>
-											<a onclick="jump(${pageIndex + 1})" aria-label="Next"><span
-												aria-hidden="true">下一页&gt</span> </a>
-										</li>
-										<li>
-											<a onclick="jump(${totalPages})">末页»</a>
-										</li>
-									</c:if>
-									<c:if test="${pageIndex >= totalPages}">
-										<li class="disabled">
-											<a aria-label="Next"><span aria-hidden="true">下一页&gt</span>
-											</a>
-										</li>
-										<li class="disabled">
-											<a>末页»</a>
-										</li>
-									</c:if>
-								</ul>
-								</nav>
-							</div>
-
-							
-							<div style="margin: 18px 0 0 10%; width: 40px; height: 30px; float: left">
-								<input type="text" class="form-control" id="inputpage"
-									title="请输入页码">
-							</div>
-							<div class="share share_size_large share_type_facebook"
-								style="margin: 24px 0 0 1%; width: 50px; float: left">
-								<a class="share__btn" onclick="checkAndJmp('${totalPages}')">跳转</a>
-							</div>
-							<div style="margin: 32px 0 0 1%; width: 100px; float: left">
-								第${pageIndex}页 / 共${totalPages}页
-							</div>
-							<div class="clearfix"></div>
-							
-							<div class="alert alert-danger" role="alert" id="errorinfo">
-								<strong>Oh snap!</strong>
-							</div>
-<script type="text/javascript">
-$("#errorinfo").hide();
-function checkAndJmp(totalPages) {
-	var pageIndex = $("#inputpage").val();
-	var re = /^[0-9]*$/;
-	if (pageIndex == "") {
-		$("#errorinfo").html("<strong>输入错误!</strong>  请输入页码.");
-		$("#errorinfo").show();
-		return false;
-	} else if (!re.test(pageIndex)) {
-		$("#errorinfo").html("<strong>输入错误!</strong>  请输入数字.");
-		$("#errorinfo").show();
-		return false;
-	} else if (eval(pageIndex) < eval(1)) {
-		$("#errorinfo").html("<strong>输入错误!</strong>  请输入1-" + totalPages + "的数字.");
-		$("#errorinfo").show();
-		return false;
-	} else if (eval(pageIndex) > eval(totalPages)) {
-		$("#errorinfo").html("<strong>输入错误!</strong>  请输入1-" + totalPages + "的数字.");
-		$("#errorinfo").show();
-		return false;
+function checkName() {
+	var mrName = $("#mrName").val();
+	
+	if (mrName == "") {
+		$("#errorinfo").html("<strong>输入错误！</strong>会议室用途输入不能为空");
+        $("#errorinfo").show();
+        return false;
 	} else {
 		$("#errorinfo").html("");
 		$("#errorinfo").hide();
-		jump(pageIndex);
+		return true;
 	}
 }
 
-function jump(pageIndex) {
-	$("#pi").val(pageIndex);
-	$("form").submit();
+function checkCap() {
+	var cap = $("#capacity").val();
+	
+	var re = /^[0-9]*$/;
+	if (cap == "") {
+		$("#errorinfo").html("<strong>输入错误！</strong>会议室容量输入不能为空");
+        $("#errorinfo").show();
+        return false;
+	} else if (!re.test(cap)) {
+		$("#errorinfo").html("<strong>输入错误！</strong>会议室容量只能输入数字");
+        $("#errorinfo").show();
+        return false;
+	} else {
+		$("#errorinfo").html("");
+		$("#errorinfo").hide();
+		return true;
+	}
+}
+
+function check() {
+	var info = $("#errorinfo");
+	if (info.html() != "") {
+		info.show();
+		return false;
+	} else if (!checkNo() || !checkName() || !checkCap()) {
+		return false;
+	} else {
+		return true;
+	}
 }
 </script>
+								</div>
+							</div>
+							<div class="clearfix"></div>
 						</div>
-						<!-- //content -->
+						<!--//set-1-->
 
 						<!--//outer-wp-->
 					</div>

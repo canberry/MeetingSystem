@@ -16,4 +16,6 @@ public interface UserMapper {
 	public List<User> queryLikeExample(@Param("userName")String userName);
 	public List<User> queryAvailableUsersByIds(Map<String, Object> params);
 	public List<User> queryAvailableUsersByIdsAndMId(Map<String, Object> params);
+	public List<User> pagination(@Param("user")User user, @Param("pageStart")int pageStart, @Param("pageSize")int pageSize);
+	public int getRows(User user);
 }

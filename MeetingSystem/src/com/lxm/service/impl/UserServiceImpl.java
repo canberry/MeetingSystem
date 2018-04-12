@@ -58,4 +58,14 @@ public class UserServiceImpl implements UserService {
 		params.put("mId", mId);
 		return userMapper.queryAvailableUsersByIdsAndMId(params);
 	}
+
+	public List<User> paginateUsersByExample(User user, int pageIndex, int pageSize) {
+		int pageStart = pageSize * (pageIndex - 1);
+		return userMapper.pagination(user, pageStart, pageSize);
+	}
+
+	public int totalPages(User user, int pageSize) {
+		int r = userMapper.getRows(user);
+		return r  % pageSize == 0 ? r / pageSize : r / pageSize + 1;
+	}
 }

@@ -202,4 +202,26 @@ public class UserController {
 		response.setCharacterEncoding(Const.ENCODING_UTF8);
 		response.getWriter().print(datas.toString());
 	}
+	
+	@RequestMapping("/queryUsers")
+	public String queryUsers(User user, HttpServletRequest request) {
+		int pageSize = 5;
+		int pageIndex = 1;
+		String piStr = request.getParameter("pageIndex");
+		if (piStr == null) {
+			piStr = "1";
+		}
+		pageIndex = Integer.parseInt(piStr);
+		
+		logger.info("user example: " + user);
+		List<User> users = userService.paginateUsersByExample(user, pageIndex, pageSize);
+		logger.info("query meetingrooms: " + users);
+		int totalPages = userService.totalPages(user, pageSize);
+		
+		request.setAttribute("users", users);
+		request.setAttribute("pageIndex", pageIndex);
+		request.setAttribute("totalPages", totalPages);
+		request.setAttribute("user", user);
+		return "/query_user";
+	}
 }

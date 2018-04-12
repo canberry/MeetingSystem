@@ -44,6 +44,17 @@
 		<result column="description" property="description" />
 		<result column="cancel" property="cancel" />
 		<result column="hold" property="hold" />
+		
+		<association property="scheduler" javaType="User">
+			<id column="scheduler" property="userId" />
+		</association>
+		
+		<association property="meetingRoom" javaType="MeetingRoom">
+		    <id column="mr_id" property="mrId" />
+			<result column="mr_name" property="mrName" />
+			<result column="no" property="no" />
+			<result column="capacity" property="capacity" />
+		</association>
 	</resultMap>
 	
 	<resultMap type="Meeting" id="mdrMap">
@@ -176,7 +187,7 @@
 	</select>
 
 	<select id="queryByTime" parameterType="Meeting" resultMap="mMap">
-		select * from meeting 
+		select * from meeting inner join meeting_room on meeting.mr_id = meeting_room.mr_id 
 		<where>
 		    <if test="mId != 0">
 				and m_id = #{mId}
@@ -188,10 +199,13 @@
 	            <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 			</if>
 			<if test="meetingRoom != null and meetingRoom.mrId != 0">
-	            and mr_id = #{meetingRoom.mrId}
+	            and meeting.mr_id = #{meetingRoom.mrId}
 	        </if>
 	        <if test="scheduler != null and scheduler.userId != 0">
 	            and scheduler = #{scheduler.userId}
+	        </if>
+	        <if test="cancel != null and cancel != ''">
+	            and cancel = #{cancel}
 	        </if>
 		</where>
 	</select>

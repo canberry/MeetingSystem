@@ -280,7 +280,7 @@ function queryMsgById(msgId) {
 										<span class="fa fa-angle-right" style="float: right"></span> </a>
 									<ul id="menu-academico-sub">
 										<li id="menu-academico-avaliacoes">
-											<a href="query_user.jsp">查询修改</a>
+											<a href="<%=basePath%>user/queryUsers">查询修改</a>
 										</li>
 										<li id="menu-academico-boletim">
 											<a href="add_user.jsp">添加人员</a>

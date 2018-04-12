@@ -87,5 +87,27 @@
 		AND me.cancel = 'no' AND me.mr_id = mr.mr_id) 
 		)
 	</select>
+	
+	<select id="queryById" resultMap="meetingRoomMap">
+	    select * from meeting_room where mr_id = #{mrId}
+	</select>
+	
+	<select id="queryNumByNo" parameterType="String" resultType="int">
+	    select count(*) from meeting_room where no = #{no} and mr_id != #{mrId}
+	</select>
+	
+	<update id="modify" parameterType="MeetingRoom">
+	    update meeting_room 
+	    set no = #{no}, mr_name = #{mrName}, capacity = #{capacity} 
+	    where mr_id = #{mrId}
+	</update>
+	
+	<insert id="add" parameterType="MeetingRoom">
+	    insert into meeting_room(mr_name, no, capacity) values(#{mrName}, #{no}, #{capacity})
+	</insert>
+	
+	<update id="remove" parameterType="int">
+	    update meeting_room set mr_state = 'yes' where mr_id = #{mrId}
+	</update>
 
 </mapper>

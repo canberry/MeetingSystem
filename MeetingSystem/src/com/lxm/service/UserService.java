@@ -13,4 +13,6 @@ public interface UserService {
 	public List<User> queryUsersLikeName(String userName);
 	public List<User> queryAvailableUsersByIds(List<Integer> userIds, String startTime, String endTime);
 	public List<User> queryAvailableUsersByIdsAndMId(int mId, List<Integer> userIds, String startTime, String endTime);
+	public List<User> paginateUsersByExample(User user, int pageIndex, int pageSize);
+	public int totalPages(User user, int pageSize);
 }

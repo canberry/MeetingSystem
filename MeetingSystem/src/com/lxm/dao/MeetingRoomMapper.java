@@ -11,4 +11,9 @@ public interface MeetingRoomMapper {
 	public int getRows(MeetingRoom meetingRoom);
 	public List<MeetingRoom> queryAvailable(@Param("startTime")String startTime, @Param("endTime")String endTime, @Param("capacity")int capacity);
 	public List<MeetingRoom> queryAvailableWithoutMid(@Param("mId")int mId, @Param("startTime")String startTime, @Param("endTime")String endTime, @Param("capacity")int capacity);
+	public MeetingRoom queryById(int mrId);
+	public int queryNumByNo(@Param("no")String no, @Param("mrId")int mrId);
+	public void modify(MeetingRoom meetingRoom);
+	public void add(MeetingRoom meetingRoom);
+	public void remove(int mrId);
 }
