@@ -23,4 +23,62 @@
         (SELECT r_id FROM meeting_resource WHERE m_id = #{meetingId}) and remain > 0 and r_state='no' 
     </select>
     
+    <select id="pagination" resultMap="resourceMap">
+        select * from resource 
+        <where>
+            and r_state = 'no'
+            <if test="resource != null">
+                <if test="resource.rName != null and resource.rName != ''">
+                    and r_name like '%${resource.rName}%' 
+                </if>
+                <if test="resource.total > 0">
+                    and total >= #{resource.total} 
+                </if>
+                <if test="resource.remain > 0">
+                    and remain >= #{resource.remain} 
+                </if>
+            </if>
+        </where>
+        order by r_id limit #{pageStart}, #{pageSize}
+    </select>
+    
+    <select id="getRows" parameterType="Resource" resultType="int">
+        select count(*) from resource 
+        <where>
+            and r_state = 'no' 
+            <if test="rName != null and rName != ''">
+                and r_name like '%${rName}%' 
+            </if>
+            <if test="total > 0">
+                and total >= #{total} 
+            </if>
+            <if test="remain > 0">
+                and remain >= #{remain} 
+            </if>
+        </where>
+    </select>
+    
+    <update id="modify" parameterType="Resource">
+        update resource 
+        <set>
+            <if test="rName != null and rName != ''">
+                r_name = #{rName}, 
+            </if>
+            total = #{total}, remain = #{remain} 
+        </set>
+        where r_id = #{rId}
+    </update>
+    
+    <select id="queryById" parameterType="int" resultMap="resourceMap">
+        select * from resource where r_id = #{rId}
+    </select>
+    
+    <insert id="add" parameterType="Resource">
+        insert into resource(r_name, total, remain) values(#{rName}, #{total}, #{remain})
+    </insert>
+    
+    <update id="remove" parameterType="int">
+        update resource set r_state = 'yes' where r_id = #{rId}
+    </update>
+    
 </mapper>

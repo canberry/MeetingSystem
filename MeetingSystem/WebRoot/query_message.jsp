@@ -13,7 +13,7 @@
 <html>
 	<head>
 		<base href="<%=basePath%>">
-		<title>主页</title>
+		<title>消息中心</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="keywords" content="" />
@@ -924,28 +924,14 @@ function removeMessageToMe(msgId) {
 									</ul>
 								</li>
 								<li id="menu-academico">
-									<a><i class="lnr lnr-layers"></i> <span>人员管理</span>
-										<span class="fa fa-angle-right" style="float: right"></span> </a>
-									<ul id="menu-academico-sub">
-										<li id="menu-academico-avaliacoes">
-											<a href="query_user.jsp">查询修改</a>
-										</li>
-										<li id="menu-academico-boletim">
-											<a href="add_user.jsp">添加人员</a>
-										</li>
-									</ul>
+									<a href="<%=basePath%>user/queryUsers"><i
+										class="lnr lnr-layers"></i><span>人员管理</span>
+									</a>
 								</li>
 								<li id="menu-academico">
-									<a><i class="lnr lnr-chart-bars"></i> <span>资源管理</span>
-										<span class="fa fa-angle-right" style="float: right"></span> </a>
-									<ul id="menu-academico-sub">
-										<li id="menu-academico-avaliacoes">
-											<a href="query_resource.jsp">查询修改</a>
-										</li>
-										<li id="menu-academico-boletim">
-											<a href="add_resource.jsp">添加设备</a>
-										</li>
-									</ul>
+									<a href="<%=basePath%>resource/queryResources"><i
+										class="lnr lnr-chart-bars"></i><span>资源管理</span>
+									</a>
 								</li>
 								<li>
 									<a href="<%=basePath%>message/queryMessageToMe"><i

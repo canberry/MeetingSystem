@@ -14,7 +14,7 @@
 <html>
 	<head>
 		<base href="<%=basePath%>">
-		<title>主页</title>
+		<title>会议详情</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="keywords" content="" />
@@ -264,13 +264,13 @@ function queryMsgById(msgId) {
 										<a id="displaycancel">
 										    <strong>会议状态:&nbsp;&nbsp;&nbsp;&nbsp;</strong>
 										    <c:choose>
-										        <c:when test="${meeting.cancel == 'no'}">
+												<c:when test="${meeting.cancel == 'no'}">
 										        正常
 										        </c:when>
-										        <c:otherwise>
-										        已取消
-										        </c:otherwise>
-										    </c:choose>
+												<c:otherwise>
+													<strong style="text-decoration: line-through">已取消</strong>
+												</c:otherwise>
+											</c:choose>
 										</a>
 									</li>
 									<li class="">
@@ -587,7 +587,7 @@ function modifyMeeting(mid) {
 		function(data) {
 			if (data == "ok") {
 				$("#stateid" + mid).hide();
-				$("#displaycancel").html("<strong>会议状态:&nbsp;&nbsp;&nbsp;&nbsp;</strong>已取消");
+				$("#displaycancel").html("<strong>会议状态:&nbsp;&nbsp;&nbsp;&nbsp;</strong><strong style='text-decoration: line-through'>已取消</strong>");
 				$("#displayresources").html("<li class=''><a><i>未借用</i></a></li>");
             } else {
             	alert("取消失败");
@@ -814,28 +814,14 @@ function removeMeetingResources(mid) {
 									</ul>
 								</li>
 								<li id="menu-academico">
-									<a><i class="lnr lnr-layers"></i> <span>人员管理</span>
-										<span class="fa fa-angle-right" style="float: right"></span> </a>
-									<ul id="menu-academico-sub">
-										<li id="menu-academico-avaliacoes">
-											<a href="query_user.jsp">查询修改</a>
-										</li>
-										<li id="menu-academico-boletim">
-											<a href="add_user.jsp">添加人员</a>
-										</li>
-									</ul>
+									<a href="<%=basePath%>user/queryUsers"><i
+										class="lnr lnr-layers"></i><span>人员管理</span>
+									</a>
 								</li>
 								<li id="menu-academico">
-									<a><i class="lnr lnr-chart-bars"></i> <span>资源管理</span>
-										<span class="fa fa-angle-right" style="float: right"></span> </a>
-									<ul id="menu-academico-sub">
-										<li id="menu-academico-avaliacoes">
-											<a href="query_resource.jsp">查询修改</a>
-										</li>
-										<li id="menu-academico-boletim">
-											<a href="add_resource.jsp">添加设备</a>
-										</li>
-									</ul>
+									<a href="<%=basePath%>resource/queryResources"><i
+										class="lnr lnr-chart-bars"></i><span>资源管理</span>
+									</a>
 								</li>
 								<li>
 									<a href="<%=basePath%>message/queryMessageToMe"><i

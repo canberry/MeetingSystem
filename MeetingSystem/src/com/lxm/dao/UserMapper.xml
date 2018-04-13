@@ -157,7 +157,7 @@
             and user_state = 'no' 
             <if test="user != null">
                 <if test="user.userName != null and user.userName != ''">
-                    and user_name = #{user.userName}
+                    and user_name like '%${user.userName}%'
                 </if>
                 <if test="user.sex != null and user.sex != ''">
                     and sex = #{user.sex}
@@ -178,7 +178,7 @@
         <where>
             and user_state = 'no' 
             <if test="userName != null and userName != ''">
-                and user_name = #{userName}
+                and user_name like '%${userName}%' 
             </if>
             <if test="sex != null and sex != ''">
                 and sex = #{sex}

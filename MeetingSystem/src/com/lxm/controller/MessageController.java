@@ -1,6 +1,7 @@
 package com.lxm.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,13 @@ public class MessageController {
 	@RequestMapping("/queryUnReadMessage")
 	public void queryUnReadMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		User user = (User) request.getSession().getAttribute("user");
+		if (user == null) {
+			JSONArray datas = JSONArray.fromObject(new ArrayList<Message>());
+			response.setCharacterEncoding(Const.ENCODING_UTF8);
+			response.getWriter().print(datas.toString());
+			return;
+		}
+		
 		int userId = user.getUserId();
 		List<Message> ms = messageService.queryUnReadMsgByRcvUserId(userId);
 		int msgNum = ms.size();

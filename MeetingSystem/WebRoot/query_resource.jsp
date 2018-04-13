@@ -13,7 +13,7 @@
 <html>
 	<head>
 		<base href="<%=basePath%>">
-		<title>会议室列表</title>
+		<title>资源列表</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="keywords" content="" />
@@ -186,7 +186,7 @@ function queryMsgById(msgId) {
 									<a href="index.jsp">主页</a>
 								</li>
 								<li class="active">
-									会议室
+									资源管理
 								</li>
 							</ol>
 						</div>
@@ -195,22 +195,25 @@ function queryMsgById(msgId) {
 						<!-- content -->
 						<div class="graph-visual tables-main">
 							<h3 class="inner-tittle two">
-								会议室列表
+								人员列表
 							</h3>
 
 							<!-- search -->
 							<div>
-								<form action="<%=basePath%>meetingRoom/queryMeetingRoom" method="Post" onsubmit="return check()">
+								<form action="<%=basePath%>resource/queryResources" method="Post" onsubmit="return check()">
 									<div class="input-group input-group-in">
-										<input type="text" name="no" id="no" value="${meetingRoom.no}" 
+										<input type="text" name="rName" id="rName" 
+											value="${resource.rName}"
 											style="width: 30%; margin-left: 5px" class="form-control"
-											placeholder="按会议室编号查询" title="按会议室编号查询">
-										<input type="text" name="mrName" id="mrName" value="${meetingRoom.mrName}" 
+											placeholder="按资源名称查询" title="按资源名称查询">
+										<input type="text" name="total" id="total" 
+											value="${resource.total}"
 											style="width: 30%; margin-left: 10px" class="form-control"
-											placeholder="按会议室用途查询" title="按会议室用途查询">
-										<input type="text" name="capacity" id="capacity" value="${meetingRoom.capacity}"  
+											placeholder="按资源总数查询" title="按资源总数查询">
+										<input type="text" name="remain" id="remain" 
+											value="${resource.remain}"
 											style="width: 30%; margin-left: 10px" class="form-control"
-											placeholder="按会议室容量查询" title="按会议室容量查询">
+											placeholder="按剩余数量查询" title="按剩余数量查询">
 										<span class="input-group-btn" style="width: 25%">
 											<button class="btn btn-success" type="submit" title="按条件查询">
 												<i class="fa fa-search"></i>
@@ -224,17 +227,30 @@ function queryMsgById(msgId) {
 								</div>
 <script type="text/javascript">
 $("#error").hide();
+
 function check() {
-	var capacity = $("#capacity").val();
+	var total = $("#total").val();
 	
 	var re = /^[0-9]*$/;
-	if (capacity == "") {
-		$("#capacity").val("0");
+	if (total == "") {
+		$("#total").val("0");
 		return true;
-	} else if (re.test(capacity)) {
+	} else if (re.test(total)) {
 		return true;
 	} else {
-		$("#error").html("<strong>输入错误!</strong>  容量只能是数字.");
+		$("#error").html("<strong>输入错误!</strong>  资源总数只能是数字.");
+		$("#error").show();
+		return false;
+	}
+	
+	var remain = $("#remain").val();
+	if (remain == "") {
+		$("#remain").val("0");
+		return true;
+	} else if (re.test(remain)) {
+		return true;
+	} else {
+		$("#error").html("<strong>输入错误!</strong>  剩余数量只能是数字.");
 		$("#error").show();
 		return false;
 	}
@@ -244,8 +260,8 @@ function check() {
 							<!-- //search -->
 							<c:if test="${sessionScope.user.userRole == 'admin'}">
 								<h4 style="float: right; margin-top: 0px">
-									<a class="label label-warning" title="添加会议室"
-										href="add_meetingroom.jsp">添加</a>
+									<a class="label label-warning" title="添加资源"
+										onclick="add()">添加</a>
 								</h4>
 								<div class="clearfix"></div>
 							</c:if>
@@ -259,13 +275,13 @@ function check() {
 													#
 												</th>
 												<th width="20%">
-													编号
-												</th>
-												<th width="25%">
 													名称
 												</th>
+												<th width="25%">
+													总数
+												</th>
 												<th width="15%">
-													容量
+													剩余
 												</th>
 												<th width="25%">
 													操作
@@ -273,48 +289,339 @@ function check() {
 											</tr>
 										</thead>
 										<tbody>
-											<c:forEach var="meetingRoom" items="${meetingRooms}"
-												varStatus="status">
+											<c:forEach var="r" items="${resources}" varStatus="status">
 												<tr>
 													<th scope="row">
 														${status.count}
 													</th>
 													<td>
-														${meetingRoom.no}
+														${r.rName}
 													</td>
 													<td>
-														${meetingRoom.mrName}
+														${r.total}
 													</td>
 													<td>
-														${meetingRoom.capacity}
+														${r.remain}
 													</td>
 													<td>
-														<div class="share share_size_large share_type_twitter" 
+														<div class="share share_size_large share_type_facebook"
+															style="width: 50px">
+															<a class="share__btn" onclick="modify('${r.rId}')">修改</a>
+														</div>
+														<div class="share share_size_large share_type_gplus"
 															style="width: 50px">
 															<a class="share__btn"
-																href="query_mr_detail.jsp?mrId=${meetingRoom.mrId}&no=${meetingRoom.no}">查看</a>
+																href="<%=basePath%>resource/removeResource?rId=${r.rId}">删除</a>
 														</div>
-
-														<c:if test="${sessionScope.user.userRole == 'admin'}">
-															<div class="share share_size_large share_type_facebook"
-																style="width: 50px">
-																<a class="share__btn"
-																	href="<%=basePath%>meetingRoom/queryMeetingRoomById?mrId=${meetingRoom.mrId}">修改</a>
-															</div>
-															<div class="share share_size_large share_type_gplus"
-																style="width: 50px">
-																<a class="share__btn"
-																	href="<%=basePath%>meetingRoom/removeMeetingRoom?mrId=${meetingRoom.mrId}">删除</a>
-															</div>
-														</c:if>
 													</td>
 												</tr>
+												<input type="hidden" id="namevalue${r.rId}" value="${r.rName}"/>
+												<input type="hidden" id="totalvalue${r.rId}" value="${r.total}"/>
+												<input type="hidden" id="remainvalue${r.rId}" value="${r.remain}"/>
 											</c:forEach>
 										</tbody>
 									</table>
 								</div>
 							</div>
+<script type="text/javascript">
+function modify(rid) {
+	var rname = $("#namevalue" + rid).val();
+	var total = $("#totalvalue" + rid).val();
+	var remain = $("#remainvalue" + rid).val();
+	
+	$("#resourceid").val(rid);
+	$("#rnameid").val(rname);
+	$("#totalid").val(total);
+	$("#remainid").val(remain);
+	
+	$("#einfo").html("请输入信息");
+	$("#einfo").hide();
+	
+	$("#modify").click();
+}
+
+function add() {
+	$("#alertinfo").html("请输入信息");
+	$("#alertinfo").hide();
+	
+	$("#add").click();
+}
+</script>
 							<div class="clearfix"></div>
+							
+							<!-- modal-dialog -->
+							<div id="adddiv"><button id="add" data-toggle="modal" data-target="#addModal"></button></div>
+							<div class="modal fade" id="addModal" tabindex="-1"
+								role="dialog" aria-labelledby="addModalLabel" aria-hidden="true"
+								style="display: none;">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close second"
+												data-dismiss="modal" aria-hidden="true" 
+												onclick="cancel()">
+												×
+											</button>
+											<h2 class="modal-title">
+												资源添加
+											</h2>
+										</div>
+										<div class="modal-body">
+											<!--/set-1-->
+											<div class="set-1">
+												<div id="alertinfo" style="font-size: 12px; color: #FF0000">请输入信息</div>
+												<div class="grid-1">
+													<div class="form-body">
+														<form id="addform" class="form-horizontal" 
+														      onsubmit="return false" method="post">
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	用户名
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="addrnameid"
+																		name="rName"
+																		placeholder="请输入资源名称" onblur="checkaddname()">
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	总数
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="addtotalid" 
+																		name="total" placeholder="请输入资源总数" 
+																		onblur="checkTotal()">
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	剩余
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="addremainid" 
+																		name="remain" placeholder="请输入剩余数量" 
+																		readonly="readonly">
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+											<!--//set-1-->
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" 
+											    data-dismiss="modal" onclick="cancel()">
+												取消
+											</button>
+											<button type="button" class="btn btn-primary"
+												onclick="checkAndAdd()">
+												保存修改
+											</button>
+										</div>
+									</div>
+<script type="text/javascript">
+$("#alertinfo").hide();
+function checkaddname() {
+	var name = $("#addrnameid").val();
+	
+	if (name == "") {
+		$("#alertinfo").html("名称输入不能为空");
+		$("#alertinfo").show();
+		return false;
+	} else {
+		$("#alertinfo").html("");
+		$("#alertinfo").hide();
+		return true;
+	}
+}
+
+function checkTotal() {
+	var total = $("#addtotalid").val();
+	
+	var re = /^[0-9]*$/;
+	if (total == "") {
+		$("#alertinfo").html("总数输入不能为空");
+		$("#alertinfo").show();
+		return false;
+	} else if (!re.test(total)) {
+		$("#alertinfo").html("总数输入只能为数字");
+		$("#alertinfo").show();
+		return false;
+	} else {
+		$("#alertinfo").html("");
+		$("#alertinfo").hide();
+		$("#addremainid").val(total);
+		return true;
+	}
+}
+
+function cancel() {
+	$("#addrnameid").val("");
+	$("#addtotalid").val("");
+	$("#addremainid").val("");
+}
+
+function checkAndAdd() {
+	if ($("#alertinfo").html() != "") {
+		$("#alertinfo").show();
+		return;
+	} else if (!checkaddname() || !checkTotal()) {
+		return;
+	} else {
+		 $.post("<%=basePath%>resource/addResource", 
+            $("#addform").serialize(), 
+		    function(data) {
+		        if (data == "ok") {
+		        	window.location.href = "<%=basePath%>resource/queryResources";
+                } else {
+                    $("#alertinfo").html("添加失败");
+                    $("#alertinfo").show();
+                }
+        });
+		return;
+	}
+}
+</script>
+									<!-- /.modal-content -->
+								</div>
+								<!-- /.modal-dialog -->
+							</div>
+
+							<!-- modal-dialog -->
+							<div id="modifydiv"><button id="modify" data-toggle="modal" data-target="#modifyModal"></button></div>
+							<div class="modal fade" id="modifyModal" tabindex="-1"
+								role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true"
+								style="display: none;">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close second"
+												data-dismiss="modal" aria-hidden="true">
+												×
+											</button>
+											<h2 class="modal-title">
+												资源信息修改
+											</h2>
+										</div>
+										<div class="modal-body">
+											<!--/set-1-->
+											<div class="set-1">
+												<div id="einfo" style="font-size: 12px; color: #FF0000">请输入信息</div>
+												<div class="grid-1">
+													<div class="form-body">
+														<form id="nodifyform" class="form-horizontal" 
+														      onsubmit="return false" method="post">
+															<input type="hidden" id="resourceid" name="rId">
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	名称
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="rnameid" 
+																		name="rName" placeholder="请输入资源名称" 
+																		onblur="checkname()">
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	总数
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="totalid" 
+																		name="total" placeholder="请输入资源总数" 
+																		readonly="readonly">
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	剩余
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="remainid" 
+																		name="remain" placeholder="请输入剩余数量" 
+																		onblur="checkRemain()">
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+											<!--//set-1-->
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">
+												取消
+											</button>
+											<button type="button" class="btn btn-primary"
+												onclick="checkAndModify()">
+												保存修改
+											</button>
+										</div>
+									</div>
+<script type="text/javascript">
+$("#einfo").hide();
+
+function checkname() {
+	var name = $("#rnameid").val();
+	
+	if (name == "") {
+		$("#einfo").html("名称输入不能为空");
+		$("#einfo").show();
+		return false;
+	} else {
+		$("#einfo").html("");
+		$("#einfo").hide();
+		return true;
+	}
+}
+
+function checkRemain() {
+	var remain = $("#remainid").val();
+	
+	var re = /^[0-9]*$/;
+	if (remain == "") {
+		$("#einfo").html("剩余数量输入不能为空");
+		$("#einfo").show();
+		return false;
+	} else if (!re.test(remain)) {
+		$("#einfo").html("剩余数量输入只能为数字");
+		$("#einfo").show();
+		return false;
+	} else {
+		$("#einfo").html("");
+		$("#einfo").hide();
+		return true;
+	}
+}
+
+function checkAndModify() {
+	if ($("#einfo").html() != "") {
+		$("#einfo").show();
+		return;
+	} else if (!checkname() || !checkRemain()) {
+		return;
+	} else {
+		$.post("<%=basePath%>resource/modifyResource", 
+			$("#nodifyform").serialize(), 
+			function(data) {
+				if (data == "ok") {
+		            window.location.href = "<%=basePath%>resource/queryResources";
+                } else {
+                    $("#einfo").html("修改失败");
+                    $("#einfo").show();
+                }
+		   });
+	}
+}
+</script>
+									<!-- /.modal-content -->
+								</div>
+								<!-- /.modal-dialog -->
+							</div>
 
 							<div style="margin-left: 25%; text-align: center; float: left">
 								<nav>
@@ -362,7 +669,7 @@ function check() {
 								</nav>
 							</div>
 
-							
+
 							<div style="margin: 18px 0 0 10%; width: 40px; height: 30px; float: left">
 								<input type="text" class="form-control" id="inputpage"
 									title="请输入页码">
@@ -411,6 +718,9 @@ function jump(pageIndex) {
 	$("#pi").val(pageIndex);
 	$("form").submit();
 }
+
+$("#modifydiv").hide();
+$("#adddiv").hide();
 </script>
 						</div>
 						<!-- //content -->
