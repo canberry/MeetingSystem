@@ -97,6 +97,20 @@ public class UserController {
 			return "fail";
 		}
 	}
+	
+	@RequestMapping("/addUser")
+	@ResponseBody
+	public String addUser(User user) {
+		try {
+			userService.register(user);
+			logger.info("add user success");
+			return "ok";
+		} catch (Exception e) {
+			logger.info("add user fail");
+			e.printStackTrace();
+			return "fail";
+		}
+	}
 
 	@RequestMapping("/modifyUser")
 	@ResponseBody
@@ -215,13 +229,23 @@ public class UserController {
 		
 		logger.info("user example: " + user);
 		List<User> users = userService.paginateUsersByExample(user, pageIndex, pageSize);
-		logger.info("query meetingrooms: " + users);
+		logger.info("query users: " + users);
 		int totalPages = userService.totalPages(user, pageSize);
 		
 		request.setAttribute("users", users);
 		request.setAttribute("pageIndex", pageIndex);
 		request.setAttribute("totalPages", totalPages);
-		request.setAttribute("user", user);
+		request.setAttribute("u", user);
 		return "/query_user";
+	}
+	
+	@RequestMapping("/removeUser")
+	public String removeUser(int userId) {
+		User user = new User();
+		user.setUserId(userId);
+		user.setUserState(Const.STATE_YES);
+		userService.modifyUser(user);
+		
+		return "redirect:/user/queryUsers";
 	}
 }

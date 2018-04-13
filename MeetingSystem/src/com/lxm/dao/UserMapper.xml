@@ -55,6 +55,11 @@
 		useGeneratedKeys="true">
 		insert into user(user_name, password) values(#{userName}, #{password})
 	</insert>
+	
+	<insert id="register" parameterType="User" keyProperty="userId"
+		useGeneratedKeys="true">
+		insert into user(user_name, position, user_role) values(#{userName}, #{position}, #{userRole})
+	</insert>
 
 	<update id="modify" parameterType="User">
 		update user
@@ -85,6 +90,12 @@
             </if>
 			<if test="address != null and address != ''">
 				address = #{address},
+            </if>
+            <if test="position != null and position != ''">
+                position = #{position}, 
+            </if>
+            <if test="userState != null and userState != ''">
+                user_state = #{userState}, 
             </if>
 		</set>
 		where user_id=#{userId}
@@ -146,37 +157,37 @@
             and user_state = 'no' 
             <if test="user != null">
                 <if test="user.userName != null and user.userName != ''">
-                    user_name = #{user.userName}
+                    and user_name = #{user.userName}
                 </if>
                 <if test="user.sex != null and user.sex != ''">
-                    sex = #{user.sex}
+                    and sex = #{user.sex}
                 </if>
                 <if test="user.userRole != null and user.userRole != ''">
-                    user_role = #{user.userRole}
+                    and user_role = #{user.userRole}
                 </if>
                 <if test="user.position != null and user.position != ''">
-                    position = #{user.position}
+                    and position = #{user.position}
                 </if>
             </if>
         </where>
         order by user_id limit #{pageStart}, #{pageSize}
     </select>
     
-    <select id="getRows" parameterType="User" resultMap="userMap">
+    <select id="getRows" parameterType="User" resultType="int">
         select count(*) from user 
         <where>
             and user_state = 'no' 
             <if test="userName != null and userName != ''">
-                user_name = #{userName}
+                and user_name = #{userName}
             </if>
             <if test="sex != null and sex != ''">
-                sex = #{sex}
+                and sex = #{sex}
             </if>
             <if test="userRole != null and userRole != ''">
-                user_role = #{userRole}
+                and user_role = #{userRole}
             </if>
             <if test="position != null and position != ''">
-                position = #{position}
+                and position = #{position}
             </if>
         </where>
     </select>

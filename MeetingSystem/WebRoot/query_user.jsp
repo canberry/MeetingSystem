@@ -202,15 +202,18 @@ function queryMsgById(msgId) {
 							<div>
 								<form action="<%=basePath%>user/queryUsers" method="Post" onsubmit="return check()">
 									<div class="input-group input-group-in">
-										<input type="text" name="userName" id="userName" value="${user.userName}" 
-											style="width: 30%; margin-left: 5px" class="form-control"
+										<input type="text" name="userName" id="userName" value="${u.userName}" 
+											style="width: 52%; margin-left: 5px" class="form-control"
 											placeholder="按用户名查询" title="按用户名查询">
-										<input type="text" name="mrName" id="mrName" value="${meetingRoom.mrName}" 
-											style="width: 30%; margin-left: 10px" class="form-control"
-											placeholder="按会议室用途查询" title="按会议室用途查询">
-										<input type="text" name="capacity" id="capacity" value="${meetingRoom.capacity}"  
-											style="width: 30%; margin-left: 10px" class="form-control"
-											placeholder="按会议室容量查询" title="按会议室容量查询">
+										<select name="sex" id="sex"
+											style="width: 40%; height: 48px; margin-left: 15px" class="form-control"
+											title="按性别查询">
+											<option value="">按性别查询</option>
+											<option value="man" id="man">男</option>
+											<option value="female" id="female">女</option>
+											<option value="secret" id="secret">保密</option>
+										</select>
+										<input type="hidden" id="sexid" value="${u.sex}">
 										<span class="input-group-btn" style="width: 25%">
 											<button class="btn btn-success" type="submit" title="按条件查询">
 												<i class="fa fa-search"></i>
@@ -218,34 +221,64 @@ function queryMsgById(msgId) {
 										</span>
 										<input type="hidden" name="pageIndex" value="1" id="pi" />
 									</div>
+									<div class="input-group input-group-in">
+										<select name="position" id="position"
+											style="width: 51%; height: 48px; margin-left: 5px" class="form-control"
+											title="按职位查询">
+											<option value="">按职位查询</option>
+											<option value="Intern" id="Intern">Intern</option>
+											<option value="Officer" id="Officer">Officer</option>
+											<option value="Associate Manager" id="AssociateManager">Associate Manager</option>
+											<option value="Manager" id="Manager">Manager</option>
+											<option value="Director" id="Director">Director</option>
+											<option value="Senior Director" id="SeniorDirector">Senior Director</option>
+											<option value="Vice President" id="VicePresident">Vice President</option>
+										    <option value="President" id="President">President</option>
+										</select>
+										<input type="hidden" id="positionid" value="${u.position}">
+										<select name="userRole" id="userRole"
+											style="width: 40%; height: 48px; margin-left: 10px" class="form-control"
+											title="按用户角色查询">
+											<option value="">按用户角色查询</option>
+											<option value="ordinary" id="ordinary">普通用户</option>
+											<option value="admin" id="admin">管理员</option>
+										</select>
+										<input type="hidden" id="roleid" value="${u.userRole}">
+									</div>
 								</form>
 								<div class="alert alert-danger" role="alert" id="error">
 									<strong>Oh snap!</strong>
 								</div>
 <script type="text/javascript">
 $("#error").hide();
+
+var sex = "#" + $("#sexid").val();
+$(sex).attr("selected", "selected");
+var positionvalue = $("#positionid").val();
+var position;
+if (positionvalue == "Associate Manager") {
+	position = "#AssociateManager";
+} else if (positionvalue == "Senior Director") {
+	position = "#SeniorDirector";
+} else if (positionvalue == "Vice President") {
+	position = "#VicePresident";
+} else {
+	position = "#" + positionvalue;
+}
+$(position).attr("selected", "selected");
+var role = "#" + $("#roleid").val();
+$(role).attr("selected", "selected");
+
 function check() {
-	var capacity = $("#capacity").val();
-	
-	var re = /^[0-9]*$/;
-	if (capacity == "") {
-		$("#capacity").val("0");
-		return true;
-	} else if (re.test(capacity)) {
-		return true;
-	} else {
-		$("#error").html("<strong>输入错误!</strong>  容量只能是数字.");
-		$("#error").show();
-		return false;
-	}
+	return true;
 }
 </script>
 							</div>
 							<!-- //search -->
 							<c:if test="${sessionScope.user.userRole == 'admin'}">
 								<h4 style="float: right; margin-top: 0px">
-									<a class="label label-warning" title="添加会议室"
-										href="add_meetingroom.jsp">添加</a>
+									<a class="label label-warning" title="添加用户"
+										onclick="add()">添加</a>
 								</h4>
 								<div class="clearfix"></div>
 							</c:if>
@@ -258,63 +291,600 @@ function check() {
 												<th width="15%">
 													#
 												</th>
-												<th width="20%">
-													编号
-												</th>
 												<th width="25%">
-													名称
+													用户名
 												</th>
-												<th width="15%">
-													容量
+												<th width="11%">
+													性别
 												</th>
-												<th width="25%">
+												<th width="11%">
+													职位
+												</th>
+												<th width="13%">
+													角色
+												</th>
+												<th width="37%" style="text-align: center">
 													操作
 												</th>
 											</tr>
 										</thead>
 										<tbody>
-											<c:forEach var="meetingRoom" items="${meetingRooms}"
-												varStatus="status">
-												<tr>
-													<th scope="row">
-														${status.count}
-													</th>
-													<td>
-														${meetingRoom.no}
+											<c:forEach var="ur" items="${users}">
+												<tr class="table-row">
+													<td class="table-img" style="width: 15%">
+														<img src="${ur.avatar}" alt="" />
 													</td>
-													<td>
-														${meetingRoom.mrName}
+													<td class="table-text" style="width: 25%">
+														<h6>
+															${ur.userName}
+														</h6>
+														<p>
+															签名：&nbsp;${ur.signature}
+														</p>
 													</td>
-													<td>
-														${meetingRoom.capacity}
+													<td style="width: 11%">
+														<c:choose>
+															<c:when test="${ur.sex == 'man'}">
+																<span class="work">男</span>
+															</c:when>
+															<c:when test="${ur.sex == 'female'}">
+																<span class="ur">女</span>
+															</c:when>
+															<c:otherwise>
+																<span class="fam">保密</span>
+															</c:otherwise>
+														</c:choose>
 													</td>
-													<td>
+													<td style="width: 11%">
+													${ur.position}
+													</td>
+													<td style="width: 13%">
+														<c:choose>
+															<c:when test="${ur.userRole == 'admin'}">
+																<span class="label label-danger">&nbsp;管&nbsp;理&nbsp;员&nbsp;</span>
+															</c:when>
+															<c:otherwise>
+																<span class="label label-success">普通用户</span>
+															</c:otherwise>
+														</c:choose>
+													</td>
+													<td style="width: 37%">
 														<div class="share share_size_large share_type_twitter" 
 															style="width: 50px">
-															<a class="share__btn"
-																href="query_mr_detail.jsp?mrId=${meetingRoom.mrId}&no=${meetingRoom.no}">查看</a>
+															<a class="share__btn" onclick="query('${ur.userId}')">查看</a>
 														</div>
 
-														<c:if test="${sessionScope.user.userRole == 'admin'}">
-															<div class="share share_size_large share_type_facebook"
-																style="width: 50px">
-																<a class="share__btn"
-																	href="<%=basePath%>meetingRoom/queryMeetingRoomById?mrId=${meetingRoom.mrId}">修改</a>
-															</div>
-															<div class="share share_size_large share_type_gplus"
-																style="width: 50px">
-																<a class="share__btn"
-																	href="<%=basePath%>meetingRoom/removeMeetingRoom?mrId=${meetingRoom.mrId}">删除</a>
-															</div>
-														</c:if>
+														<div class="share share_size_large share_type_facebook"
+															style="width: 50px">
+															<a class="share__btn" onclick="modify('${ur.userId}')">修改</a>
+														</div>
+														<div class="share share_size_large share_type_gplus"
+															style="width: 50px">
+															<a class="share__btn"
+																href="<%=basePath%>user/removeUser?userId=${ur.userId}">删除</a>
+														</div>
 													</td>
 												</tr>
+												<input type="hidden" id="namevalue${ur.userId}" value="${ur.userName}">
+												<input type="hidden" id="positionvalue${ur.userId}" value="${ur.position}">
+												<input type="hidden" id="nicknamevalue${ur.userId}" value="${ur.nickname}">
+												<input type="hidden" id="sexvalue${ur.userId}" value="${ur.sex}">
+												<input type="hidden" id="mobilevalue${ur.userId}" value="${ur.mobile}">
+												<input type="hidden" id="emailvalue${ur.userId}" value="${ur.email}">
+												<input type="hidden" id="addressvalue${ur.userId}" value="${ur.address}">
+												<input type="hidden" id="signaturevalue${ur.userId}" value="${ur.signature}">
+												<input type="hidden" id="userrolevalue${ur.userId}" value="${ur.userRole}">
 											</c:forEach>
 										</tbody>
 									</table>
 								</div>
 							</div>
+<script type="text/javascript">
+function query(userId) {
+	var username = $("#namevalue" + userId).val();
+	var position = $("#positionvalue" + userId).val();
+	var nickname = $("#nicknamevalue" + userId).val();
+	var sex = $("#sexvalue" + userId).val();
+	var mobile = $("#mobilevalue" + userId).val();
+	var email = $("#emailvalue" + userId).val();
+	var address = $("#addressvalue" + userId).val();
+	var signature = $("#signaturevalue" + userId).val();
+	var role = $("#userrolevalue" + userId).val();
+	if (role == "admin") {
+		role = "管理员";
+	} else {
+		role = "普通用户";
+	}
+	
+	$("#unid").html(username);
+	$("#pid").html(position);
+	$("#rid").html(role);
+	$("#nnid").html(nickname);
+	$("#sid").val(sex);
+	$("#mid").html(mobile);
+	$("#eid").html(email);
+	$("#aid").html(address);
+	$("#signid").html(signature);
+	$("input:radio[value='" + sex + "']").prop("checked", "true");
+	
+	$("#look").click();
+}
+
+function modify(userId) {
+	var username = $("#namevalue" + userId).val();
+	var position = $("#positionvalue" + userId).val();
+	var role = $("#userrolevalue" + userId).val();
+	
+	$("#uid").val(userId);
+	$("#usernameid").val(username);
+	$("#userroleid").find("option[value='" + role + "']").prop("selected", "selected");
+	$("#positid").find("option[value='" + position + "']").prop("selected", "selected");
+	
+	$("#modify").click();
+}
+
+function add() {
+	$("#add").click();
+}
+</script>
 							<div class="clearfix"></div>
+							
+							<!-- modal-dialog -->
+							<div id="adddiv"><button id="add" data-toggle="modal" data-target="#addModal"></button></div>
+							<div class="modal fade" id="addModal" tabindex="-1"
+								role="dialog" aria-labelledby="addModalLabel" aria-hidden="true"
+								style="display: none;">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close second"
+												data-dismiss="modal" aria-hidden="true" 
+												onclick="cancel()">
+												×
+											</button>
+											<h2 class="modal-title">
+												人员添加
+											</h2>
+										</div>
+										<div class="modal-body">
+											<!--/set-1-->
+											<div class="set-1">
+												<div id="alertinfo" style="font-size: 12px; color: #FF0000">请输入信息</div>
+												<div class="grid-1">
+													<div class="form-body">
+														<form id="addform" class="form-horizontal" 
+														      onsubmit="return false" method="post">
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	用户名
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="addnameid"
+																		name="userName"
+																		placeholder="请输入用户名" onblur="checkUserName()">
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	职位
+																</label>
+																<div class="col-sm-9">
+																	<select name="position" id="addpid" 
+																	    style="height: 48px" 
+																		class="form-control" title="请选择职位" onblur="checkPosition()">
+																		<option value="">请选择职位</option>
+																		<option value="Intern">
+																			Intern
+																		</option>
+																		<option value="Officer">
+																			Officer
+																		</option>
+																		<option value="Associate Manager"
+																			id="AssociateManagerid">
+																			Associate Manager
+																		</option>
+																		<option value="Manager">
+																			Manager
+																		</option>
+																		<option value="Director">
+																			Director
+																		</option>
+																		<option value="Senior Director"">
+																			Senior Director
+																		</option>
+																		<option value="Vice President">
+																			Vice President
+																		</option>
+																		<option value="President">
+																			President
+																		</option>
+																	</select>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	角色
+																</label>
+																<div class="col-sm-9">
+																	<select name="userRole" id="addrid"
+																		style="height: 48px" class="form-control"
+																		title="请选择用户角色" onblur="checkUserRole()">
+																		<option value="">请选择用户角色</option>
+																		<option value="ordinary">
+																			普通用户
+																		</option>
+																		<option value="admin" >
+																			管理员
+																		</option>
+																	</select>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+											<!--//set-1-->
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" 
+											    data-dismiss="modal" onclick="cancel()">
+												取消
+											</button>
+											<button type="button" class="btn btn-primary"
+												onclick="checkAndAdd()">
+												保存修改
+											</button>
+										</div>
+									</div>
+<script type="text/javascript">
+$("#alertinfo").hide();
+
+$.ajaxSetup({
+    async : false
+});
+
+function checkUserName() {
+	var name = $("#addnameid").val();
+	if (name == "") {
+		$("#alertinfo").html("请输入用户名");
+		$("#alertinfo").show();
+		return false;
+	} else {
+		 $.post("<%=basePath%>user/queryUserName", 
+            {userName : name}, 
+		    function(data) {
+                if (data == "ok") {
+                	$("#alertinfo").html("");
+                    $("#alertinfo").hide();
+                } else {
+                    $("#alertinfo").html("此用户名已存在");
+                    $("#alertinfo").show();
+                }
+		});
+		
+		if ($("#alertinfo").html() == "") {
+		    return true;
+		} else {
+		    return false;
+		}
+	}
+}
+
+function checkPosition() {
+	var position = $("#addpid").val();
+	if (position == "") {
+		$("#alertinfo").html("请选择职位信息");
+		$("#alertinfo").show();
+		return false;
+	} else {
+		$("#alertinfo").html("");
+		$("#alertinfo").hide();
+		return true;
+	}
+}
+
+function checkUserRole() {
+	var role = $("#addrid").val();
+	if (role == "") {
+		$("#alertinfo").html("请选择用户角色");
+		$("#alertinfo").show();
+		return false;
+	} else {
+		$("#alertinfo").html("");
+		$("#alertinfo").hide();
+		return true;
+	}
+}
+
+function cancel() {
+	$("#addnameid").val("");
+	$("#addpid").val("");
+	$("#addrid").val("");
+}
+
+function checkAndAdd() {
+	if ($("#alertinfo").html() != "") {
+		$("#alertinfo").show();
+		return;
+	} else if (!checkUserName() || !checkPosition() || !checkUserRole) {
+		return;
+	} else {
+		 $.post("<%=basePath%>user/addUser", 
+            $("#addform").serialize(), 
+		    function(data) {
+		        if (data == "ok") {
+		        	window.location.href = "<%=basePath%>user/queryUsers";
+                } else {
+                    $("#alertinfo").html("添加失败");
+                    $("#alertinfo").show();
+                }
+        });
+		return;
+	}
+}
+</script>
+									<!-- /.modal-content -->
+								</div>
+								<!-- /.modal-dialog -->
+							</div>
+
+							<!-- modal-dialog -->
+							<div id="modifydiv"><button id="modify" data-toggle="modal" data-target="#modifyModal"></button></div>
+							<div class="modal fade" id="modifyModal" tabindex="-1"
+								role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true"
+								style="display: none;">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close second"
+												data-dismiss="modal" aria-hidden="true">
+												×
+											</button>
+											<h2 class="modal-title">
+												基本信息修改
+											</h2>
+										</div>
+										<div class="modal-body">
+											<!--/set-1-->
+											<div class="set-1">
+												<div id="einfo" style="font-size: 12px; color: #FF0000"></div>
+												<div class="grid-1">
+													<div class="form-body">
+														<form id="nodifyform" class="form-horizontal" 
+														      onsubmit="return false" method="post">
+															<input type="hidden" id="uid" name="userId">
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	用户名
+																</label>
+																<div class="col-sm-9">
+																	<input type="text" class="form-control" id="usernameid"
+																		name="userName"
+																		placeholder="请输入用户名" 
+																		readonly="readonly">
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	职位
+																</label>
+																<div class="col-sm-9">
+																	<select name="position" id="positid" 
+																	    style="height: 48px" 
+																		class="form-control" title="请选择职位">
+																		<option value="Intern" id="Internid">
+																			Intern
+																		</option>
+																		<option value="Officer" id="Officerid">
+																			Officer
+																		</option>
+																		<option value="Associate Manager"
+																			id="AssociateManagerid">
+																			Associate Manager
+																		</option>
+																		<option value="Manager" id="Managerid">
+																			Manager
+																		</option>
+																		<option value="Director" id="Directorid">
+																			Director
+																		</option>
+																		<option value="Senior Director" id="SeniorDirectorid">
+																			Senior Director
+																		</option>
+																		<option value="Vice President" id="VicePresidentid">
+																			Vice President
+																		</option>
+																		<option value="President" id="Presidentid">
+																			President
+																		</option>
+																	</select>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	角色
+																</label>
+																<div class="col-sm-9">
+																	<select name="userRole" id="userroleid"
+																		style="height: 48px" class="form-control"
+																		title="请选择用户角色">
+																		<option value="ordinary" id="ordinaryid">
+																			普通用户
+																		</option>
+																		<option value="admin" id="adminid">
+																			管理员
+																		</option>
+																	</select>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+											<!--//set-1-->
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">
+												取消
+											</button>
+											<button type="button" class="btn btn-primary"
+												onclick="checkAndModify()">
+												保存修改
+											</button>
+										</div>
+									</div>
+<script type="text/javascript">
+$("#einfo").hide();
+function checkAndModify() {
+	$.post("<%=basePath%>user/modifyUser", 
+            $("#nodifyform").serialize(), 
+		    function(data) {
+		        if (data == "ok") {
+		            window.location.href = "<%=basePath%>user/queryUsers";
+                } else {
+                    $("#einfo").html("修改失败");
+                    $("#einfo").show();
+                }
+    });
+}
+</script>
+									<!-- /.modal-content -->
+								</div>
+								<!-- /.modal-dialog -->
+							</div>
+
+							<!-- modal-dialog -->
+							<div id="lookdiv"><button id="look" data-toggle="modal" data-target="#myinfoModal"></button></div>
+							<div class="modal fade" id="myinfoModal" tabindex="-1"
+								role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+								style="display: none;">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close second"
+												data-dismiss="modal" aria-hidden="true">
+												×
+											</button>
+											<h2 class="modal-title">
+												用户基本信息
+											</h2>
+										</div>
+										<div class="modal-body">
+											<!--/set-1-->
+											<div class="set-1">
+												<div class="grid-1">
+													<div class="form-body">
+														<form class="form-horizontal" action="#"
+															onsubmit="return false" method="post">
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	用户名
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="unid">
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	职位
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="pid">
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="username" class="col-sm-2 control-label">
+																	角色
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="rid">
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="nickname" class="col-sm-2 control-label">
+																	昵称
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="nnid">
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="sex" class="col-sm-2 control-label">
+																	性别
+																</label>
+																<input type="hidden" id="sid">
+																<div class="col-sm-9">
+																	<input type="radio" name="sex" value="man"
+																		disabled="disabled">
+																	&nbsp;男&nbsp;&nbsp;
+																	<input type="radio" name="sex" value="female"
+																		disabled="disabled">
+																	&nbsp;女&nbsp;&nbsp;
+																	<input type="radio" name="sex" value="secret"
+																		disabled="disabled">
+																	&nbsp;保密
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="mobile" class="col-sm-2 control-label">
+																	手机
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="mid">
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="email" class="col-sm-2 control-label">
+																	Email
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="eid">
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="address" class="col-sm-2 control-label">
+																	工作地
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="aid">
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="signature" class="col-sm-2 control-label">
+																	&nbsp;&nbsp;&nbsp;&nbsp;个性签名
+																</label>
+																<div class="col-sm-9">
+																	<div class="form-control" id="signid">
+																	</div>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+											<!--//set-1-->
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">
+												取消
+											</button>
+										</div>
+									</div>
+									<!-- /.modal-content -->
+								</div>
+								<!-- /.modal-dialog -->
+							</div>
+
 
 							<div style="margin-left: 25%; text-align: center; float: left">
 								<nav>
@@ -362,7 +932,7 @@ function check() {
 								</nav>
 							</div>
 
-							
+
 							<div style="margin: 18px 0 0 10%; width: 40px; height: 30px; float: left">
 								<input type="text" class="form-control" id="inputpage"
 									title="请输入页码">
@@ -411,6 +981,10 @@ function jump(pageIndex) {
 	$("#pi").val(pageIndex);
 	$("form").submit();
 }
+
+$("#lookdiv").hide();
+$("#modifydiv").hide();
+$("#adddiv").hide();
 </script>
 						</div>
 						<!-- //content -->

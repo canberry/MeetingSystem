@@ -68,4 +68,8 @@ public class UserServiceImpl implements UserService {
 		int r = userMapper.getRows(user);
 		return r  % pageSize == 0 ? r / pageSize : r / pageSize + 1;
 	}
+
+	public void register(User user) {
+		userMapper.register(user);
+	}
 }

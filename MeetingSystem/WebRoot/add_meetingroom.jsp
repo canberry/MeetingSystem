@@ -187,7 +187,7 @@ function queryMsgById(msgId) {
 									<a href="index.jsp">主页</a>
 								</li>
 								<li class="active">
-									<a a href="<%=basePath%>meetingRoom/queryMeetingRoom">会议室</a>
+									<a href="<%=basePath%>meetingRoom/queryMeetingRoom">会议室</a>
 								</li>
 								<li class="active">
 									会议室添加
