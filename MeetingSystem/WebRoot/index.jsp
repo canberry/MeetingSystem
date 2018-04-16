@@ -61,6 +61,12 @@ function hideURLbar() {
 </script>
 
 		<!--//skycons-icons-->
+
+		<!-- 404word -->
+		<script type="text/javascript" src="word/js/404.js">
+</script>
+		<link rel="stylesheet" href="word/css/404.css" />
+
 	</head>
 
 	<body>
@@ -180,6 +186,34 @@ function queryMsgById(msgId) {
 
 
 					<div class="outter-wp">
+
+						<div class="code">
+							<p>
+								welcome to MMS
+							</p>
+						</div>
+						<div class="road">
+							<div class="shadow">
+								<div class="shelt">
+									<div class="head">
+										<div class="eyes">
+											<div class="lefteye">
+												<div class="eyeball"></div>
+												<div class="eyebrow"></div>
+											</div>
+											<div class="righteye">
+												<div class="eyeball"></div>
+												<div class="eyebrow"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="hat"></div>
+								<div class="bubble">
+									<a href="index.html">Hello~</a>
+								</div>
+							</div>
+						</div>
 
 						<!--//outer-wp-->
 					</div>
