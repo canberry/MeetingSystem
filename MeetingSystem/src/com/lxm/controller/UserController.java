@@ -45,7 +45,7 @@ public class UserController {
 			User u = users.get(0);
 			request.getSession().setAttribute("user", u);
 			logger.info("after login u: " + u);
-			
+
 			logger.info("want to index.jsp");
 			return "ordinary ok";
 		} else { // fail to login
@@ -65,15 +65,17 @@ public class UserController {
 			logger.info("username is not existed");
 			return "ok";
 		} else {
-			logger.info("username is not existed. userId: " + users.get(0).getUserId());
-			return String.valueOf(users.get(0));
+			logger.info("username is not existed. userId: "
+					+ users.get(0).getUserId());
+			return String.valueOf(users.get(0).getUserId());
 		}
 	}
 
 	@RequestMapping("/checkCertCode")
 	@ResponseBody
 	public String checkCertCode(String inputCode, HttpServletRequest request) {
-		String certCode = (String) request.getSession().getAttribute("certCode");
+		String certCode = (String) request.getSession()
+				.getAttribute("certCode");
 		logger.info("inputCode: " + inputCode + " actual: " + certCode);
 		if (!certCode.equals(inputCode)) {
 			logger.info("code is not macth");
@@ -97,7 +99,7 @@ public class UserController {
 			return "fail";
 		}
 	}
-	
+
 	@RequestMapping("/addUser")
 	@ResponseBody
 	public String addUser(User user) {
@@ -126,13 +128,13 @@ public class UserController {
 			return "fail";
 		}
 	}
-	
+
 	@RequestMapping("/loginout")
 	public String loginout(HttpServletRequest request) {
 		request.getSession().invalidate();
 		return "/jump";
 	}
-	
+
 	@RequestMapping("/changeUserSession")
 	public String changeUserSession(int userId, HttpServletRequest request) {
 		User user = userService.queryByUserId(userId);
@@ -140,27 +142,30 @@ public class UserController {
 		request.getSession().setAttribute("user", user);
 		return "/query_myuserinfo";
 	}
-	
-	@RequestMapping(value="/uploadAvatar", method=RequestMethod.POST)
-	public String uploadAvatar(@RequestParam("file")MultipartFile file, HttpServletRequest request) {
+
+	@RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
+	public String uploadAvatar(@RequestParam("file") MultipartFile file,
+			HttpServletRequest request) {
 		String saveFilePath = Const.Path_TOSAVE_AVATAR;
 		String imgPath = FileUtil.saveFile(file, saveFilePath, request);
 		logger.info("imgPath: " + imgPath);
-		
+
 		User u = (User) request.getSession().getAttribute("user");
 		User user = new User(u);
 		user.setAvatar(imgPath);
-		
+
 		logger.info("before avatar modify user: " + u);
 		userService.modifyUser(user);
 		FileUtil.deleteFile(u.getAvatar(), request);
 		logger.info("avatar modify user success");
-		
-		return "redirect:/user/changeUserSession?userId=" + user.getUserId(); // change session
+
+		return "redirect:/user/changeUserSession?userId=" + user.getUserId(); // change
+																				// session
 	}
-	
+
 	@RequestMapping("/queryUsersByName")
-	public void queryUsersByName(String uname, HttpServletResponse response) throws IOException {
+	public void queryUsersByName(String uname, HttpServletResponse response)
+			throws IOException {
 		logger.info("uname: " + uname);
 		List<User> users = userService.queryUsersLikeName(uname);
 		logger.info("users size: " + users.size());
@@ -170,13 +175,14 @@ public class UserController {
 		response.setCharacterEncoding(Const.ENCODING_UTF8);
 		response.getWriter().print(datas.toString());
 	}
-	
+
 	@RequestMapping("/queryAvailableUsersByIds")
-	public void queryAvailableUsersByIds(@RequestParam("uids")String uids, 
-			@RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime, 
+	public void queryAvailableUsersByIds(@RequestParam("uids") String uids,
+			@RequestParam("startTime") String startTime,
+			@RequestParam("endTime") String endTime,
 			HttpServletResponse response) throws IOException {
 		logger.info("startt: " + startTime + " endt: " + endTime);
-		
+
 		List<Integer> userIds = new ArrayList<Integer>();
 		JSONArray jarray = JSONArray.fromObject(uids);
 		for (Object obj : jarray) {
@@ -186,20 +192,24 @@ public class UserController {
 		}
 
 		logger.info("size: " + userIds.size() + " ids: " + userIds);
-		List<User> users = userService.queryAvailableUsersByIds(userIds, startTime, endTime);
+		List<User> users = userService.queryAvailableUsersByIds(userIds,
+				startTime, endTime);
 		logger.info("users: " + users); // not available
 
 		JSONArray datas = JSONArray.fromObject(users);
 		response.setCharacterEncoding(Const.ENCODING_UTF8);
 		response.getWriter().print(datas.toString());
 	}
-	
+
 	@RequestMapping("/queryAvailableUsersByIdsAndMId")
-	public void queryAvailableUsersByIdsAndMId(@RequestParam("uids")String uids, @RequestParam("meetingId")int mId, 
-			@RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime, 
+	public void queryAvailableUsersByIdsAndMId(
+			@RequestParam("uids") String uids,
+			@RequestParam("meetingId") int mId,
+			@RequestParam("startTime") String startTime,
+			@RequestParam("endTime") String endTime,
 			HttpServletResponse response) throws IOException {
 		logger.info("startt: " + startTime + " endt: " + endTime);
-		
+
 		List<Integer> userIds = new ArrayList<Integer>();
 		JSONArray jarray = JSONArray.fromObject(uids);
 		for (Object obj : jarray) {
@@ -209,43 +219,45 @@ public class UserController {
 		}
 
 		logger.info("size: " + userIds.size() + " ids: " + userIds);
-		List<User> users = userService.queryAvailableUsersByIdsAndMId(mId, userIds, startTime, endTime);
+		List<User> users = userService.queryAvailableUsersByIdsAndMId(mId,
+				userIds, startTime, endTime);
 		logger.info("users: " + users); // not available
 
 		JSONArray datas = JSONArray.fromObject(users);
 		response.setCharacterEncoding(Const.ENCODING_UTF8);
 		response.getWriter().print(datas.toString());
 	}
-	
+
 	@RequestMapping("/queryUsers")
 	public String queryUsers(User user, HttpServletRequest request) {
-		int pageSize = 5;
+		int pageSize = 4;
 		int pageIndex = 1;
 		String piStr = request.getParameter("pageIndex");
 		if (piStr == null) {
 			piStr = "1";
 		}
 		pageIndex = Integer.parseInt(piStr);
-		
+
 		logger.info("user example: " + user);
-		List<User> users = userService.paginateUsersByExample(user, pageIndex, pageSize);
+		List<User> users = userService.paginateUsersByExample(user, pageIndex,
+				pageSize);
 		logger.info("query users: " + users);
 		int totalPages = userService.totalPages(user, pageSize);
-		
+
 		request.setAttribute("users", users);
 		request.setAttribute("pageIndex", pageIndex);
 		request.setAttribute("totalPages", totalPages);
 		request.setAttribute("u", user);
 		return "/query_user";
 	}
-	
+
 	@RequestMapping("/removeUser")
 	public String removeUser(int userId) {
 		User user = new User();
 		user.setUserId(userId);
 		user.setUserState(Const.STATE_YES);
 		userService.modifyUser(user);
-		
+
 		return "redirect:/user/queryUsers";
 	}
 }

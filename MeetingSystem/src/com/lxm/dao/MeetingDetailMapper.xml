@@ -7,7 +7,7 @@
 <mapper namespace="com.lxm.dao.MeetingDetailMapper">
 
 	<resultMap type="MeetingDetail" id="mdMap">
-	    <id column="m_id" property="meeting.mId" />
+		<id column="m_id" property="meeting.mId" />
 		<result column="md_role" property="role" />
 		<result column="will" property="will" />
 		<result column="optional" property="optional" />
@@ -35,66 +35,84 @@
 	</resultMap>
 
 	<select id="pagination" resultMap="mdMap">
-		select * from ((meeting m inner join meeting_room mr on m.mr_id = mr.mr_id)
-		inner join user u on m.scheduler= u.user_id) inner join meeting_detail md on md.m_id = m.m_id 
+		select * from ((meeting m inner join meeting_room mr on m.mr_id =
+		mr.mr_id)
+		inner join user u on m.scheduler= u.user_id) inner join
+		meeting_detail md on md.m_id = m.m_id
 		<where>
-		    <if test="meetingDetail != null and meetingDetail.user != null and 
+			<if
+				test="meetingDetail != null and meetingDetail.user != null and 
 		          meetingDetail.user.userId != 0">
-		        and md.user_id=#{meetingDetail.user.userId}
+				and md.user_id=#{meetingDetail.user.userId}
 		    </if>
 			<if test="meetingDetail != null and meetingDetail.meeting != null">
-				<if test="meetingDetail.meeting.meetingRoom != null and 
+				<if
+					test="meetingDetail.meeting.meetingRoom != null and 
 	                  meetingDetail.meeting.meetingRoom.no != null and meetingDetail.meeting.meetingRoom.no != ''">
 					and mr.no like '%${meetingDetail.meeting.meetingRoom.no}%'
-	            </if>
-				<if test="meetingDetail.meeting.scheduler != null and 
+				</if>
+				<if
+					test="meetingDetail.meeting.scheduler != null and 
 	                  meetingDetail.meeting.scheduler.userName != null and meetingDetail.meeting.scheduler.userName != ''">
-					and u.user_name like '%${meetingDetail.meeting.scheduler.userName}%'
+					and u.user_name like
+					'%${meetingDetail.meeting.scheduler.userName}%'
 			    </if>
 
-				<if test="meetingDetail.meeting.mName != null and meetingDetail.meeting.mName != ''">
+				<if
+					test="meetingDetail.meeting.mName != null and meetingDetail.meeting.mName != ''">
 					and m.m_name like '%${meetingDetail.meeting.mName}%'
                 </if>
-				<if test="meetingDetail.meeting.startTime != null and meetingDetail.meeting.startTime != ''">
+				<if
+					test="meetingDetail.meeting.startTime != null and meetingDetail.meeting.startTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meetingDetail.meeting.startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.endTime != null and meetingDetail.meeting.endTime != ''">
+				<if
+					test="meetingDetail.meeting.endTime != null and meetingDetail.meeting.endTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{meetingDetail.meeting.endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.scheduledTime != null and meetingDetail.meeting.scheduledTime != ''">
+				<if
+					test="meetingDetail.meeting.scheduledTime != null and meetingDetail.meeting.scheduledTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.scheduled_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meetingDetail.meeting.scheduledTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.cancel != null and meetingDetail.meeting.cancel != ''">
+				<if
+					test="meetingDetail.meeting.cancel != null and meetingDetail.meeting.cancel != ''">
 					and m.cancel = #{meetingDetail.meeting.cancel}
                 </if>
 			</if>
 
-			<if test="meetingDetail != null and meetingDetail.role != null and meetingDetail.role != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.role != null and meetingDetail.role != ''">
 				and md.md_role = #{meetingDetail.role}
             </if>
-			<if test="meetingDetail != null and meetingDetail.will != null and meetingDetail.will != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.will != null and meetingDetail.will != ''">
 				and md.will = #{meetingDetail.will}
             </if>
-            <if test="meetingDetail != null and meetingDetail.optional != null and meetingDetail.optional != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.optional != null and meetingDetail.optional != ''">
 				and md.optional = #{meetingDetail.optional}
             </if>
-        </where>
-        order by m.start_time limit #{pageStart}, #{pageSize}
+		</where>
+		order by m.start_time limit #{pageStart}, #{pageSize}
 	</select>
 
 	<select id="getRows" parameterType="MeetingDetail" resultType="int">
-		select count(*) from ((meeting m inner join meeting_room mr on m.mr_id = mr.mr_id)
-		inner join user u on m.scheduler= u.user_id) inner join meeting_detail md on md.m_id = m.m_id 
+		select count(*) from ((meeting m inner join meeting_room mr on m.mr_id
+		= mr.mr_id)
+		inner join user u on m.scheduler= u.user_id) inner join
+		meeting_detail md on md.m_id = m.m_id
 		<where>
-		    <if test="user != null and user.userId != 0">
-		        and md.user_id = #{user.userId}
+			<if test="user != null and user.userId != 0">
+				and md.user_id = #{user.userId}
 		    </if>
 			<if test="meeting != null">
-				<if test="meeting.meetingRoom != null and 
+				<if
+					test="meeting.meetingRoom != null and 
 	                  meeting.meetingRoom.no != null and meeting.meetingRoom.no != ''">
 					and mr.no like '%${meeting.meetingRoom.no}%'
 	            </if>
-				<if test="meeting.scheduler != null and 
+				<if
+					test="meeting.scheduler != null and 
 	                  meeting.scheduler.userName != null and meeting.scheduler.userName != ''">
 					and u.user_name like '%${meeting.scheduler.userName}%'
 			    </if>
@@ -122,138 +140,167 @@
 			<if test="will != null and will != ''">
 				and md.will = #{will}
             </if>
-            <if test="optional != null and optional != ''">
+			<if test="optional != null and optional != ''">
 				and md.optional = #{optional}
             </if>
-        </where>
+		</where>
 	</select>
-	
+
 	<update id="modify" parameterType="MeetingDetail">
-	    update meeting_detail 
-	    <set>
-	        <if test="role != null and role != ''">
-	            md_role = #{role},
+		update meeting_detail
+		<set>
+			<if test="role != null and role != ''">
+				md_role = #{role},
 	        </if>
-	        <if test="will != null and will != ''">
-	            will = #{will},
+			<if test="will != null and will != ''">
+				will = #{will},
 	        </if>
-	        <if test="optional != null and optional != ''">
-	            optional = #{optional},
+			<if test="optional != null and optional != ''">
+				optional = #{optional},
 	        </if>
-	    </set>
-	    where m_id=#{meeting.mId} and user_id=#{user.userId}
+		</set>
+		where m_id=#{meeting.mId} and user_id=#{user.userId}
 	</update>
 
-    <select id="paginationBeforeNow" resultMap="mdMap">
-		select * from ((meeting m inner join meeting_room mr on m.mr_id = mr.mr_id)
-		inner join user u on m.scheduler= u.user_id) inner join meeting_detail md on md.m_id = m.m_id 
+	<select id="paginationBeforeNow" resultMap="mdMap">
+		select * from ((meeting m inner join meeting_room mr on m.mr_id =
+		mr.mr_id)
+		inner join user u on m.scheduler= u.user_id) inner join
+		meeting_detail md on md.m_id = m.m_id
 		<where>
-		    <if test="meetingDetail != null and meetingDetail.user != null and 
+			<if
+				test="meetingDetail != null and meetingDetail.user != null and 
 		          meetingDetail.user.userId != 0">
-		        and md.user_id = #{meetingDetail.user.userId}
+				and md.user_id = #{meetingDetail.user.userId}
 		    </if>
 			<if test="meetingDetail != null and meetingDetail.meeting != null">
-				<if test="meetingDetail.meeting.meetingRoom != null and 
+				<if
+					test="meetingDetail.meeting.meetingRoom != null and 
 	                  meetingDetail.meeting.meetingRoom.no != null and meetingDetail.meeting.meetingRoom.no != ''">
 					and mr.no like '%${meetingDetail.meeting.meetingRoom.no}%'
-	            </if>
-				<if test="meetingDetail.meeting.scheduler != null and 
+				</if>
+				<if
+					test="meetingDetail.meeting.scheduler != null and 
 	                  meetingDetail.meeting.scheduler.userName != null and meetingDetail.meeting.scheduler.userName != ''">
-					and u.user_name like '%${meetingDetail.meeting.scheduler.userName}%'
+					and u.user_name like
+					'%${meetingDetail.meeting.scheduler.userName}%'
 			    </if>
 
-				<if test="meetingDetail.meeting.mName != null and meetingDetail.meeting.mName != ''">
+				<if
+					test="meetingDetail.meeting.mName != null and meetingDetail.meeting.mName != ''">
 					and m.m_name like '%${meetingDetail.meeting.mName}%'
                 </if>
-				<if test="meetingDetail.meeting.startTime != null and meetingDetail.meeting.startTime != ''">
+				<if
+					test="meetingDetail.meeting.startTime != null and meetingDetail.meeting.startTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meetingDetail.meeting.startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.endTime != null and meetingDetail.meeting.endTime != ''">
+				<if
+					test="meetingDetail.meeting.endTime != null and meetingDetail.meeting.endTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{meetingDetail.meeting.endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.scheduledTime != null and meetingDetail.meeting.scheduledTime != ''">
+				<if
+					test="meetingDetail.meeting.scheduledTime != null and meetingDetail.meeting.scheduledTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.scheduled_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meetingDetail.meeting.scheduledTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.cancel != null and meetingDetail.meeting.cancel != ''">
+				<if
+					test="meetingDetail.meeting.cancel != null and meetingDetail.meeting.cancel != ''">
 					and m.cancel = #{meetingDetail.meeting.cancel}
                 </if>
 			</if>
 
-			<if test="meetingDetail != null and meetingDetail.role != null and meetingDetail.role != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.role != null and meetingDetail.role != ''">
 				and md.md_role = #{meetingDetail.role}
             </if>
-			<if test="meetingDetail != null and meetingDetail.will != null and meetingDetail.will != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.will != null and meetingDetail.will != ''">
 				and md.will = #{meetingDetail.will}
             </if>
-            <if test="meetingDetail != null and meetingDetail.optional != null and meetingDetail.optional != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.optional != null and meetingDetail.optional != ''">
 				and md.optional = #{meetingDetail.optional}
             </if>
-            
-            <if test="nowTime != null and nowTime != ''">
+
+			<if test="nowTime != null and nowTime != ''">
                 <![CDATA[ and DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{nowTime}, '%Y-%m-%d %H:%i:%s') ]]>
-            </if>
-        </where>
-        order by m.start_time DESC limit #{pageStart}, #{pageSize}
+			</if>
+		</where>
+		order by m.start_time DESC limit #{pageStart}, #{pageSize}
 	</select>
 
-	<select id="getRowsBeforeNow" parameterType="MeetingDetail" resultType="int">
-		select count(*) from ((meeting m inner join meeting_room mr on m.mr_id = mr.mr_id)
-		inner join user u on m.scheduler= u.user_id) inner join meeting_detail md on md.m_id = m.m_id 
+	<select id="getRowsBeforeNow" parameterType="MeetingDetail"
+		resultType="int">
+		select count(*) from ((meeting m inner join meeting_room mr on m.mr_id
+		= mr.mr_id)
+		inner join user u on m.scheduler= u.user_id) inner join
+		meeting_detail md on md.m_id = m.m_id
 		<where>
-		    <if test="meetingDetail != null and meetingDetail.user != null and 
+			<if
+				test="meetingDetail != null and meetingDetail.user != null and 
 		          meetingDetail.user.userId != 0">
-		        and md.user_id = #{meetingDetail.user.userId}
+				and md.user_id = #{meetingDetail.user.userId}
 		    </if>
 			<if test="meetingDetail != null and meetingDetail.meeting != null">
-				<if test="meetingDetail.meeting.meetingRoom != null and 
+				<if
+					test="meetingDetail.meeting.meetingRoom != null and 
 	                  meetingDetail.meeting.meetingRoom.no != null and meetingDetail.meeting.meetingRoom.no != ''">
 					and mr.no like '%${meetingDetail.meeting.meetingRoom.no}%'
-	            </if>
-				<if test="meetingDetail.meeting.scheduler != null and 
+				</if>
+				<if
+					test="meetingDetail.meeting.scheduler != null and 
 	                  meetingDetail.meeting.scheduler.userName != null and meetingDetail.meeting.scheduler.userName != ''">
-					and u.user_name like '%${meetingDetail.meeting.scheduler.userName}%'
+					and u.user_name like
+					'%${meetingDetail.meeting.scheduler.userName}%'
 			    </if>
 
-				<if test="meetingDetail.meeting.mName != null and meetingDetail.meeting.mName != ''">
+				<if
+					test="meetingDetail.meeting.mName != null and meetingDetail.meeting.mName != ''">
 					and m.m_name like '%${meetingDetail.meeting.mName}%'
                 </if>
-				<if test="meetingDetail.meeting.startTime != null and meetingDetail.meeting.startTime != ''">
+				<if
+					test="meetingDetail.meeting.startTime != null and meetingDetail.meeting.startTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meetingDetail.meeting.startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.endTime != null and meetingDetail.meeting.endTime != ''">
+				<if
+					test="meetingDetail.meeting.endTime != null and meetingDetail.meeting.endTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{meetingDetail.meeting.endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.scheduledTime != null and meetingDetail.meeting.scheduledTime != ''">
+				<if
+					test="meetingDetail.meeting.scheduledTime != null and meetingDetail.meeting.scheduledTime != ''">
                     <![CDATA[ and DATE_FORMAT(m.scheduled_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meetingDetail.meeting.scheduledTime}, '%Y-%m-%d %H:%i:%s') ]]>
 				</if>
-				<if test="meetingDetail.meeting.cancel != null and meetingDetail.meeting.cancel != ''">
+				<if
+					test="meetingDetail.meeting.cancel != null and meetingDetail.meeting.cancel != ''">
 					and m.cancel = #{meetingDetail.meeting.cancel}
                 </if>
 			</if>
 
-			<if test="meetingDetail != null and meetingDetail.role != null and meetingDetail.role != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.role != null and meetingDetail.role != ''">
 				and md.md_role = #{meetingDetail.role}
             </if>
-			<if test="meetingDetail != null and meetingDetail.will != null and meetingDetail.will != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.will != null and meetingDetail.will != ''">
 				and md.will = #{meetingDetail.will}
             </if>
-            <if test="meetingDetail != null and meetingDetail.optional != null and meetingDetail.optional != ''">
+			<if
+				test="meetingDetail != null and meetingDetail.optional != null and meetingDetail.optional != ''">
 				and md.optional = #{meetingDetail.optional}
             </if>
-            
-            <if test="nowTime != null and nowTime != ''">
+
+			<if test="nowTime != null and nowTime != ''">
                 <![CDATA[ and DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{nowTime}, '%Y-%m-%d %H:%i:%s') ]]>
-            </if>
-        </where>
+			</if>
+		</where>
 	</select>
 
-    <insert id="add" parameterType="MeetingDetail">
-        insert into meeting_detail(m_id, user_id, md_role, optional) 
-        values(#{meeting.mId}, #{user.userId}, #{role}, #{optional})
+	<insert id="add" parameterType="MeetingDetail">
+		insert into meeting_detail(m_id, user_id, md_role, optional)
+		values(#{meeting.mId}, #{user.userId}, #{role}, #{optional})
     </insert>
-    
-    <delete id="removByMId" parameterType="int">
-        delete from meeting_detail where m_id = #{mId}
+
+	<delete id="removByMId" parameterType="int">
+		delete from meeting_detail where m_id = #{mId}
     </delete>
-    
+
 </mapper>

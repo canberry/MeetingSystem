@@ -13,7 +13,7 @@
 		<result column="user_name" property="userName" /> <!-- 可以有多个 -->
 		<result column="user_role" property="userRole" />
 	</resultMap>
-	
+
 	<resultMap type="User" id="uMap">
 		<!-- column值是数据表的列名，property值是实体类的get属性 -->
 		<id column="user_id" property="userId" /> <!-- 唯一的主键 -->
@@ -29,7 +29,8 @@
 	</select>
 
 	<select id="queryById" parameterType="int" resultMap="userMap">
-		select * from user where user_id=#{userId}
+		select *
+		from user where user_id=#{userId}
 	</select>
 
 	<select id="queryByExample" parameterType="User" resultMap="userMap">
@@ -48,17 +49,20 @@
 	</select>
 
 	<select id="queryLikeExample" resultMap="userMap">
-		select * from user where user_name like '%${userName}%' and user_state='no' 
+		select * from user where
+		user_name like '%${userName}%' and user_state='no' 
 	</select>
 
 	<insert id="add" parameterType="User" keyProperty="userId"
 		useGeneratedKeys="true">
-		insert into user(user_name, password) values(#{userName}, #{password})
+		insert into user(user_name, password)
+		values(#{userName}, #{password})
 	</insert>
-	
+
 	<insert id="register" parameterType="User" keyProperty="userId"
 		useGeneratedKeys="true">
-		insert into user(user_name, position, user_role) values(#{userName}, #{position}, #{userRole})
+		insert into user(user_name, position, user_role)
+		values(#{userName}, #{position}, #{userRole})
 	</insert>
 
 	<update id="modify" parameterType="User">
@@ -91,22 +95,24 @@
 			<if test="address != null and address != ''">
 				address = #{address},
             </if>
-            <if test="position != null and position != ''">
-                position = #{position}, 
+			<if test="position != null and position != ''">
+				position = #{position}, 
             </if>
-            <if test="userState != null and userState != ''">
-                user_state = #{userState}, 
+			<if test="userState != null and userState != ''">
+				user_state = #{userState}, 
             </if>
 		</set>
 		where user_id=#{userId}
 	</update>
 
 	<select id="queryAvailableUsersByIds" resultMap="uMap">
-		SELECT DISTINCT(u.user_id), u.user_name, u.sex, u.position FROM USER u INNER JOIN
-		meeting_detail md ON u.user_id = md.user_id WHERE u.user_id IN 
-		<foreach collection="userIds" index="index" item="item" 
-		         open="(" separator="," close=")">
-		#{item}
+		SELECT DISTINCT(u.user_id), u.user_name, u.sex, u.position FROM USER u
+		INNER JOIN
+		meeting_detail md ON u.user_id = md.user_id WHERE u.user_id
+		IN
+		<foreach collection="userIds" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
 		</foreach>
 		AND EXISTS (
 		(SELECT * FROM meeting AS m WHERE
@@ -114,24 +120,28 @@
 		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		AND m.cancel = 'no' AND m.m_id = md.m_id)
 		UNION
-		(SELECT * FROM meeting mt WHERE
+		(SELECT * FROM meeting
+		mt WHERE
 		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		AND mt.cancel = 'no' AND mt.m_id = md.m_id)
 		UNION
-		(SELECT * FROM meeting AS me WHERE
+		(SELECT * FROM meeting
+		AS me WHERE
 		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		AND me.cancel = 'no' AND me.m_id = md.m_id)
 		)
-    </select>
-    
-    <select id="queryAvailableUsersByIdsAndMId" resultMap="uMap">
-		SELECT DISTINCT(u.user_id), u.user_name, u.sex, u.position FROM USER u INNER JOIN
-		meeting_detail md ON u.user_id = md.user_id WHERE u.user_id IN 
-		<foreach collection="userIds" index="index" item="item" 
-		         open="(" separator="," close=")">
-		#{item}
+	</select>
+
+	<select id="queryAvailableUsersByIdsAndMId" resultMap="uMap">
+		SELECT DISTINCT(u.user_id), u.user_name, u.sex, u.position FROM USER u
+		INNER JOIN
+		meeting_detail md ON u.user_id = md.user_id WHERE u.user_id
+		IN
+		<foreach collection="userIds" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
 		</foreach>
 		AND EXISTS (
 		(SELECT * FROM meeting AS m WHERE m.m_id != #{mId} AND 
@@ -139,57 +149,59 @@
 		<![CDATA[ AND DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') > DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		AND m.cancel = 'no' AND m.m_id = md.m_id)
 		UNION
-		(SELECT * FROM meeting mt WHERE mt.m_id != #{mId} AND 
+		(SELECT * FROM meeting
+		mt WHERE mt.m_id != #{mId} AND 
 		<![CDATA[ DATE_FORMAT(mt.end_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(mt.start_time, '%Y-%m-%d %H:%i:%s') < DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		AND mt.cancel = 'no' AND mt.m_id = md.m_id)
 		UNION
-		(SELECT * FROM meeting AS me WHERE me.m_id != #{mId} AND 
+		(SELECT * FROM meeting
+		AS me WHERE me.m_id != #{mId} AND 
 		<![CDATA[ DATE_FORMAT(me.start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		<![CDATA[ AND DATE_FORMAT(me.end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 		AND me.cancel = 'no' AND me.m_id = md.m_id)
 		)
-    </select>
-    
-    <select id="pagination" resultMap="userMap">
-        select * from user 
-        <where>
-            and user_state = 'no' 
-            <if test="user != null">
-                <if test="user.userName != null and user.userName != ''">
-                    and user_name like '%${user.userName}%'
+	</select>
+
+	<select id="pagination" resultMap="userMap">
+		select * from user
+		<where>
+			and user_state = 'no'
+			<if test="user != null">
+				<if test="user.userName != null and user.userName != ''">
+					and user_name like '%${user.userName}%'
                 </if>
-                <if test="user.sex != null and user.sex != ''">
-                    and sex = #{user.sex}
+				<if test="user.sex != null and user.sex != ''">
+					and sex = #{user.sex}
                 </if>
-                <if test="user.userRole != null and user.userRole != ''">
-                    and user_role = #{user.userRole}
+				<if test="user.userRole != null and user.userRole != ''">
+					and user_role = #{user.userRole}
                 </if>
-                <if test="user.position != null and user.position != ''">
-                    and position = #{user.position}
+				<if test="user.position != null and user.position != ''">
+					and position = #{user.position}
                 </if>
+			</if>
+		</where>
+		order by user_id limit #{pageStart}, #{pageSize}
+	</select>
+
+	<select id="getRows" parameterType="User" resultType="int">
+		select count(*) from user
+		<where>
+			and user_state = 'no'
+			<if test="userName != null and userName != ''">
+				and user_name like '%${userName}%' 
             </if>
-        </where>
-        order by user_id limit #{pageStart}, #{pageSize}
-    </select>
-    
-    <select id="getRows" parameterType="User" resultType="int">
-        select count(*) from user 
-        <where>
-            and user_state = 'no' 
-            <if test="userName != null and userName != ''">
-                and user_name like '%${userName}%' 
+			<if test="sex != null and sex != ''">
+				and sex = #{sex}
             </if>
-            <if test="sex != null and sex != ''">
-                and sex = #{sex}
+			<if test="userRole != null and userRole != ''">
+				and user_role = #{userRole}
             </if>
-            <if test="userRole != null and userRole != ''">
-                and user_role = #{userRole}
+			<if test="position != null and position != ''">
+				and position = #{position}
             </if>
-            <if test="position != null and position != ''">
-                and position = #{position}
-            </if>
-        </where>
-    </select>
-    
+		</where>
+	</select>
+
 </mapper>

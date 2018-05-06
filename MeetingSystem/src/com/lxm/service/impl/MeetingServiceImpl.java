@@ -21,7 +21,7 @@ import com.lxm.service.ResourceService;
 
 @Service
 public class MeetingServiceImpl implements MeetingService {
-	
+
 	private static Logger logger = Logger.getLogger(MeetingServiceImpl.class);
 
 	@Resource
@@ -51,7 +51,8 @@ public class MeetingServiceImpl implements MeetingService {
 		return meetingMapper.queryByIds(meetingId, userId);
 	}
 
-	public List<Meeting> paginateMeetingsByExample(Meeting meeting, int pageIndex, int pageSize) {
+	public List<Meeting> paginateMeetingsByExample(Meeting meeting,
+			int pageIndex, int pageSize) {
 		int pageStart = pageSize * (pageIndex - 1);
 		return meetingMapper.pagination(meeting, pageStart, pageSize);
 	}
@@ -60,28 +61,28 @@ public class MeetingServiceImpl implements MeetingService {
 		int r = meetingMapper.getRows(meeting);
 		return calTotalPages(r, pageSize);
 	}
-	
+
 	private int calTotalPages(int r, int pageSize) {
-		return r  % pageSize == 0 ? r / pageSize : r / pageSize + 1;
+		return r % pageSize == 0 ? r / pageSize : r / pageSize + 1;
 	}
 
-	public void addMeeting(Meeting meeting, List<MeetingDetail> meetingDetails, 
+	public void addMeeting(Meeting meeting, List<MeetingDetail> meetingDetails,
 			List<MeetingResource> meetingResources, Message message) {
 		meetingMapper.add(meeting);
-		
+
 		logger.info("after insert meeting: " + meeting);
 		for (MeetingDetail meetingDetail : meetingDetails) {
 			meetingDetail.setMeeting(meeting);
 			logger.info("start to insert md: " + meetingDetail);
 			meetingDetailService.addMeetingDetail(meetingDetail);
 		}
-		
+
 		for (MeetingResource meetingResource : meetingResources) {
 			meetingResource.setMeeting(meeting);
 			logger.info("start to insert md: " + meetingResource);
 			meetingResourceService.addMeetingResource(meetingResource);
 		}
-		
+
 		logger.info("start to send message to mds...");
 		for (MeetingDetail meetingDetail : meetingDetails) {
 			message.setReceiveUser(meetingDetail.getUser());
@@ -93,10 +94,11 @@ public class MeetingServiceImpl implements MeetingService {
 		return resourceService.queryUnAddResources(meetingId);
 	}
 
-	public void modifyMeeting(Meeting meeting, List<MeetingDetail> meetingDetails, 
+	public void modifyMeeting(Meeting meeting,
+			List<MeetingDetail> meetingDetails,
 			List<MeetingResource> meetingResources, Message message) {
 		meetingMapper.modify(meeting);
-		
+
 		logger.info("after modify meeting: ");
 		logger.info("start to remove mds...");
 		meetingDetailService.removeMeetingDetailsByMId(meeting.getmId());
@@ -105,7 +107,7 @@ public class MeetingServiceImpl implements MeetingService {
 			logger.info("start to insert md: " + meetingDetail);
 			meetingDetailService.addMeetingDetail(meetingDetail);
 		}
-		
+
 		logger.info("start to remove mrs...");
 		meetingResourceService.removeMeetingResourcesByMId(meeting.getmId());
 		for (MeetingResource meetingResource : meetingResources) {
@@ -113,7 +115,7 @@ public class MeetingServiceImpl implements MeetingService {
 			logger.info("start to insert md: " + meetingResource);
 			meetingResourceService.addMeetingResource(meetingResource);
 		}
-		
+
 		logger.info("start to send message to mds...");
 		for (MeetingDetail meetingDetail : meetingDetails) {
 			message.setReceiveUser(meetingDetail.getUser());
@@ -123,14 +125,14 @@ public class MeetingServiceImpl implements MeetingService {
 
 	public void modifyMeetingCancel(Meeting meeting, Message message) {
 		meetingMapper.modify(meeting);
-		
+
 		logger.info("after modify meeting: ");
 		logger.info("start to remove mrs...");
 		meetingResourceService.removeMeetingResourcesByMId(meeting.getmId());
-		
+
 		logger.info("start to send message to mds...");
 		List<MeetingDetail> meetingDetails = meeting.getMeetingDetails();
-		for (MeetingDetail meetingDetail : meetingDetails ) {
+		for (MeetingDetail meetingDetail : meetingDetails) {
 			message.setReceiveUser(meetingDetail.getUser());
 			messageService.addMessage(message);
 		}

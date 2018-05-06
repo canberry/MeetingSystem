@@ -9,13 +9,13 @@ public class DateUtil {
 		if (time == null) {
 			return time;
 		}
-		
+
 		Date ts = Timestamp.valueOf(time);
 		return formatDate(ts, format);
 	}
 
 	public static String formatDate(Date date, String dateformatHms) {
-		SimpleDateFormat sdf = new SimpleDateFormat(dateformatHms);    
-        return sdf.format(date);
+		SimpleDateFormat sdf = new SimpleDateFormat(dateformatHms);
+		return sdf.format(date);
 	}
 }

@@ -42,7 +42,8 @@ public class UserServiceImpl implements UserService {
 		return userMapper.queryLikeExample(userName);
 	}
 
-	public List<User> queryAvailableUsersByIds(List<Integer> userIds, String startTime, String endTime) {
+	public List<User> queryAvailableUsersByIds(List<Integer> userIds,
+			String startTime, String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userIds", userIds);
 		params.put("startTime", startTime);
@@ -50,7 +51,8 @@ public class UserServiceImpl implements UserService {
 		return userMapper.queryAvailableUsersByIds(params);
 	}
 
-	public List<User> queryAvailableUsersByIdsAndMId(int mId, List<Integer> userIds, String startTime, String endTime) {
+	public List<User> queryAvailableUsersByIdsAndMId(int mId,
+			List<Integer> userIds, String startTime, String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userIds", userIds);
 		params.put("startTime", startTime);
@@ -59,14 +61,15 @@ public class UserServiceImpl implements UserService {
 		return userMapper.queryAvailableUsersByIdsAndMId(params);
 	}
 
-	public List<User> paginateUsersByExample(User user, int pageIndex, int pageSize) {
+	public List<User> paginateUsersByExample(User user, int pageIndex,
+			int pageSize) {
 		int pageStart = pageSize * (pageIndex - 1);
 		return userMapper.pagination(user, pageStart, pageSize);
 	}
 
 	public int totalPages(User user, int pageSize) {
 		int r = userMapper.getRows(user);
-		return r  % pageSize == 0 ? r / pageSize : r / pageSize + 1;
+		return r % pageSize == 0 ? r / pageSize : r / pageSize + 1;
 	}
 
 	public void register(User user) {

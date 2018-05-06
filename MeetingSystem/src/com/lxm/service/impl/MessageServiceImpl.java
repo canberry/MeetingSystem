@@ -15,7 +15,7 @@ import com.lxm.util.Const;
 
 @Service
 public class MessageServiceImpl implements MessageService {
-	
+
 	@Resource
 	MessageMapper messageMapper;
 	@Resource
@@ -24,7 +24,7 @@ public class MessageServiceImpl implements MessageService {
 	public List<Message> queryUnReadMsgByRcvUserId(int userId) {
 		return messageMapper.queryUnReadMsgByRcvUserId(userId);
 	}
-	
+
 	public void addMessage(Message message) {
 		messageMapper.add(message);
 	}
@@ -43,20 +43,22 @@ public class MessageServiceImpl implements MessageService {
 
 	public Message queryMessageById(int msgId) {
 		Message message = messageMapper.queryById(msgId);
-		User receiveUser = userMapper.queryById(message.getReceiveUser().getUserId());
-		message.setReceiveUser(receiveUser );
-		
+		User receiveUser = userMapper.queryById(message.getReceiveUser()
+				.getUserId());
+		message.setReceiveUser(receiveUser);
+
 		Message msg = new Message();
 		msg.setMessageId(message.getMessageId());
 		msg.setScan(Const.SCAN_YES);
-		messageMapper.modify(msg );
+		messageMapper.modify(msg);
 		return message;
 	}
 
 	public Message queryMessageFromMeById(int msgId) {
 		Message message = messageMapper.queryById(msgId);
-		User receiveUser = userMapper.queryById(message.getReceiveUser().getUserId());
-		message.setReceiveUser(receiveUser );
+		User receiveUser = userMapper.queryById(message.getReceiveUser()
+				.getUserId());
+		message.setReceiveUser(receiveUser);
 		return message;
 	}
 }

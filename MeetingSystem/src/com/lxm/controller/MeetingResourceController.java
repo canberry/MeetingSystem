@@ -11,16 +11,17 @@ import com.lxm.service.MeetingResourceService;
 @Controller
 @RequestMapping("/meetingResource")
 public class MeetingResourceController {
-	private static Logger logger = Logger.getLogger(MeetingResourceController.class);
-	
+	private static Logger logger = Logger
+			.getLogger(MeetingResourceController.class);
+
 	@Autowired
 	MeetingResourceService meetingResourceService;
-	
+
 	@RequestMapping("/removeMeetingResourcesByMId")
 	@ResponseBody
 	public String removeMeetingResourcesByMId(int meetingId) {
 		logger.info("meetingId: " + meetingId);
-		
+
 		try {
 			meetingResourceService.removeMeetingResourcesByMId(meetingId);
 			return "ok";

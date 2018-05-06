@@ -15,11 +15,11 @@ public class SessionFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		String[] notFilter = new String[] {"/login.jsp", "/user/login", 
-				"/modify_password.jsp", "/make_certpic.jsp", 
-				"/user/queryUserName", "/user/checkCertCode", 
-				"/register.jsp", "/jumpto_login.jsp"};
-		
+		String[] notFilter = new String[] { "/login.jsp", "/user/login",
+				"/modify_password.jsp", "/make_certpic.jsp",
+				"/user/queryUserName", "/user/checkCertCode", "/register.jsp",
+				"/jumpto_login.jsp" };
+
 		String uri = request.getRequestURI();
 		boolean doFilter = true;
 		for (String s : notFilter) {
@@ -29,11 +29,12 @@ public class SessionFilter extends OncePerRequestFilter {
 				break;
 			}
 		}
-		
+
 		if (doFilter) {
 			Object obj = request.getSession().getAttribute("user");
 			if (obj == null) {
-				response.sendRedirect(request.getContextPath() + "/jumpto_login.jsp");
+				response.sendRedirect(request.getContextPath()
+						+ "/jumpto_login.jsp");
 				return;
 			} else {
 				filterChain.doFilter(request, response);
@@ -42,13 +43,12 @@ public class SessionFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 		}
 	}
-	
+
 	public static boolean isAjaxRequest(HttpServletRequest request) {
 		String header = request.getHeader("X-Requested-With");
-		if (header != null && "XMLHttpRequest".equals(header)) {			
+		if (header != null && "XMLHttpRequest".equals(header)) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}

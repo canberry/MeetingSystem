@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- namespace：必须与对应的接口全类名一致
+	<!-- namespace：必须与对应的接口全类名一致
 	 id:必须与对应接口的某个对应的方法名一致	-->
 <mapper namespace="com.lxm.dao.MeetingResourceMapper">
 
@@ -11,35 +11,36 @@
 		<id column="m_id" property="meeting.mId" /> <!-- 唯一的主键 -->
 		<id column="r_id" property="resource.rId" /> <!-- 唯一的主键 -->
 		<result column="number" property="number" /> <!-- 可以有多个 -->
-		
+
 		<association property="meeting" javaType="Meeting">
-		    <id column="m_id" property="mId"/>
+			<id column="m_id" property="mId" />
 		</association>
-		
+
 		<association property="resource" javaType="Resource">
 			<id column="r_id" property="rId" />
 		</association>
 	</resultMap>
 
-    <select id="queryByMId" parameterType="int" resultMap="mrMap">
-        select r_id, m_id, number from meeting_resource where m_id = #{mId}
+	<select id="queryByMId" parameterType="int" resultMap="mrMap">
+		select r_id, m_id, number from meeting_resource where m_id = #{mId}
     </select>
 
-    <insert id="add" parameterType="MeetingResource">
-        insert into meeting_resource(m_id, r_id, number) 
-        values(#{meeting.mId}, #{resource.rId}, #{number})
+	<insert id="add" parameterType="MeetingResource">
+		insert into meeting_resource(m_id, r_id, number)
+		values(#{meeting.mId}, #{resource.rId}, #{number})
     </insert>
-    
-    <update id="subResourceRemain" parameterType="MeetingResource">
-        update resource set remain = remain - #{number} where r_id = #{resource.rId}
-    </update>
-    
-    <delete id="remove">
-        delete from meeting_resource where m_id = #{mId} and r_id = #{rId}
+
+	<update id="subResourceRemain" parameterType="MeetingResource">
+		update resource set
+		remain = remain - #{number} where r_id = #{resource.rId}
+	</update>
+
+	<delete id="remove">
+		delete from meeting_resource where m_id = #{mId} and r_id = #{rId}
     </delete>
-    
-    <update id="addResourceRemain" parameterType="MeetingResource">
-        update resource set remain = remain + #{number} where r_id = #{resource.rId}
-    </update>
-    
+
+	<update id="addResourceRemain" parameterType="MeetingResource">
+		update resource set remain = remain + #{number} where r_id = #{resource.rId}
+	</update>
+
 </mapper>

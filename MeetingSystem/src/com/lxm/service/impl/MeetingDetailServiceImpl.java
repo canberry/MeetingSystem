@@ -21,22 +21,24 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 	@Autowired
 	MessageMapper messageMapper;
 
-	public List<MeetingDetail> paginateMeetingDetailsByExample(MeetingDetail meetingDetail, int pageIndex, int pageSize) {
+	public List<MeetingDetail> paginateMeetingDetailsByExample(
+			MeetingDetail meetingDetail, int pageIndex, int pageSize) {
 		int pageStart = pageSize * (pageIndex - 1);
-		return meetingDetailMapper.pagination(meetingDetail, pageStart, pageSize);			
+		return meetingDetailMapper.pagination(meetingDetail, pageStart,
+				pageSize);
 	}
 
 	public int totalPages(MeetingDetail meetingDetail, int pageSize) {
 		int r = meetingDetailMapper.getRows(meetingDetail);
 		return calTotalPages(r, pageSize);
 	}
-	
+
 	public int getRows(MeetingDetail meetingDetail) {
 		return meetingDetailMapper.getRows(meetingDetail);
 	}
-	
+
 	private int calTotalPages(int r, int pageSize) {
-		return r  % pageSize == 0 ? r / pageSize : r / pageSize + 1;
+		return r % pageSize == 0 ? r / pageSize : r / pageSize + 1;
 	}
 
 	public void modifyMeetingDetail(MeetingDetail meetingDetail, Message message) {
@@ -44,12 +46,16 @@ public class MeetingDetailServiceImpl implements MeetingDetailService {
 		messageMapper.add(message);
 	}
 
-	public List<MeetingDetail> paginateMeetingDetailsBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageIndex, int pageSize) {
+	public List<MeetingDetail> paginateMeetingDetailsBeforeNow(
+			MeetingDetail meetingDetail, String nowTime, int pageIndex,
+			int pageSize) {
 		int pageStart = pageSize * (pageIndex - 1);
-		return meetingDetailMapper.paginationBeforeNow(meetingDetail, nowTime, pageStart, pageSize);
+		return meetingDetailMapper.paginationBeforeNow(meetingDetail, nowTime,
+				pageStart, pageSize);
 	}
 
-	public int totalPagesBeforeNow(MeetingDetail meetingDetail, String nowTime, int pageSize) {
+	public int totalPagesBeforeNow(MeetingDetail meetingDetail, String nowTime,
+			int pageSize) {
 		int r = meetingDetailMapper.getRowsBeforeNow(meetingDetail, nowTime);
 		return calTotalPages(r, pageSize);
 	}

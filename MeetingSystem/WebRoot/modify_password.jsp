@@ -205,6 +205,8 @@ function checkAndModify() {
     } else if (!checkUsername() || !checkPassword() || !checkConfirmPassword() || !checkCertCode()) {
         return;
     } else {
+    	alert($("#userId").val());
+    	
         $.post("<%=basePath%>user/modifyUser", 
             $("form").serialize(), 
 		    function(data) {

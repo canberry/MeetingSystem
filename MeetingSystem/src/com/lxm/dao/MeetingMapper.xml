@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- namespace：必须与对应的接口全类名一致
+	<!-- namespace：必须与对应的接口全类名一致
 	 id:必须与对应接口的某个对应的方法名一致	-->
 <mapper namespace="com.lxm.dao.MeetingMapper">
 
@@ -17,7 +17,7 @@
 		<result column="description" property="description" />
 		<result column="cancel" property="cancel" />
 		<result column="hold" property="hold" />
-		
+
 		<!-- 再写引用关联主表MeetingRoom -->
 		<association property="meetingRoom" javaType="MeetingRoom">
 			<id column="mr_id" property="mrId" />
@@ -26,14 +26,14 @@
 			<result column="capacity" property="capacity" />
 			<result column="occupation" property="occupation" />
 		</association>
-		
+
 		<!-- 再写引用关联主表User -->
 		<association property="scheduler" javaType="User">
 			<id column="scheduler" property="userId" />
-		    <result column="user_name" property="userName" />
+			<result column="user_name" property="userName" />
 		</association>
 	</resultMap>
-	
+
 	<resultMap type="Meeting" id="mMap">
 		<!-- column值是数据表的列名，property值是实体类的get属性 -->
 		<id column="m_id" property="mId" /> <!-- 唯一的主键 -->
@@ -44,114 +44,128 @@
 		<result column="description" property="description" />
 		<result column="cancel" property="cancel" />
 		<result column="hold" property="hold" />
-		
+
 		<association property="scheduler" javaType="User">
 			<id column="scheduler" property="userId" />
 		</association>
-		
+
 		<association property="meetingRoom" javaType="MeetingRoom">
-		    <id column="mr_id" property="mrId" />
+			<id column="mr_id" property="mrId" />
 			<result column="mr_name" property="mrName" />
 			<result column="no" property="no" />
 			<result column="capacity" property="capacity" />
 		</association>
 	</resultMap>
-	
+
 	<resultMap type="Meeting" id="mdrMap">
 		<!-- column值是数据表的列名，property值是实体类的get属性 -->
 		<id column="m_id" property="mId" /> <!-- 唯一的主键 -->
-		
+
 		<!-- 联合从表MeetingDetail -->
-		<collection property="meetingDetails" ofType="MeetingDetail" javaType="ArrayList">
-		    <id column="m_id" property="meeting.mId" />
-		    <id column="user_id" property="user.userId" />
-		    <result column="md_role" property="role" />
-		    <result column="will" property="will" />
-		    <result column="optional" property="optional" />
-		    
-		    <association property="user" javaType="User">
-		        <id column="user_id" property="userId" />
-		        <result column="user_name" property="userName" />
-		        <result column="avatar" property="avatar" />
-		        <result column="position" property="position" />
-		    </association>
+		<collection property="meetingDetails" ofType="MeetingDetail"
+			javaType="ArrayList">
+			<id column="m_id" property="meeting.mId" />
+			<id column="user_id" property="user.userId" />
+			<result column="md_role" property="role" />
+			<result column="will" property="will" />
+			<result column="optional" property="optional" />
+
+			<association property="user" javaType="User">
+				<id column="user_id" property="userId" />
+				<result column="user_name" property="userName" />
+				<result column="avatar" property="avatar" />
+				<result column="position" property="position" />
+			</association>
 		</collection>
-		
+
 		<!-- 联合从表MeetingResource -->
-		<collection property="meetingResources" ofType="MeetingResource" javaType="ArrayList">
-		    <id column="r_id" property="resource.rId" />
-		    <result column="number" property="number" />
-		    
-		    <association property="resource" javaType="Resource">
-		        <id column="r_id" property="rId" />
-		        <result column="r_name" property="rName" />
-		        <result column="remain" property="remain" />
-		    </association>
+		<collection property="meetingResources" ofType="MeetingResource"
+			javaType="ArrayList">
+			<id column="r_id" property="resource.rId" />
+			<result column="number" property="number" />
+
+			<association property="resource" javaType="Resource">
+				<id column="r_id" property="rId" />
+				<result column="r_name" property="rName" />
+				<result column="remain" property="remain" />
+			</association>
 		</collection>
-		
+
 		<!-- 联合从表Documents -->
-		<collection property="documents" ofType="Document" javaType="ArrayList">
-		    <id column="d_id" property="docId" />
-		    <id column="d_name" property="docName" />
-		    <result column="path" property="path" />
+		<collection property="documents" ofType="Document"
+			javaType="ArrayList">
+			<id column="d_id" property="docId" />
+			<id column="d_name" property="docName" />
+			<result column="path" property="path" />
 		</collection>
 	</resultMap>
-	
+
 	<resultMap type="Meeting" id="mdMap">
 		<!-- column值是数据表的列名，property值是实体类的get属性 -->
 		<id column="m_id" property="mId" /> <!-- 唯一的主键 -->
-		
+
 		<!-- 联合从表MeetingDetail -->
-		<collection property="meetingDetails" ofType="MeetingDetail" javaType="ArrayList">
-		    <id column="m_id" property="meeting.mId" />
-		    <id column="user_id" property="user.userId" />
-		    <result column="md_role" property="role" />
-		    <result column="will" property="will" />
-		    <result column="optional" property="optional" />
+		<collection property="meetingDetails" ofType="MeetingDetail"
+			javaType="ArrayList">
+			<id column="m_id" property="meeting.mId" />
+			<id column="user_id" property="user.userId" />
+			<result column="md_role" property="role" />
+			<result column="will" property="will" />
+			<result column="optional" property="optional" />
 		</collection>
 	</resultMap>
 
 	<select id="pagination" resultMap="meetingMap">
-		select * from (meeting m inner join meeting_room mr on m.mr_id = mr.mr_id) 
-		inner join user u on m.scheduler= u.user_id 
+		select * from (meeting m inner join meeting_room mr on m.mr_id =
+		mr.mr_id)
+		inner join user u on m.scheduler= u.user_id
 		<where>
 			<if test="meeting != null and meeting.mId != 0">
 				and m_id = #{meeting.mId}
 	        </if>
-			<if test="meeting != null and meeting.mName != null and meeting.mName != ''">
+			<if
+				test="meeting != null and meeting.mName != null and meeting.mName != ''">
 				and m_name like '%${meeting.mName}%'
 	        </if>
-			<if test="meeting != null and meeting.startTime != null and meeting.startTime != ''">
+			<if
+				test="meeting != null and meeting.startTime != null and meeting.startTime != ''">
 			    <![CDATA[ and DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meeting.startTime}, '%Y-%m-%d %H:%i:%s') ]]>
-	        </if>
-	        <if test="meeting != null and meeting.endTime != null and meeting.endTime != ''">
+			</if>
+			<if
+				test="meeting != null and meeting.endTime != null and meeting.endTime != ''">
 	            <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{meeting.endTime}, '%Y-%m-%d %H:%i:%s') ]]>
-	        </if>
-	        <if test="meeting != null and meeting.scheduledTime != null and meeting.scheduledTime != ''">
+			</if>
+			<if
+				test="meeting != null and meeting.scheduledTime != null and meeting.scheduledTime != ''">
 	            <![CDATA[ and DATE_FORMAT(scheduled_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{meeting.scheduledTime}, '%Y-%m-%d %H:%i:%s') ]]>
+			</if>
+			<if
+				test="meeting != null and meeting.cancel != null and meeting.cancel != ''">
+				and cancel = #{meeting.cancel}
 	        </if>
-	        <if test="meeting != null and meeting.cancel != null and meeting.cancel != ''">
-	            and cancel = #{meeting.cancel}
+			<if test="meeting != null and meeting.hold != null and meeting.hold != ''">
+				and hold = #{meeting.hold}
 	        </if>
-	        <if test="meeting != null and meeting.hold != null and meeting.hold != ''">
-	            and hold = #{meeting.hold}
+			<if
+				test="meeting != null and meeting.meetingRoom != null and meeting.meetingRoom.mrId != 0">
+				and m.mr_id = #{meeting.meetingRoom.mrId}	        
 	        </if>
-	        <if test="meeting != null and meeting.meetingRoom != null and meeting.meetingRoom.mrId != 0">
-	            and m.mr_id = #{meeting.meetingRoom.mrId}	        
+			<if
+				test="meeting != null and meeting.meetingRoom != null and meeting.meetingRoom.no != ''">
+				and mr.no like '%${meeting.meetingRoom.no}%'	        
 	        </if>
-	        <if test="meeting != null and meeting.meetingRoom != null and meeting.meetingRoom.no != ''">
-	            and mr.no like '%${meeting.meetingRoom.no}%'	        
-	        </if>
-	        <if test="meeting != null and meeting.scheduler != null and meeting.scheduler.userId != 0">
-	            and m.scheduler = #{meeting.scheduler.userId}
+			<if
+				test="meeting != null and meeting.scheduler != null and meeting.scheduler.userId != 0">
+				and m.scheduler = #{meeting.scheduler.userId}
 	        </if>
 		</where>
 		order by m_id limit #{pageStart}, #{pageSize}
 	</select>
-	
+
 	<select id="getRows" parameterType="Meeting" resultType="int">
-		select count(*) from (meeting m inner join meeting_room mr on m.mr_id = mr.mr_id) 
-		inner join user u on m.scheduler= u.user_id 
+		select count(*) from (meeting m inner join meeting_room mr on m.mr_id
+		= mr.mr_id)
+		inner join user u on m.scheduler= u.user_id
 		<where>
 			<if test="mId != 0">
 				and m_id = #{mId}
@@ -161,35 +175,36 @@
 	        </if>
 			<if test="startTime != null and startTime != ''">
 			    <![CDATA[ and DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s') ]]>
-	        </if>
-	        <if test="endTime != null and endTime != ''">
+			</if>
+			<if test="endTime != null and endTime != ''">
 	            <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
-	        </if>
-	        <if test="scheduledTime != null and scheduledTime != ''">
+			</if>
+			<if test="scheduledTime != null and scheduledTime != ''">
 	            <![CDATA[ and DATE_FORMAT(scheduled_time, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{scheduledTime}, '%Y-%m-%d %H:%i:%s') ]]>
+			</if>
+			<if test="cancel != null and cancel != ''">
+				and cancel = #{cancel}
 	        </if>
-	        <if test="cancel != null and cancel != ''">
-	            and cancel = #{cancel}
+			<if test="hold != null and hold != ''">
+				and hold = #{hold}
 	        </if>
-	        <if test="hold != null and hold != ''">
-	            and hold = #{hold}
+			<if test="meetingRoom != null and meetingRoom.mrId != 0">
+				and m.mr_id = #{meetingRoom.mrId}	        
 	        </if>
-	        <if test="meetingRoom != null and meetingRoom.mrId != 0">
-	            and m.mr_id = #{meetingRoom.mrId}	        
+			<if test="meetingRoom != null and meetingRoom.no != ''">
+				and mr.no like '%${meetingRoom.no}%'	        
 	        </if>
-	        <if test="meetingRoom != null and meetingRoom.no != ''">
-	            and mr.no like '%${meetingRoom.no}%'	        
-	        </if>
-	        <if test="scheduler != null and scheduler.userId != 0">
-	            and m.scheduler = #{scheduler.userId}
+			<if test="scheduler != null and scheduler.userId != 0">
+				and m.scheduler = #{scheduler.userId}
 	        </if>
 		</where>
 	</select>
 
 	<select id="queryByTime" parameterType="Meeting" resultMap="mMap">
-		select * from meeting inner join meeting_room on meeting.mr_id = meeting_room.mr_id 
+		select * from meeting inner join meeting_room on meeting.mr_id =
+		meeting_room.mr_id
 		<where>
-		    <if test="mId != 0">
+			<if test="mId != 0">
 				and m_id = #{mId}
 	        </if>
 			<if test="startTime != null and startTime != ''">
@@ -199,68 +214,76 @@
 	            <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]>
 			</if>
 			<if test="meetingRoom != null and meetingRoom.mrId != 0">
-	            and meeting.mr_id = #{meetingRoom.mrId}
+				and meeting.mr_id = #{meetingRoom.mrId}
 	        </if>
-	        <if test="scheduler != null and scheduler.userId != 0">
-	            and scheduler = #{scheduler.userId}
+			<if test="scheduler != null and scheduler.userId != 0">
+				and scheduler = #{scheduler.userId}
 	        </if>
-	        <if test="cancel != null and cancel != ''">
-	            and cancel = #{cancel}
+			<if test="cancel != null and cancel != ''">
+				and cancel = #{cancel}
 	        </if>
 		</where>
 	</select>
-	
+
 	<select id="queryById" parameterType="int" resultMap="meetingMap">
-		select * from (meeting m inner join meeting_room mr on m.mr_id = mr.mr_id) 
+		select *
+		from (meeting m inner join meeting_room mr on m.mr_id = mr.mr_id)
 		inner join user u on m.scheduler = u.user_id where m.m_id=#{meetingId}
 	</select>
-	
+
 	<select id="queryByIds" resultMap="mdMap">
-		select m.m_id, md.user_id, md.md_role,  md.will, md.optional 
-		from meeting m inner join meeting_detail md on m.m_id = md.m_id  
+		select m.m_id, md.user_id,
+		md.md_role, md.will, md.optional
+		from meeting m inner join meeting_detail md on m.m_id = md.m_id
 		where m.m_id=#{meetingId} and md.user_id=#{userId}
 	</select>
-    
-    <select id="queryDetailById" parameterType="int" resultMap="mdrMap">
-        select m.m_id, md.user_id, u.user_name, u.avatar, u.position, 
-        md.md_role, md.will, md.optional, 
-        mr.r_id, mr.number, r.r_name, r.remain, 
-        d.d_id, d.d_name, d.path
-        from ((meeting m inner join 
-        (meeting_detail md inner join user u on md.user_id = u.user_id) on m.m_id = md.m_id) 
-        left join (meeting_resource mr inner join resource r on mr.r_id = r.r_id) 
-        on m.m_id = mr.m_id) left join document d on m.m_id = d.m_id 
-        where m.m_id=#{meetingId}
+
+	<select id="queryDetailById" parameterType="int" resultMap="mdrMap">
+		select m.m_id, md.user_id, u.user_name, u.avatar, u.position,
+		md.md_role, md.will, md.optional,
+		mr.r_id, mr.number, r.r_name, r.remain,
+		d.d_id, d.d_name, d.path
+		from ((meeting m inner join
+		(meeting_detail md inner join user u on md.user_id = u.user_id) on m.m_id = md.m_id)
+		left join (meeting_resource mr inner join resource r on mr.r_id =
+		r.r_id)
+		on m.m_id = mr.m_id) left join document d on m.m_id = d.m_id
+		where m.m_id=#{meetingId}
     </select>
-    
-    <insert id="add" parameterType="Meeting" keyProperty="mId" useGeneratedKeys="true">
-        insert into meeting(m_name, start_time, end_time, description, mr_id, scheduler) 
-        values(#{mName}, #{startTime}, #{endTime}, #{description}, #{meetingRoom.mrId}, #{scheduler.userId})
-    </insert>
-    
-    <update id="modify" parameterType="Meeting">
-        update meeting 
-        <set>
-            <if test="mName != null and mName != ''">
-                m_name=#{mName}, 
+
+	<insert id="add" parameterType="Meeting" keyProperty="mId"
+		useGeneratedKeys="true">
+		insert into meeting(m_name, start_time, end_time,
+		description, mr_id,
+		scheduler)
+		values(#{mName}, #{startTime},
+		#{endTime}, #{description}, #{meetingRoom.mrId},
+		#{scheduler.userId})
+	</insert>
+
+	<update id="modify" parameterType="Meeting">
+		update meeting
+		<set>
+			<if test="mName != null and mName != ''">
+				m_name=#{mName}, 
             </if>
-            <if test="startTime != null and startTime != ''">
-                start_time=#{startTime}, 
+			<if test="startTime != null and startTime != ''">
+				start_time=#{startTime}, 
             </if>
-            <if test="endTime != null and endTime != ''">
-                end_time=#{endTime}, 
+			<if test="endTime != null and endTime != ''">
+				end_time=#{endTime}, 
             </if>
-            <if test="description != null and description != ''">
-                description=#{description}, 
+			<if test="description != null and description != ''">
+				description=#{description}, 
             </if>
-            <if test="meetingRoom != null and meetingRoom.mrId != 0">
-                mr_id=#{meetingRoom.mrId}, 
+			<if test="meetingRoom != null and meetingRoom.mrId != 0">
+				mr_id=#{meetingRoom.mrId}, 
             </if>
-            <if test="cancel != null and cancel != ''">
-                cancel=#{cancel} 
+			<if test="cancel != null and cancel != ''">
+				cancel=#{cancel} 
             </if>
-        </set>
-        where m_id=#{mId}
-    </update>
-    
+		</set>
+		where m_id=#{mId}
+	</update>
+
 </mapper>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/context 
@@ -19,18 +18,21 @@
 		<property value="${driver}" name="driverClassName" />
 	</bean>
 
-	<!-- mybatis的SqlSessionFactory引用，
-	           注入已经配置好的的数据源dataSource和mybatis-config.xml文件 -->
+	<!--
+		mybatis的SqlSessionFactory引用，
+		注入已经配置好的的数据源dataSource和mybatis-config.xml文件
+	-->
 	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:com/lxm/xml/mybatis-config.xml" />
 	</bean>
-	
-	<!-- mybatis自动扫描加载Sql映射文件/接口
-	     basePackage:指定sql映射文件/接口所在的包（自动扫描）,
-	           自动实现sqlSessionFactory的注入 相当于SqlSession对象的getMapper()方法 -->
+
+	<!--
+		mybatis自动扫描加载Sql映射文件/接口 basePackage:指定sql映射文件/接口所在的包（自动扫描）,
+		自动实现sqlSessionFactory的注入 相当于SqlSession对象的getMapper()方法
+	-->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-	     <property name="basePackage" value="com.lxm.dao" />
-    </bean>
+		<property name="basePackage" value="com.lxm.dao" />
+	</bean>
 
 </beans>

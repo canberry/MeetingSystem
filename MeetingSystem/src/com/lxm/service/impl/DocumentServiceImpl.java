@@ -9,7 +9,7 @@ import com.lxm.service.DocumentService;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
-	
+
 	@Resource
 	DocumentMapper documentMapper;
 
