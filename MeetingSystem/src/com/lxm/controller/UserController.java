@@ -230,7 +230,7 @@ public class UserController {
 
 	@RequestMapping("/queryUsers")
 	public String queryUsers(User user, HttpServletRequest request) {
-		int pageSize = 4;
+		int pageSize = 3;
 		int pageIndex = 1;
 		String piStr = request.getParameter("pageIndex");
 		if (piStr == null) {

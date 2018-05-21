@@ -195,7 +195,7 @@ function queryMsgById(msgId) {
 						<!-- content -->
 						<div class="graph-visual tables-main">
 							<h3 class="inner-tittle two">
-								人员列表
+								资源列表
 							</h3>
 
 							<!-- search -->
@@ -376,7 +376,7 @@ function add() {
 														      onsubmit="return false" method="post">
 															<div class="form-group">
 																<label for="username" class="col-sm-2 control-label">
-																	用户名
+																	名称
 																</label>
 																<div class="col-sm-9">
 																	<input type="text" class="form-control" id="addrnameid"
